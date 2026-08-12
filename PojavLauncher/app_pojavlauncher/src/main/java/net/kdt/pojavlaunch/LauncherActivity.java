@@ -42,7 +42,7 @@ import net.kdt.pojavlaunch.lifecycle.ContextExecutor;
 import net.kdt.pojavlaunch.modloaders.modpacks.ModloaderInstallTracker;
 import net.kdt.pojavlaunch.modloaders.modpacks.imagecache.IconCacheJanitor;
 import net.kdt.pojavlaunch.prefs.LauncherPreferences;
-import net.kdt.pojavlaunch.prefs.screens.LauncherPreferenceFragment;
+import net.kdt.pojavlaunch.stardock.ui.SettingsFragment;
 import net.kdt.pojavlaunch.update.UpdateManager;
 import net.kdt.pojavlaunch.progresskeeper.ProgressKeeper;
 import net.kdt.pojavlaunch.progresskeeper.TaskCountListener;
@@ -268,7 +268,7 @@ public class LauncherActivity extends BaseActivity {
                 target = MusicFragment.class;
                 break;
             case NAV_SETTINGS:
-                target = LauncherPreferenceFragment.class;
+                target = SettingsFragment.class;
                 break;
             default:
                 target = MainMenuFragment.class;
@@ -310,7 +310,7 @@ public class LauncherActivity extends BaseActivity {
         else if (cls == MultiplayerFragment.class) highlightNavButton(NAV_MULTIPLAYER);
         else if (cls == AiAssistantFragment.class) highlightNavButton(NAV_AI);
         else if (cls == MusicFragment.class) highlightNavButton(NAV_MUSIC);
-        else if (cls == LauncherPreferenceFragment.class) highlightNavButton(NAV_SETTINGS);
+        else if (cls == SettingsFragment.class) highlightNavButton(NAV_SETTINGS);
     }
 
     @Override

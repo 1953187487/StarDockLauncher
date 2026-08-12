@@ -5,11 +5,11 @@ plugins {
 static def getDate() { return new Date().format('yyyyMMdd') }
 
 def getVersionName = {
-    return "0.0.2"
+    return "0.0.3"
 }
 
 def getVersionCode = {
-    return 2
+    return 3
 }
 
 def getCFApiKey = {

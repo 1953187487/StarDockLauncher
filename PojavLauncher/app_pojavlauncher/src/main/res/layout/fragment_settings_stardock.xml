@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background_app">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_50sdp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/background_top_bar"
+        android:paddingHorizontal="@dimen/_16sdp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/nav_settings"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/_15ssp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/settings_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:listSelector="@drawable/background_nav_button"
+        android:padding="@dimen/_12sdp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/background_nav_bar"
+        android:padding="@dimen/_14sdp"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/settings_about_button"
+            style="@style/StarDockPrimaryButton"
+            android:layout_gravity="center"
+            android:text="@string/preference_about_title" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:text="StarDockLauncher · v0.0.3"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/_11ssp" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -70,8 +70,16 @@
             style="@style/StarDockPrimaryButton"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_marginStart="@dimen/_4sdp"
+            android:layout_marginHorizontal="@dimen/_4sdp"
             android:text="@string/download_type_shader" />
+
+        <Button
+            android:id="@+id/download_type_version"
+            style="@style/StarDockPrimaryButton"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:text="@string/download_type_version" />
     </LinearLayout>
 
     <TextView

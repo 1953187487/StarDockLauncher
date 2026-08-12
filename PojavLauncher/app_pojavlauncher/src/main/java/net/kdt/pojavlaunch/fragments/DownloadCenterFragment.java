@@ -1,12 +1,13 @@
 package net.kdt.pojavlaunch.fragments;
 
-import android.content.Context;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,16 +17,20 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.kdt.pojavlaunch.JMinecraftVersionList;
 import net.kdt.pojavlaunch.R;
 import net.kdt.pojavlaunch.Tools;
+import net.kdt.pojavlaunch.lifecycle.ContextAwareDoneListener;
 import net.kdt.pojavlaunch.prefs.LauncherPreferences;
+import net.kdt.pojavlaunch.tasks.AsyncMinecraftDownloader;
+import net.kdt.pojavlaunch.tasks.AsyncVersionList;
+import net.kdt.pojavlaunch.tasks.MinecraftDownloader;
 import net.kdt.pojavlaunch.value.launcherprofiles.LauncherProfiles;
 import net.kdt.pojavlaunch.value.launcherprofiles.MinecraftProfile;
 
@@ -42,19 +47,22 @@ import java.util.List;
 
 public class DownloadCenterFragment extends Fragment {
 
-    private static final String TAG = "DownloadCenterFragment";
     private static final String MODRINTH_API = "https://api.modrinth.com/v2";
+    private static final String MOJANG_VERSION_MANIFEST = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
+
+    private enum Mode { MOD, RESOURCEPACK, SHADER, VERSION }
 
     private final Handler mHandler = new Handler(Looper.getMainLooper());
 
     private EditText mSearchInput;
     private ListView mResultList;
     private TextView mStatusText;
-    private Button mTypeModButton, mTypeResourceButton, mTypeShaderButton;
+    private Button mTypeModButton, mTypeResourceButton, mTypeShaderButton, mTypeVersionButton;
 
-    private String mCurrentType = "mod";
-    private final List<ModrinthProject> mProjects = new ArrayList<>();
-    private ProjectAdapter mAdapter;
+    private Mode mCurrentMode = Mode.MOD;
+    private final List<Object> mItems = new ArrayList<>();
+    private MixAdapter mAdapter;
+    private JMinecraftVersionList.Version[] mMojangVersions;
 
     public DownloadCenterFragment() {
         super(R.layout.fragment_download_center);
@@ -68,32 +76,105 @@ public class DownloadCenterFragment extends Fragment {
         mTypeModButton = view.findViewById(R.id.download_type_mod);
         mTypeResourceButton = view.findViewById(R.id.download_type_resourcepack);
         mTypeShaderButton = view.findViewById(R.id.download_type_shader);
+        mTypeVersionButton = view.findViewById(R.id.download_type_version);
 
         Button searchButton = view.findViewById(R.id.download_search_button);
-        searchButton.setOnClickListener(v -> doSearch());
+        searchButton.setOnClickListener(v -> onSearch());
 
-        mTypeModButton.setOnClickListener(v -> setType("mod"));
-        mTypeResourceButton.setOnClickListener(v -> setType("resourcepack"));
-        mTypeShaderButton.setOnClickListener(v -> setType("shaderpack"));
+        mTypeModButton.setOnClickListener(v -> switchMode(Mode.MOD));
+        mTypeResourceButton.setOnClickListener(v -> switchMode(Mode.RESOURCEPACK));
+        mTypeShaderButton.setOnClickListener(v -> switchMode(Mode.SHADER));
+        mTypeVersionButton.setOnClickListener(v -> switchMode(Mode.VERSION));
 
-        mAdapter = new ProjectAdapter(requireContext(), mProjects);
+        mAdapter = new MixAdapter(requireContext(), mItems);
         mResultList.setAdapter(mAdapter);
-        mResultList.setOnItemClickListener((parent, view1, position, id) -> showProjectOptions(mProjects.get(position)));
+        mResultList.setOnItemClickListener((parent, view1, position, id) -> onItemClick(position));
 
-        setType(mCurrentType);
-        mStatusText.setText(R.string.download_empty);
+        switchMode(Mode.MOD);
     }
 
-    private void setType(String type) {
-        mCurrentType = type;
-        boolean mod = "mod".equals(type);
-        boolean resource = "resourcepack".equals(type);
-        mTypeModButton.setSelected(mod);
-        mTypeResourceButton.setSelected(resource);
-        mTypeShaderButton.setSelected(!mod && !resource);
+    private void switchMode(Mode mode) {
+        mCurrentMode = mode;
+        mTypeModButton.setSelected(mode == Mode.MOD);
+        mTypeResourceButton.setSelected(mode == Mode.RESOURCEPACK);
+        mTypeShaderButton.setSelected(mode == Mode.SHADER);
+        mTypeVersionButton.setSelected(mode == Mode.VERSION);
+
+        mItems.clear();
+        mAdapter.notifyDataSetChanged();
+
+        if (mode == Mode.VERSION) {
+            mSearchInput.setVisibility(View.GONE);
+            ((View) mSearchInput.getParent()).findViewById(R.id.download_search_button).setVisibility(View.GONE);
+            loadMojangVersions();
+        } else {
+            mSearchInput.setVisibility(View.VISIBLE);
+            ((View) mSearchInput.getParent()).findViewById(R.id.download_search_button).setVisibility(View.VISIBLE);
+            setStatus(getString(R.string.download_empty));
+        }
     }
 
-    private void doSearch() {
+    /* ============================= Mojang versions ============================= */
+
+    private void loadMojangVersions() {
+        setStatus("正在加载游戏版本列表…");
+        new AsyncVersionList().getVersionList(versions -> {
+            if (versions == null || versions.versions == null) {
+                setStatus("无法加载版本列表，请检查网络");
+                return;
+            }
+            mMojangVersions = versions.versions;
+            mItems.clear();
+            for (JMinecraftVersionList.Version v : versions.versions) {
+                mItems.add(v);
+            }
+            mAdapter.notifyDataSetChanged();
+            setStatus("共 " + versions.versions.length + " 个版本。点击版本一键下载（含依赖）。");
+        }, false);
+    }
+
+    private void onMojangVersionClick(int position) {
+        JMinecraftVersionList.Version version = (JMinecraftVersionList.Version) mItems.get(position);
+        new AlertDialog.Builder(requireContext())
+                .setTitle(version.id)
+                .setMessage("类型：" + version.type
+                        + "\n发布时间：" + version.releaseTime
+                        + "\n将自动下载游戏本体、依赖库与资源。\n游戏数据大小约 100-300MB，请保持网络通畅。")
+                .setPositiveButton("一键下载（含依赖）", (d, w) -> startGameDownload(version))
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    private void startGameDownload(JMinecraftVersionList.Version version) {
+        ensureProfileThen(() -> new MinecraftDownloader().start(
+                requireActivity(),
+                version,
+                version.id,
+                new ContextAwareDoneListener(requireActivity(), version.id)
+        ));
+    }
+
+    private void ensureProfileThen(Runnable then) {
+        // Make sure at least one profile exists before launching the downloader.
+        LauncherProfiles.load();
+        if (LauncherProfiles.mainProfileJson == null || LauncherProfiles.mainProfileJson.profiles == null
+                || LauncherProfiles.mainProfileJson.profiles.isEmpty()) {
+            MinecraftProfile profile = new MinecraftProfile();
+            profile.lastVersionId = "1.20.4";
+            profile.name = "Default";
+            profile.icon = "TNT";
+            LauncherProfiles.mainProfileJson.profiles.put(profile.name, profile);
+            LauncherProfiles.write();
+        }
+        LauncherPreferences.DEFAULT_PREF.edit()
+                .putString(LauncherPreferences.PREF_KEY_CURRENT_PROFILE, "Default")
+                .apply();
+        then.run();
+    }
+
+    /* ============================= Modrinth ============================= */
+
+    private void onSearch() {
         final String query = mSearchInput.getText().toString().trim();
         if (query.isEmpty()) {
             Toast.makeText(requireContext(), R.string.download_empty, Toast.LENGTH_SHORT).show();
@@ -102,7 +183,13 @@ public class DownloadCenterFragment extends Fragment {
         setStatus("正在搜索“" + query + "”…");
         new Thread(() -> {
             try {
-                String facets = "[[" + "\"project_type:" + mCurrentType + "\"" + "]]";
+                String projectType;
+                switch (mCurrentMode) {
+                    case RESOURCEPACK: projectType = "resourcepack"; break;
+                    case SHADER: projectType = "shaderpack"; break;
+                    default: projectType = "mod";
+                }
+                String facets = "[[" + "\"project_type:" + projectType + "\"" + "]]";
                 URL url = new URL(MODRINTH_API + "/search?query="
                         + URLEncoder.encode(query, StandardCharsets.UTF_8.name())
                         + "&facets=" + URLEncoder.encode(facets, StandardCharsets.UTF_8.name())
@@ -110,7 +197,7 @@ public class DownloadCenterFragment extends Fragment {
                 String body = httpGet(url);
                 JsonObject root = Tools.GLOBAL_GSON.fromJson(body, JsonObject.class);
                 JsonArray hits = root.getAsJsonArray("hits");
-                List<ModrinthProject> projects = new ArrayList<>();
+                List<Object> result = new ArrayList<>();
                 if (hits != null) {
                     for (JsonElement hit : hits) {
                         JsonObject obj = hit.getAsJsonObject();
@@ -118,20 +205,25 @@ public class DownloadCenterFragment extends Fragment {
                         p.id = getString(obj, "project_id");
                         p.title = getString(obj, "title");
                         p.description = getString(obj, "description");
-                        projects.add(p);
+                        result.add(p);
                     }
                 }
-                List<ModrinthProject> finalProjects = projects;
                 mHandler.post(() -> {
-                    mProjects.clear();
-                    mProjects.addAll(finalProjects);
+                    mItems.clear();
+                    mItems.addAll(result);
                     mAdapter.notifyDataSetChanged();
-                    setStatus(finalProjects.isEmpty() ? "未找到相关内容" : "共 " + finalProjects.size() + " 条结果");
+                    setStatus(result.isEmpty() ? "未找到相关内容" : "共 " + result.size() + " 条结果");
                 });
             } catch (Exception e) {
                 mHandler.post(() -> setStatus("搜索失败：" + e.getMessage()));
             }
         }).start();
+    }
+
+    private void onItemClick(int position) {
+        Object item = mItems.get(position);
+        if (item instanceof ModrinthProject) showProjectOptions((ModrinthProject) item);
+        else if (item instanceof JMinecraftVersionList.Version) onMojangVersionClick(position);
     }
 
     private void showProjectOptions(ModrinthProject project) {
@@ -185,7 +277,7 @@ public class DownloadCenterFragment extends Fragment {
         setStatus("正在下载 " + version.fileName + " …");
         new Thread(() -> {
             try {
-                File targetDir = getTargetDir(project);
+                File targetDir = getTargetDir();
                 if (targetDir == null) {
                     mHandler.post(() -> Toast.makeText(requireContext(), "未找到游戏目录，请先创建游戏版本", Toast.LENGTH_SHORT).show());
                     return;
@@ -196,13 +288,8 @@ public class DownloadCenterFragment extends Fragment {
                     setStatus("下载完成：" + version.fileName);
                     Toast.makeText(requireContext(), R.string.download_done, Toast.LENGTH_SHORT).show();
                 });
-
-                // One-click required dependencies
                 for (String depId : version.requiredDeps) {
-                    try {
-                        downloadDependency(depId, targetDir);
-                    } catch (Exception ignored) {
-                    }
+                    try { downloadDependency(depId, targetDir); } catch (Exception ignored) {}
                 }
             } catch (Exception e) {
                 mHandler.post(() -> Toast.makeText(requireContext(), "下载失败：" + e.getMessage(), Toast.LENGTH_SHORT).show());
@@ -221,13 +308,12 @@ public class DownloadCenterFragment extends Fragment {
         Tools.downloadFile(fileUrl, new File(targetDir, fileName).getAbsolutePath());
     }
 
-    private File getTargetDir(ModrinthProject project) {
+    private File getTargetDir() {
         File gameDir = getCurrentGameDir();
         if (gameDir == null) return null;
-        switch (mCurrentType) {
-            case "mod": return new File(gameDir, "mods");
-            case "resourcepack": return new File(gameDir, "resourcepacks");
-            case "shaderpack": return new File(gameDir, "shaderpacks");
+        switch (mCurrentMode) {
+            case RESOURCEPACK: return new File(gameDir, "resourcepacks");
+            case SHADER: return new File(gameDir, "shaderpacks");
             default: return new File(gameDir, "mods");
         }
     }
@@ -249,7 +335,7 @@ public class DownloadCenterFragment extends Fragment {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setConnectTimeout(10000);
         conn.setReadTimeout(15000);
-        conn.setRequestProperty("User-Agent", "StarDockLauncher/0.0.1");
+        conn.setRequestProperty("User-Agent", "StarDockLauncher/0.0.3");
         try (InputStream in = conn.getInputStream();
              BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
             StringBuilder sb = new StringBuilder();
@@ -275,31 +361,43 @@ public class DownloadCenterFragment extends Fragment {
         final List<String> requiredDeps = new ArrayList<>();
     }
 
-    private static class ProjectAdapter extends BaseAdapter {
-        private final Context mContext;
-        private final List<ModrinthProject> mItems;
+    /** Adapter that renders either a Modrinth search hit or a Mojang version row. */
+    private static class MixAdapter extends BaseAdapter {
+        private final android.content.Context mContext;
+        private final List<Object> mItems;
 
-        ProjectAdapter(Context context, List<ModrinthProject> items) {
+        MixAdapter(android.content.Context context, List<Object> items) {
             mContext = context;
             mItems = items;
         }
 
         @Override public int getCount() { return mItems.size(); }
-
-        @Override public ModrinthProject getItem(int position) { return mItems.get(position); }
-
+        @Override public Object getItem(int position) { return mItems.get(position); }
         @Override public long getItemId(int position) { return position; }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = LayoutInflater.from(mContext).inflate(R.layout.item_mc_search, parent, false);
+            if (mItems.get(position) instanceof JMinecraftVersionList.Version) {
+                if (convertView == null || !convertView.getTag().equals("version")) {
+                    convertView = LayoutInflater.from(mContext).inflate(R.layout.item_mc_search, parent, false);
+                    convertView.setTag("version");
+                }
+                JMinecraftVersionList.Version v = (JMinecraftVersionList.Version) mItems.get(position);
+                TextView title = convertView.findViewById(R.id.item_title);
+                TextView desc = convertView.findViewById(R.id.item_description);
+                title.setText(v.id);
+                desc.setText(v.type + " · " + v.releaseTime);
+            } else {
+                if (convertView == null || !convertView.getTag().equals("mod")) {
+                    convertView = LayoutInflater.from(mContext).inflate(R.layout.item_mc_search, parent, false);
+                    convertView.setTag("mod");
+                }
+                ModrinthProject item = (ModrinthProject) mItems.get(position);
+                TextView title = convertView.findViewById(R.id.item_title);
+                TextView desc = convertView.findViewById(R.id.item_description);
+                title.setText(item.title);
+                desc.setText(item.description == null || item.description.isEmpty() ? "点击查看版本" : item.description);
             }
-            ModrinthProject item = getItem(position);
-            TextView titleView = convertView.findViewById(R.id.item_title);
-            TextView descView = convertView.findViewById(R.id.item_description);
-            titleView.setText(item.title);
-            descView.setText(item.description == null || item.description.isEmpty() ? mContext.getString(R.string.download_deps) : item.description);
             return convertView;
         }
     }

@@ -514,4 +514,22 @@
     <string name="download_failed">Download failed: %s</string>
     <string name="download_deps">Required dependencies will be installed</string>
     <string name="download_game_version">Manage game versions and Java runtimes in Launch / Settings</string>
+
+    <!-- Login -->
+    <string name="login_choose_method">Choose login method</string>
+    <string name="login_official">Microsoft Account</string>
+    <string name="login_offline">Offline Account</string>
+    <string name="login_third_party">Third-party Server</string>
+    <string name="login_third_party_url_hint">Enter auth server URL (e.g. https://littleskin.cn)</string>
+    <string name="login_third_party_url_next">Next</string>
+    <string name="login_username_hint">Username</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_submit">Log in</string>
+    <string name="login_loading">Connecting to server…</string>
+    <string name="login_failed">Login failed: %s</string>
+    <string name="login_success">Logged in: %s</string>
+    <string name="login_back">Back</string>
+    <string name="login_url_invalid">Invalid server URL</string>
+
+    <string name="download_type_version">Game Versions</string>
 </resources>
