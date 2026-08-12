@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="control_button_color">#4CC4C4C4</color>
+    <color name="control_button_pressed_color">#4D000000</color>
+
+    <color name="minebutton_color">#57CC33</color>
+    <color name="background_app">#181818</color>
+    <color name="divider">@color/background_overlay</color>
+    <color name="background_overlay">#464646</color>
+    <color name="background_status_bar">#242424</color>
+    <color name="background_bottom_bar">#232323</color>
+
+    <color name="primary_text">#FFFFFF</color>
+    <color name="secondary_text">#B2B2B2</color>
+
+    <!-- StarDock theme -->
+    <color name="brand_primary">#57CC33</color>
+    <color name="brand_primary_dark">#3E9E22</color>
+    <color name="background_top_bar">#1B1E23</color>
+    <color name="background_nav_bar">#14171C</color>
+    <color name="background_card">#23272E</color>
+    <color name="background_card_pressed">#2C313A</color>
+    <color name="text_primary">#ECEFF4</color>
+    <color name="text_secondary">#8A919E</color>
+    <color name="nav_inactive">#7A828F</color>
+    <color name="nav_active">#57CC33</color>
+    <color name="input_background">#1B1E23</color>
+    <color name="divider_soft">#2A2F37</color>
+</resources>

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_menu_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_app">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/mc_version_spinner">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/_16sdp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_6sdp"
+                android:text="@string/app_name"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/_20ssp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_16sdp"
+                android:text="v0.0.1 · 预发布版本 · 横屏模式"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/_11ssp" />
+
+            <Button
+                android:id="@+id/news_button"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_60sdp"
+                android:layout_marginBottom="@dimen/_12sdp"
+                android:background="@drawable/background_card"
+                android:drawableStart="@drawable/ic_menu_news"
+                android:drawablePadding="@dimen/_12sdp"
+                android:gravity="start|center_vertical"
+                android:paddingHorizontal="@dimen/_16sdp"
+                android:text="@string/mcl_tab_wiki"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/_14ssp"
+                app:drawableTint="@color/brand_primary" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="@dimen/_12sdp">
+
+                <Button
+                    android:id="@+id/custom_control_button"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_96sdp"
+                    android:layout_marginEnd="@dimen/_6sdp"
+                    android:layout_weight="1"
+                    android:background="@drawable/background_card"
+                    android:drawableTop="@drawable/ic_menu_custom_controls"
+                    android:drawablePadding="@dimen/_8sdp"
+                    android:gravity="center"
+                    android:text="@string/mcl_option_customcontrol"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/_12ssp" />
+
+                <Button
+                    android:id="@+id/install_jar_button"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_96sdp"
+                    android:layout_marginStart="@dimen/_6sdp"
+                    android:layout_weight="1"
+                    android:background="@drawable/background_card"
+                    android:drawableTop="@drawable/ic_menu_install_jar"
+                    android:drawablePadding="@dimen/_8sdp"
+                    android:gravity="center"
+                    android:text="@string/main_install_jar_file"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/_12ssp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="@dimen/_12sdp">
+
+                <Button
+                    android:id="@+id/share_logs_button"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_96sdp"
+                    android:layout_marginEnd="@dimen/_6sdp"
+                    android:layout_weight="1"
+                    android:background="@drawable/background_card"
+                    android:drawableTop="@android:drawable/ic_menu_share"
+                    android:drawablePadding="@dimen/_8sdp"
+                    android:gravity="center"
+                    android:text="@string/main_share_logs"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/_12ssp" />
+
+                <Button
+                    android:id="@+id/open_files_button"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_96sdp"
+                    android:layout_marginStart="@dimen/_6sdp"
+                    android:layout_weight="1"
+                    android:background="@drawable/background_card"
+                    android:drawableTop="@drawable/ic_folder"
+                    android:drawablePadding="@dimen/_8sdp"
+                    android:gravity="center"
+                    android:text="@string/mcl_button_open_directory"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/_12ssp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Java 运行时、游戏版本将随启动自动下载安装。模组 / 资源包 / 光影请前往「下载」页。联机、AI、音乐请在下方导航切换。"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/_11ssp"
+                android:lineSpacingExtra="2dp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <com.kdt.mcgui.mcVersionSpinner
+        android:id="@+id/mc_version_spinner"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_52sdp"
+        android:background="@android:color/transparent"
+        android:drawableEnd="@drawable/spinner_arrow"
+        app:drawableEndSize="@dimen/padding_heavy"
+        app:drawableStartIntegerScaling="true"
+        app:drawableStartSize="@dimen/_36sdp"
+        app:drawableEndPadding="@dimen/_1sdp"
+        app:layout_constraintBottom_toTopOf="@id/play_button"
+        app:layout_constraintEnd_toStartOf="@+id/edit_profile_button"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/edit_profile_button"
+        android:layout_width="@dimen/_52sdp"
+        android:layout_height="@dimen/_52sdp"
+        android:background="?android:attr/selectableItemBackground"
+        android:src="@drawable/ic_edit_profile"
+        app:layout_constraintBottom_toBottomOf="@+id/mc_version_spinner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/mc_version_spinner" />
+
+    <!-- Cosmetic bottom bar -->
+    <View
+        android:id="@+id/_background_display_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/background_bottom_bar"
+        android:translationZ="-1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@id/mc_version_spinner" />
+
+    <com.kdt.mcgui.MineButton
+        android:id="@+id/play_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_62sdp"
+        android:layout_marginHorizontal="@dimen/_17sdp"
+        android:layout_marginBottom="@dimen/_15sdp"
+        android:textAllCaps="true"
+        android:text="@string/main_play"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

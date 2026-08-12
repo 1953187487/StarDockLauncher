@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background_app"
+    android:padding="@dimen/_16sdp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/nav_download"
+        android:textColor="@color/text_primary"
+        android:textSize="@dimen/_18ssp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_12sdp"
+        android:text="@string/download_game_version"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/_11ssp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/_10sdp">
+
+        <EditText
+            android:id="@+id/download_search_input"
+            style="@style/StarDockInput"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_44sdp"
+            android:layout_weight="1"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:hint="@string/download_search_hint" />
+
+        <Button
+            android:id="@+id/download_search_button"
+            style="@style/StarDockPrimaryButton"
+            android:text="@string/download_search_btn" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/_8sdp">
+
+        <Button
+            android:id="@+id/download_type_mod"
+            style="@style/StarDockPrimaryButton"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:text="@string/download_type_mod" />
+
+        <Button
+            android:id="@+id/download_type_resourcepack"
+            style="@style/StarDockPrimaryButton"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="@dimen/_4sdp"
+            android:text="@string/download_type_resourcepack" />
+
+        <Button
+            android:id="@+id/download_type_shader"
+            style="@style/StarDockPrimaryButton"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:text="@string/download_type_shader" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/download_status_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_6sdp"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/_11ssp" />
+
+    <ListView
+        android:id="@+id/download_result_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@color/divider_soft"
+        android:dividerHeight="1dp"
+        android:listSelector="@drawable/background_nav_button" />
+
+</LinearLayout>

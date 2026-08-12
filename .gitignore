@@ -1,0 +1,13 @@
+# Build outputs (not committed)
+.gradle/
+build/
+local.properties
+*.iml
+
+# Java / Android build outputs
+**/build/
+**/.gradle/
+**/local.properties
+
+# Keep PojavLauncher upstream source tracked (with its own .git removed)
+!PojavLauncher/.git/

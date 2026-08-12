@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_app"
+    android:overScrollMode="never">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/_16sdp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mp_title"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/_18ssp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_12sdp"
+            android:text="@string/mp_howto_desc"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/_11ssp"
+            android:lineSpacingExtra="2dp" />
+
+        <!-- LAN play card -->
+        <LinearLayout
+            style="@style/StarDockCard"
+            android:layout_marginBottom="@dimen/_12sdp">
+
+            <TextView
+                style="@style/StarDockSectionTitle"
+                android:layout_marginBottom="@dimen/_6sdp"
+                android:text="@string/mp_lan_title" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/mp_lan_desc"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/_12ssp"
+                android:lineSpacingExtra="2dp" />
+        </LinearLayout>
+
+        <!-- Tunnel card -->
+        <LinearLayout
+            style="@style/StarDockCard"
+            android:layout_marginBottom="@dimen/_12sdp">
+
+            <TextView
+                style="@style/StarDockSectionTitle"
+                android:layout_marginBottom="@dimen/_6sdp"
+                android:text="@string/mp_tunnel_title" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:text="@string/mp_tunnel_desc"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/_12ssp"
+                android:lineSpacingExtra="2dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/mp_tunnel_tailscale_button"
+                    style="@style/StarDockPrimaryButton"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/_4sdp"
+                    android:text="@string/mp_tunnel_tailscale" />
+
+                <Button
+                    android:id="@+id/mp_tunnel_zerotier_button"
+                    style="@style/StarDockPrimaryButton"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/_4sdp"
+                    android:text="@string/mp_tunnel_zerotier" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Custom tunnel config card -->
+        <LinearLayout
+            style="@style/StarDockCard"
+            android:layout_marginBottom="@dimen/_12sdp">
+
+            <TextView
+                style="@style/StarDockSectionTitle"
+                android:layout_marginBottom="@dimen/_8sdp"
+                android:text="@string/mp_custom_title" />
+
+            <EditText
+                android:id="@+id/mp_custom_host_input"
+                style="@style/StarDockInput"
+                android:layout_marginBottom="@dimen/_8sdp"
+                android:hint="@string/mp_custom_host" />
+
+            <EditText
+                android:id="@+id/mp_custom_port_input"
+                style="@style/StarDockInput"
+                android:layout_marginBottom="@dimen/_8sdp"
+                android:hint="@string/mp_custom_port"
+                android:inputType="number" />
+
+            <EditText
+                android:id="@+id/mp_custom_token_input"
+                style="@style/StarDockInput"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:hint="@string/mp_custom_token" />
+
+            <Button
+                android:id="@+id/mp_custom_save_button"
+                style="@style/StarDockPrimaryButton"
+                android:layout_gravity="end"
+                android:text="@string/mp_custom_save" />
+        </LinearLayout>
+
+        <!-- How to -->
+        <LinearLayout
+            style="@style/StarDockCard">
+
+            <TextView
+                style="@style/StarDockSectionTitle"
+                android:layout_marginBottom="@dimen/_6sdp"
+                android:text="@string/mp_howto_title" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/mp_howto_desc"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/_12ssp"
+                android:lineSpacingExtra="3dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

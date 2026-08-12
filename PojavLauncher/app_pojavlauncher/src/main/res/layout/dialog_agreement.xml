@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="12dp"
+        android:text="欢迎使用《我的世界Java版启动器》（StarDockLauncher）"
+        android:textColor="@color/text_primary"
+        android:textSize="@dimen/_15ssp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/agreement_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:minHeight="@dimen/_220sdp"
+        android:maxHeight="@dimen/_320sdp"
+        android:padding="8dp"
+        android:lineSpacingExtra="3dp"
+        android:textColor="@color/text_primary"
+        android:textSize="@dimen/_12ssp"
+        android:text="本软件为一款基于 PojavLauncher（MIT 开源协议）二次开发的《Minecraft：Java Edition》第三方手机启动器。\n\n一、使用协议\n1. 本软件仅用于个人学习与娱乐，不提供游戏本体。游戏文件与资源需通过官方渠道获取。\n2. 请遵守《Minecraft》最终用户许可协议（EULA）及当地法律法规。\n3. 使用第三方验证服务器登录时，请自行确认其安全性与合法性。\n4. 下载模组、资源包等第三方内容前，请确认其来源可靠，由此产生的任何问题由使用者自行承担。\n\n二、用户须知\n1. 本软件为预发布版本（0.0.1），部分功能可能存在缺陷，请理性使用并及时更新。\n2. AI 助手功能需要您自行配置 AI 服务商（API 地址与密钥），本软件不内置任何模型密钥。\n3. 语音输入与播报、音乐播放、内网穿透等能力依赖系统环境与第三方服务，无法保证在全部设备上可用。\n4. 请勿将本软件用于任何商业用途或违法行为。\n\n三、免责声明\n本软件与 Mojang、Microsoft 及其关联方无任何隶属或合作关系。《Minecraft》相关商标归其各自权利人所有。因使用本软件产生的任何直接或间接损失，本项目开发组不承担任何责任。\n\n继续使用即代表您已阅读并同意以上全部条款。" />
+</LinearLayout>

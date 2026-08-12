@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/_4sdp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_4sdp"
+            android:text="@string/ai_config_base_url"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/_12ssp" />
+
+        <EditText
+            android:id="@+id/ai_cfg_base_url"
+            style="@style/StarDockInput"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:hint="https://api.openai.com/v1"
+            android:inputType="textUri" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_4sdp"
+            android:text="@string/ai_config_api_key"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/_12ssp" />
+
+        <EditText
+            android:id="@+id/ai_cfg_api_key"
+            style="@style/StarDockInput"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:hint="sk-..."
+            android:inputType="textPassword" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_4sdp"
+            android:text="@string/ai_config_model"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/_12ssp" />
+
+        <EditText
+            android:id="@+id/ai_cfg_model"
+            style="@style/StarDockInput"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:hint="gpt-3.5-turbo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_4sdp"
+            android:text="@string/ai_config_system"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/_12ssp" />
+
+        <EditText
+            android:id="@+id/ai_cfg_system"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_input"
+            android:padding="@dimen/_10sdp"
+            android:minHeight="@dimen/_60sdp"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/_12ssp"
+            android:gravity="top"
+            android:hint="你是一位友好的 Minecraft 助手" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginBottom="@dimen/_4sdp"
+            android:text="语音引擎包名（可选，可安装洛天依等音源后填入）"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/_12ssp" />
+
+        <EditText
+            android:id="@+id/ai_cfg_tts_engine"
+            style="@style/StarDockInput"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:hint="com.example.tts.engine" />
+
+        <Switch
+            android:id="@+id/ai_cfg_tts_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ai_config_tts"
+            android:textColor="@color/text_primary" />
+    </LinearLayout>
+</ScrollView>
