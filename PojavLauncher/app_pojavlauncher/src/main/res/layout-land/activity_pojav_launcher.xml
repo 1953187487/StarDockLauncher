@@ -6,7 +6,6 @@
     android:orientation="vertical"
     android:background="@color/background_app">
 
-    <!-- Top bar -->
     <LinearLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
@@ -15,6 +14,13 @@
         android:gravity="center_vertical"
         android:background="@color/background_top_bar"
         android:paddingHorizontal="@dimen/_16sdp">
+
+        <ImageView
+            android:layout_width="@dimen/_28sdp"
+            android:layout_height="@dimen/_28sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:src="@drawable/ic_launcher_foreground"
+            android:contentDescription="@string/app_name" />
 
         <TextView
             android:id="@+id/top_bar_title"
@@ -28,71 +34,78 @@
             android:textSize="@dimen/_15ssp"
             android:textStyle="bold" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:text="v0.0.2"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/_11ssp" />
+
         <com.kdt.mcgui.mcAccountSpinner
             android:id="@+id/account_spinner"
-            android:layout_width="@dimen/_210sdp"
+            android:layout_width="@dimen/_200sdp"
             android:layout_height="@dimen/_44sdp"
             android:dropDownWidth="@dimen/_250sdp"
             android:dropDownVerticalOffset="@dimen/_52sdp" />
     </LinearLayout>
 
-    <!-- Dynamic content -->
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/container_fragment"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/left_nav"
+            android:layout_width="@dimen/_92sdp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/background_nav_bar"
+            android:paddingVertical="@dimen/_8sdp">
+
+            <LinearLayout android:id="@+id/nav_launch" style="@style/StarDockNavRail">
+                <ImageView style="@style/StarDockNavRailIcon" android:src="@drawable/ic_menu_home" />
+                <TextView style="@style/StarDockNavRailLabel" android:text="@string/nav_launch" />
+            </LinearLayout>
+            <LinearLayout android:id="@+id/nav_download" style="@style/StarDockNavRail">
+                <ImageView style="@style/StarDockNavRailIcon" android:src="@drawable/ic_download" />
+                <TextView style="@style/StarDockNavRailLabel" android:text="@string/nav_download" />
+            </LinearLayout>
+            <LinearLayout android:id="@+id/nav_multiplayer" style="@style/StarDockNavRail">
+                <ImageView style="@style/StarDockNavRailIcon" android:src="@drawable/ic_multiplayer" />
+                <TextView style="@style/StarDockNavRailLabel" android:text="@string/nav_multiplayer" />
+            </LinearLayout>
+            <LinearLayout android:id="@+id/nav_ai" style="@style/StarDockNavRail">
+                <ImageView style="@style/StarDockNavRailIcon" android:src="@drawable/ic_ai" />
+                <TextView style="@style/StarDockNavRailLabel" android:text="@string/nav_ai" />
+            </LinearLayout>
+            <LinearLayout android:id="@+id/nav_music" style="@style/StarDockNavRail">
+                <ImageView style="@style/StarDockNavRailIcon" android:src="@drawable/ic_music" />
+                <TextView style="@style/StarDockNavRailLabel" android:text="@string/nav_music" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <LinearLayout android:id="@+id/nav_settings" style="@style/StarDockNavRail">
+                <ImageView style="@style/StarDockNavRailIcon" android:src="@drawable/ic_menu_settings" />
+                <TextView style="@style/StarDockNavRailLabel" android:text="@string/nav_settings" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/container_fragment"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
 
     <com.kdt.mcgui.ProgressLayout
         android:id="@+id/progress_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
-    <!-- Bottom navigation -->
-    <LinearLayout
-        android:id="@+id/bottom_nav"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_62sdp"
-        android:orientation="horizontal"
-        android:background="@color/background_nav_bar"
-        android:paddingHorizontal="@dimen/_6sdp"
-        android:paddingVertical="@dimen/_4sdp">
-
-        <Button
-            android:id="@+id/nav_launch"
-            style="@style/StarDockNavButton"
-            android:text="@string/nav_launch"
-            android:drawableTop="@drawable/ic_menu_home" />
-
-        <Button
-            android:id="@+id/nav_download"
-            style="@style/StarDockNavButton"
-            android:text="@string/nav_download"
-            android:drawableTop="@drawable/ic_download" />
-
-        <Button
-            android:id="@+id/nav_multiplayer"
-            style="@style/StarDockNavButton"
-            android:text="@string/nav_multiplayer"
-            android:drawableTop="@drawable/ic_multiplayer" />
-
-        <Button
-            android:id="@+id/nav_ai"
-            style="@style/StarDockNavButton"
-            android:text="@string/nav_ai"
-            android:drawableTop="@drawable/ic_ai" />
-
-        <Button
-            android:id="@+id/nav_music"
-            style="@style/StarDockNavButton"
-            android:text="@string/nav_music"
-            android:drawableTop="@drawable/ic_music" />
-
-        <Button
-            android:id="@+id/nav_settings"
-            style="@style/StarDockNavButton"
-            android:text="@string/nav_settings"
-            android:drawableTop="@drawable/ic_menu_settings" />
-    </LinearLayout>
 
 </LinearLayout>

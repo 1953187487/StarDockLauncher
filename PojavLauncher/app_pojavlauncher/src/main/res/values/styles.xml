@@ -88,4 +88,31 @@
         <item name="android:textSize">@dimen/_14ssp</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="StarDockNavRail">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginVertical">@dimen/_3sdp</item>
+        <item name="android:layout_marginHorizontal">@dimen/_6sdp</item>
+        <item name="android:padding">@dimen/_8sdp</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/background_nav_rail</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="StarDockNavRailIcon">
+        <item name="android:layout_width">@dimen/_26sdp</item>
+        <item name="android:layout_height">@dimen/_26sdp</item>
+        <item name="android:tint">@color/nav_inactive</item>
+    </style>
+
+    <style name="StarDockNavRailLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/_4sdp</item>
+        <item name="android:textColor">@color/nav_inactive</item>
+        <item name="android:textSize">@dimen/_10ssp</item>
+    </style>
 </resources>

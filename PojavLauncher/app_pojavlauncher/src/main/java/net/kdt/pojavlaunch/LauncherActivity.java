@@ -43,6 +43,7 @@ import net.kdt.pojavlaunch.modloaders.modpacks.ModloaderInstallTracker;
 import net.kdt.pojavlaunch.modloaders.modpacks.imagecache.IconCacheJanitor;
 import net.kdt.pojavlaunch.prefs.LauncherPreferences;
 import net.kdt.pojavlaunch.prefs.screens.LauncherPreferenceFragment;
+import net.kdt.pojavlaunch.update.UpdateManager;
 import net.kdt.pojavlaunch.progresskeeper.ProgressKeeper;
 import net.kdt.pojavlaunch.progresskeeper.TaskCountListener;
 import net.kdt.pojavlaunch.services.ProgressServiceKeeper;
@@ -158,6 +159,13 @@ public class LauncherActivity extends BaseActivity {
     private ActivityResultLauncher<String> mRequestNotificationPermissionLauncher;
     private WeakReference<Runnable> mRequestNotificationPermissionRunnable;
 
+    private UpdateManager mUpdateManager;
+
+    public void triggerUpdateCheck() {
+        if (mUpdateManager == null) mUpdateManager = new UpdateManager(this);
+        mUpdateManager.checkForUpdates();
+    }
+
     @Override
     protected boolean shouldIgnoreNotch() {
         return getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT;
@@ -217,6 +225,9 @@ public class LauncherActivity extends BaseActivity {
 
         selectNav(NAV_LAUNCH);
         AgreementDialog.show(this, () -> {}, this::finish);
+
+        mUpdateManager = new UpdateManager(this);
+        mUpdateManager.checkForUpdates();
     }
 
     private void bindViews() {
@@ -226,12 +237,12 @@ public class LauncherActivity extends BaseActivity {
     }
 
     private void setupBottomNavigation() {
-        Button navLaunch = findViewById(R.id.nav_launch);
-        Button navDownload = findViewById(R.id.nav_download);
-        Button navMultiplayer = findViewById(R.id.nav_multiplayer);
-        Button navAi = findViewById(R.id.nav_ai);
-        Button navMusic = findViewById(R.id.nav_music);
-        Button navSettings = findViewById(R.id.nav_settings);
+        View navLaunch = findViewById(R.id.nav_launch);
+        View navDownload = findViewById(R.id.nav_download);
+        View navMultiplayer = findViewById(R.id.nav_multiplayer);
+        View navAi = findViewById(R.id.nav_ai);
+        View navMusic = findViewById(R.id.nav_music);
+        View navSettings = findViewById(R.id.nav_settings);
 
         navLaunch.setOnClickListener(v -> selectNav(NAV_LAUNCH));
         navDownload.setOnClickListener(v -> selectNav(NAV_DOWNLOAD));
@@ -286,8 +297,8 @@ public class LauncherActivity extends BaseActivity {
         int[] ids = {R.id.nav_launch, R.id.nav_download, R.id.nav_multiplayer, R.id.nav_ai, R.id.nav_music, R.id.nav_settings};
         String[] tags = {NAV_LAUNCH, NAV_DOWNLOAD, NAV_MULTIPLAYER, NAV_AI, NAV_MUSIC, NAV_SETTINGS};
         for (int i = 0; i < ids.length; i++) {
-            Button button = findViewById(ids[i]);
-            if (button != null) button.setSelected(tags[i].equals(tag));
+            View v = findViewById(ids[i]);
+            if (v != null) v.setSelected(tags[i].equals(tag));
         }
     }
 

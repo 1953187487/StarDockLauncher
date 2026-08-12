@@ -16,12 +16,16 @@
     <string name="agreement_title">用户须知与使用协议</string>
     <string name="agreement_accept">我已阅读并同意</string>
     <string name="agreement_decline">不同意并退出</string>
+    <string name="agreement_open_source">查看开源协议</string>
+    <string name="agreement_open_source_view">开源协议</string>
+    <string name="agreement_download_java">一键下载 Java 运行时</string>
 
     <!-- Settings extras -->
     <string name="preference_check_update_title">检查更新</string>
     <string name="preference_check_update_summary">前往更新地址查看最新版本</string>
+    <string name="preference_check_update_summary_open">前往项目</string>
     <string name="preference_about_title">关于</string>
-    <string name="preference_about_summary">StarDockLauncher · 我的世界Java版启动器 · v0.0.1</string>
+    <string name="preference_about_summary">StarDockLauncher · 我的世界Java版启动器 · v0.0.2</string>
 
     <!-- AI assistant -->
     <string name="ai_send">发送</string>

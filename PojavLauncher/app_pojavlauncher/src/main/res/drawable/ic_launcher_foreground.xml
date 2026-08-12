@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Outer cube face -->
+    <path
+        android:fillColor="#57CC33"
+        android:pathData="M22,30 L54,18 L86,30 L86,78 L54,90 L22,78 Z" />
+
+    <!-- Top face highlight -->
+    <path
+        android:fillColor="#7EE05A"
+        android:pathData="M22,30 L54,18 L86,30 L54,42 Z" />
+
+    <!-- Left face shadow -->
+    <path
+        android:fillColor="#3E9E22"
+        android:pathData="M22,30 L54,42 L54,90 L22,78 Z" />
+
+    <!-- "S" letter as 3 stacked bars -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M40,46 L68,46 L68,52 L46,52 L46,56 L64,56 L64,72 L40,72 L40,66 L62,66 L62,62 L44,62 L44,52 L40,52 Z" />
+</vector>

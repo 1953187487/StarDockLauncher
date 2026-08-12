@@ -18,12 +18,16 @@
     <string name="agreement_title">User Agreement &amp; Notice</string>
     <string name="agreement_accept">I Agree</string>
     <string name="agreement_decline">Disagree</string>
+    <string name="agreement_open_source">View Open Source License</string>
+    <string name="agreement_open_source_view">Open Source License</string>
+    <string name="agreement_download_java">One-click Download Java Runtime</string>
 
     <!-- Settings extras -->
     <string name="preference_check_update_title">Check Update</string>
     <string name="preference_check_update_summary">Visit update channel for latest version</string>
+    <string name="preference_check_update_summary_open">Open Project</string>
     <string name="preference_about_title">About</string>
-    <string name="preference_about_summary">StarDockLauncher · MC Java Launcher · v0.0.1</string>
+    <string name="preference_about_summary">StarDockLauncher · MC Java Launcher · v0.0.2</string>
 
     <!-- Login strings -->
     <string name="login_online_username_hint">Username</string>

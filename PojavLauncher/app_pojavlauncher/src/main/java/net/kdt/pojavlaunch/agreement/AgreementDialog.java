@@ -6,15 +6,20 @@ import android.content.SharedPreferences;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
 import net.kdt.pojavlaunch.R;
+import net.kdt.pojavlaunch.Tools;
+import net.kdt.pojavlaunch.multirt.MultiRTConfigDialog;
 
 /**
  * First-launch user agreement dialog.
- * Shows a EULA-like notice; the app quits unless the user accepts it.
+ * Shows EULA-like notice; the app quits unless the user accepts it.
+ * Also offers an in-app link to open the open-source license and to download
+ * a Java runtime through Pojav's multi-runtime installer.
  */
 public class AgreementDialog {
 
@@ -42,15 +47,55 @@ public class AgreementDialog {
         TextView contentView = dialogView.findViewById(R.id.agreement_content);
         contentView.setMovementMethod(new ScrollingMovementMethod());
 
-        new AlertDialog.Builder(activity)
+        AlertDialog dialog = new AlertDialog.Builder(activity)
                 .setTitle(R.string.agreement_title)
                 .setView(dialogView)
                 .setCancelable(false)
-                .setPositiveButton(R.string.agreement_accept, (dialog, which) -> {
-                    markAccepted(activity);
-                    onAgree.run();
-                })
-                .setNegativeButton(R.string.agreement_decline, (dialog, which) -> onExit.run())
+                .setPositiveButton(R.string.agreement_accept, null)
+                .setNegativeButton(R.string.agreement_decline, null)
+                .setNeutralButton(R.string.agreement_download_java, null)
+                .create();
+
+        dialog.setOnShowListener(d -> {
+            Button positive = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            positive.setOnClickListener(v -> {
+                markAccepted(activity);
+                dialog.dismiss();
+                onAgree.run();
+            });
+            Button negative = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+            negative.setOnClickListener(v -> {
+                dialog.dismiss();
+                onExit.run();
+            });
+            Button neutral = dialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+            neutral.setOnClickListener(v -> {
+                MultiRTConfigDialog jvmDialog = new MultiRTConfigDialog();
+                jvmDialog.prepare(activity, null);
+                jvmDialog.show();
+            });
+        });
+
+        dialog.show();
+    }
+
+    /** Show the open-source license dialog at any time (linked from the about screen). */
+    public static void showOpenSourceLicense(Activity activity) {
+        String content =
+                "本应用基于 PojavLauncher 进行二次开发。\n\n" +
+                "上游内核协议：\n" +
+                "  PojavLauncher — MIT License\n" +
+                "  https://github.com/PojavLauncherTeam/PojavLauncher\n\n" +
+                "本项目协议：\n" +
+                "  StarDockLauncher — MIT License\n" +
+                "  https://github.com/1953187487/StarDockLauncher\n\n" +
+                "感谢 PojavLauncher 团队与社区贡献者。";
+        new AlertDialog.Builder(activity)
+                .setTitle(R.string.agreement_open_source_view)
+                .setMessage(content)
+                .setPositiveButton(android.R.string.ok, null)
+                .setNeutralButton(R.string.agreement_open_source, (d, w) ->
+                        Tools.openURL(activity, "https://github.com/1953187487/StarDockLauncher/blob/main/LICENSE"))
                 .show();
     }
 }
