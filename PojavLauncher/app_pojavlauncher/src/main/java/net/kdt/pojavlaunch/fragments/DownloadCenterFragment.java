@@ -146,12 +146,59 @@ public class DownloadCenterFragment extends Fragment {
     }
 
     private void startGameDownload(JMinecraftVersionList.Version version) {
+        if (!hasAccount()) {
+            Toast.makeText(requireContext(), "请先登录账户", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (!hasJavaRuntime()) {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("需要 Java 运行时")
+                    .setMessage("下载游戏版本需要先安装 Java 运行时。\n是否前往「设置 → Java 运行时」安装？")
+                    .setPositiveButton("前往安装", (d, w) -> openJavaRuntimeDialog())
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show();
+            return;
+        }
         ensureProfileThen(() -> new MinecraftDownloader().start(
                 requireActivity(),
                 version,
                 version.id,
                 new ContextAwareDoneListener(requireActivity(), version.id)
         ));
+    }
+
+    private boolean hasAccount() {
+        try {
+            File dir = new File(net.kdt.pojavlaunch.Tools.DIR_ACCOUNT_NEW);
+            if (!dir.exists() || dir.listFiles() == null || dir.listFiles().length == 0) {
+                return false;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean hasJavaRuntime() {
+        try {
+            File runtimeDir = new File(net.kdt.pojavlaunch.multirt.MultiRTUtils.getRuntimes().isEmpty()
+                    ? "" : "");
+            File[] files = new File(net.kdt.pojavlaunch.Tools.DIR_GAME_HOME, "runtimes").listFiles();
+            return files != null && files.length > 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private void openJavaRuntimeDialog() {
+        try {
+            net.kdt.pojavlaunch.multirt.MultiRTConfigDialog dialog =
+                    new net.kdt.pojavlaunch.multirt.MultiRTConfigDialog();
+            dialog.prepare(requireContext(), null);
+            dialog.show();
+        } catch (Exception e) {
+            Toast.makeText(requireContext(), "无法打开 Java 运行时：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void ensureProfileThen(Runnable then) {

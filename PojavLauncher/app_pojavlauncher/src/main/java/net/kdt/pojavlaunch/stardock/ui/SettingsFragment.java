@@ -95,7 +95,7 @@ public class SettingsFragment extends Fragment {
             version = requireContext().getPackageManager()
                     .getPackageInfo(requireContext().getPackageName(), 0).versionName;
         } catch (Exception e) {
-            version = "0.0.3";
+            version = "0.0.4";
         }
         String content =
                 "StarDockLauncher\n" +
@@ -106,9 +106,10 @@ public class SettingsFragment extends Fragment {
                 "您可以随时在「用户协议 / 开源协议」入口查看完整内容。\n\n" +
                 "【开源协议 / 内核协议】\n" +
                 "本应用基于 PojavLauncher（MIT License）二次开发，\n" +
-                "遵循 MIT 协议开源。\n" +
-                "PojavLauncher 内核版权与协议信息：\n" +
-                "  https://github.com/PojavLauncherTeam/PojavLauncher\n" +
+                "并借鉴 ZalithLauncher 1（GPL v3）的 UI 模式与双栏布局。\n" +
+                "前端 UI 原创；后端启动内核为 PojavLauncher。\n" +
+                "  PojavLauncher: https://github.com/PojavLauncherTeam/PojavLauncher\n" +
+                "  ZalithLauncher: https://github.com/ZalithLauncher/ZalithLauncher\n" +
                 "本项目协议：\n" +
                 "  https://github.com/1953187487/StarDockLauncher\n\n" +
                 "【免责声明】\n" +

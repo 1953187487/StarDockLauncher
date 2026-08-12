@@ -285,6 +285,7 @@ public class LauncherActivity extends BaseActivity {
         try {
             getSupportFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                     .replace(mFragmentView.getId(), target, null, tag)
                     .commit();
         } catch (Exception e) {

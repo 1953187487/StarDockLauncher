@@ -26,4 +26,5 @@
     <color name="nav_active">#57CC33</color>
     <color name="input_background">#1B1E23</color>
     <color name="divider_soft">#2A2F37</color>
+    <color name="menu_overlay">#F523272E</color>
 </resources>
