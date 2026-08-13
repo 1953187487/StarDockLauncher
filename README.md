@@ -2,7 +2,9 @@
 
 > 我的世界 Java 版 · 新一代手机启动器
 
-StarDockLauncher 是一款面向 Android 的《Minecraft：Java Edition》启动器（APK，兼容 Android 8.0 – Android 15），以著名的开源项目 [PojavLauncher](https://github.com/PojavLauncherTeam/PojavLauncher)（MIT 协议）源码为基座进行的二次开发与全面 UI 重构。我们在保留其强大启动内核的同时，重写了界面布局、交互结构与扩展模块，让手机玩《我的世界》更加顺手、更加优雅。
+StarDockLauncher 是一款面向 Android 的《Minecraft：Java Edition》启动器（APK，兼容 Android 8.0 – Android 15）。自 v1.0.0 起，项目以开源启动器 [HMCL-PE](https://github.com/HMCL-dev/HMCL-PE)（GPL-3.0 协议）源码为基座进行二次开发与品牌化改造，在保留其成熟启动内核与丰富功能的基础上，重写了品牌信息、关于 / 反馈 / 捐赠等页面，并持续迭代界面与扩展能力。
+
+> 版本沿革：早期预测试版（v0.0.1 – v0.0.9）基于 [PojavLauncher](https://github.com/PojavLauncherTeam/PojavLauncher)（MIT 协议）源码二次开发；自 v1.0.0 正式版起切换至 HMCL-PE 基座。
 
 ## 特性
 
@@ -23,26 +25,31 @@ StarDockLauncher 是一款面向 Android 的《Minecraft：Java Edition》启动
 
 ## 项目结构
 
+当前版本（v1.0.0+，基于 HMCL-PE）的主要模块：
+
 ```
-app_pojavlauncher/    Android 应用主模块（UI 与业务逻辑）
-jre_lwjgl3glfw/       LWJGL3 + GLFW 运行时组件
-forge_installer/      Forge / Fabric 等模组加载器安装器
-arc_dns_injector/     DNS 注入组件（网络辅助）
+HMCLPE/           Android 应用主模块（UI、启动、下载、联机、设置等）
+PojavLauncher/    游戏启动内核组件（JVM 启动、渲染、输入桥接等）
+Boat/             渲染器组件
+FilePicker/       文件选择器组件
+ZipTools/         压缩解压工具组件
 ```
+
+> 早期预测试版（v0.0.x，基于 PojavLauncher）的模块结构为 `app_pojavlauncher`（主模块）、`jre_lwjgl3glfw`、`forge_installer`、`arc_dns_injector`。
 
 ## 构建
 
 环境要求：JDK 17+、Android SDK 34、Android NDK 25.2。
 
 ```bash
-./gradlew :app_pojavlauncher:assembleDebug
+./gradlew :HMCLPE:assembleDebug
 ```
 
-构建产物位于 `app_pojavlauncher/build/outputs/apk/debug/`。
+构建产物位于 `HMCLPE/build/outputs/apk/debug/`。
 
 ## 致谢
 
-本项目的游戏启动内核构建于 PojavLauncher 团队的开源成果之上，感谢其作者与社区贡献者。本项目遵循原开源协议，以二次开发形式发布，仅为非官方学习与使用项目，与 Mojang / Microsoft 无任何关联。《Minecraft》是 Mojang AB 的商标。
+本项目的游戏启动内核自 v1.0.0 起构建于 HMCL-PE 团队的开源成果之上，早期预测试版（v0.0.x）构建于 PojavLauncher 团队的开源成果之上，感谢两个项目作者与社区贡献者。本项目遵循对应开源协议，以二次开发形式发布，仅为非官方学习与使用项目，与 Mojang / Microsoft 无任何关联。《Minecraft》是 Mojang AB 的商标。
 
 ## 免责声明
 
