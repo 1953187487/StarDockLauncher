@@ -17,9 +17,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import net.kdt.pojavlaunch.BuildConfig;
 import net.kdt.pojavlaunch.R;
 import net.kdt.pojavlaunch.Tools;
-import net.kdt.pojavlaunch.multirt.MultiRTConfigDialog;
+import net.kdt.pojavlaunch.stardock.ui.OneClickJavaActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,30 +34,65 @@ import java.util.List;
 public class AgreementDialog {
 
     public static final String PREF_NAME = "user_agreement";
-    public static final String KEY_ACCEPTED = "agreement_accepted_v1";
+    public static final String KEY_ACCEPTED = "agreement_accepted_v2";
+    private static final int REQ_PERMISSIONS = 2001;
 
-    private static final int REQ_PERMISSIONS = 1001;
+    /** 当 versionCode 变更时，协议会重新弹出 */
+    public static int currentVersionCode() {
+        try {
+            return BuildConfig.VERSION_CODE;
+        } catch (Throwable t) {
+            return 0;
+        }
+    }
 
     public static boolean isAccepted(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        return prefs.getBoolean(KEY_ACCEPTED, false);
+        int acceptedCode = prefs.getInt(KEY_ACCEPTED, 0);
+        int current = currentVersionCode();
+        return acceptedCode == current && current > 0;
     }
 
     public static void markAccepted(Context context) {
         context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-                .edit().putBoolean(KEY_ACCEPTED, true).apply();
+                .edit().putInt(KEY_ACCEPTED, currentVersionCode()).apply();
+    }
+
+    /** 强制弹出（无论是否同意过）。用于设置中心「重看协议」入口。 */
+    public static void showForce(Activity activity, Runnable onAgree, Runnable onExit) {
+        showInternal(activity, onAgree, onExit);
     }
 
     /** Show the dialog; call {@code onAgree} when accepted, {@code onExit} when declined.
-     *  v0.0.6 起每次启动都强制弹出协议（除非用户在同一会话内已同意）。 */
+     *  v0.0.8 起只在首次启动或 versionCode 升级时弹出协议。 */
     public static void show(Activity activity, Runnable onAgree, Runnable onExit) {
+        if (isAccepted(activity)) {
+            onAgree.run();
+            return;
+        }
+        showInternal(activity, onAgree, onExit);
+    }
+
+    private static void showInternal(Activity activity, Runnable onAgree, Runnable onExit) {
         View dialogView = LayoutInflater.from(activity).inflate(R.layout.dialog_agreement, null);
         TextView contentView = dialogView.findViewById(R.id.agreement_content);
         contentView.setMovementMethod(new ScrollingMovementMethod());
         contentView.setText(R.string.agreement_content_v2);
 
+        String versionName;
+        try {
+            versionName = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionName;
+        } catch (Exception e) {
+            versionName = "0.0.8";
+        }
+        TextView titleView = new TextView(activity);
+        titleView.setText("StarDockLauncher v" + versionName + " · 使用须知");
+        titleView.setTextSize(18);
+        titleView.setTextColor(0xFFF2F5FA);
+        titleView.setPadding(48, 48, 48, 24);
+
         AlertDialog dialog = new AlertDialog.Builder(activity)
-                .setTitle(R.string.agreement_title_v2)
+                .setCustomTitle(titleView)
                 .setView(dialogView)
                 .setCancelable(false)
                 .setPositiveButton(R.string.agreement_accept, null)
@@ -79,9 +115,7 @@ public class AgreementDialog {
             });
             Button neutral = dialog.getButton(AlertDialog.BUTTON_NEUTRAL);
             neutral.setOnClickListener(v -> {
-                MultiRTConfigDialog jvmDialog = new MultiRTConfigDialog();
-                jvmDialog.prepare(activity, null);
-                jvmDialog.show();
+                OneClickJavaActivity.showDialog(activity);
             });
         });
 

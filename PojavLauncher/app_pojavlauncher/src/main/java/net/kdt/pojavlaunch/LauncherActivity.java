@@ -22,7 +22,6 @@ import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
 import com.kdt.mcgui.ProgressLayout;
-import com.kdt.mcgui.mcAccountSpinner;
 
 import net.kdt.pojavlaunch.agreement.AgreementDialog;
 import net.kdt.pojavlaunch.contracts.OpenDocumentWithExtension;
@@ -41,7 +40,7 @@ import net.kdt.pojavlaunch.fragments.SelectAuthFragment;
 import net.kdt.pojavlaunch.stardock.ui.DownloadHubFragment;
 import net.kdt.pojavlaunch.stardock.ui.KeyBindingFragment;
 import net.kdt.pojavlaunch.stardock.ui.KeyMarketFragment;
-import net.kdt.pojavlaunch.stardock.ui.MainFragmentV3;
+import net.kdt.pojavlaunch.stardock.ui.MainFragmentV4;
 import net.kdt.pojavlaunch.stardock.ui.OnlineHubFragment;
 import net.kdt.pojavlaunch.stardock.ui.SettingsHubFragment;
 import net.kdt.pojavlaunch.tasks.AsyncMinecraftDownloader;
@@ -53,6 +52,7 @@ import net.kdt.pojavlaunch.utils.NotificationUtils;
 import net.kdt.pojavlaunch.value.launcherprofiles.LauncherProfiles;
 import net.kdt.pojavlaunch.value.launcherprofiles.MinecraftProfile;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.text.ParseException;
 
@@ -75,13 +75,12 @@ public class LauncherActivity extends BaseActivity {
                 if (data != null) Tools.launchModInstaller(this, data);
             });
 
-    private mcAccountSpinner mAccountSpinner;
     private FragmentContainerView mFragmentView;
     private ProgressLayout mProgressLayout;
     private ProgressServiceKeeper mProgressServiceKeeper;
     private ModloaderInstallTracker mInstallTracker;
     private NotificationManager mNotificationManager;
-    private android.widget.LinearLayout mHiddenAccountContainer;
+    /** v0.0.8 起 LauncherActivity 不再使用全局 mcAccountSpinner；账户入口直接走 SelectAuthFragment */
 
     private ActivityResultLauncher<String> mRequestNotificationPermissionLauncher;
     private WeakReference<Runnable> mRequestNotificationPermissionRunnable;
@@ -104,9 +103,9 @@ public class LauncherActivity extends BaseActivity {
         @Override
         public void onFragmentResumed(@NonNull FragmentManager fm, @NonNull Fragment f) {
             syncNavWithFragment(f);
-            if (f instanceof MainFragmentV3) {
-                ((MainFragmentV3) f).refreshVersion();
-                ((MainFragmentV3) f).refreshAccount();
+            if (f instanceof MainFragmentV4) {
+                ((MainFragmentV4) f).refreshVersion();
+                ((MainFragmentV4) f).refreshAccount();
             }
         }
     };
@@ -132,7 +131,7 @@ public class LauncherActivity extends BaseActivity {
             fragmentManager.beginTransaction()
                     .setReorderingAllowed(true)
                     .addToBackStack("ROOT")
-                    .add(R.id.container_fragment, MainFragmentV3.class, null, NAV_LAUNCH).commit();
+                    .add(R.id.container_fragment, MainFragmentV4.class, null, NAV_LAUNCH).commit();
         }
 
         IconCacheJanitor.runJanitor();
@@ -170,16 +169,54 @@ public class LauncherActivity extends BaseActivity {
 
         mUpdateManager = new UpdateManager(this);
         mUpdateManager.checkForUpdates();
+        // v0.0.8 启动时自动检查应用更新
+        checkAppUpdateOnStart();
+    }
+
+    private void checkAppUpdateOnStart() {
+        new android.os.AsyncTask<Void, Void, String>() {
+            @Override protected String doInBackground(Void... voids) {
+                try {
+                    java.net.URL url = new java.net.URL("https://api.github.com/repos/1953187487/StarDockLauncher/releases/latest");
+                    java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+                    conn.setConnectTimeout(10000);
+                    conn.setReadTimeout(15000);
+                    conn.setRequestProperty("Accept", "application/vnd.github+json");
+                    conn.connect();
+                    if (conn.getResponseCode() != 200) return null;
+                    java.io.BufferedReader br = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream()));
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null) sb.append(line);
+                    org.json.JSONObject root = new org.json.JSONObject(sb.toString());
+                    return root.optString("tag_name", "");
+                } catch (Exception e) {
+                    return null;
+                }
+            }
+            @Override protected void onPostExecute(String latestTag) {
+                if (latestTag == null || latestTag.isEmpty()) return;
+                String current;
+                try {
+                    current = "v" + getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+                } catch (Exception e) { current = ""; }
+                if (!latestTag.equals(current) && latestTag.compareTo(current) > 0) {
+                    new androidx.appcompat.app.AlertDialog.Builder(LauncherActivity.this)
+                            .setTitle("StarDockLauncher 有新版本")
+                            .setMessage("当前：" + current + "\n最新：" + latestTag + "\n\n前往 GitHub 下载？")
+                            .setPositiveButton("前往", (d, w) ->
+                                    Tools.openURL(LauncherActivity.this,
+                                            "https://github.com/1953187487/StarDockLauncher/releases/tag/" + latestTag))
+                            .setNegativeButton(android.R.string.cancel, null)
+                            .show();
+                }
+            }
+        }.execute();
     }
 
     private void bindViews() {
         mFragmentView = findViewById(R.id.container_fragment);
         mProgressLayout = findViewById(R.id.progress_layout);
-        // 全局 mcAccountSpinner：用于账户选择下拉与状态查询
-        mAccountSpinner = new mcAccountSpinner(this);
-        mAccountSpinner.setLayoutParams(new android.widget.LinearLayout.LayoutParams(1, 1));
-        mAccountSpinner.setVisibility(android.view.View.GONE);
-        addContentView(mAccountSpinner, mAccountSpinner.getLayoutParams());
     }
 
     /** v0.0.6b 现代窗口：透明状态栏 + 深色背景 + 沉浸式 */
@@ -230,7 +267,7 @@ public class LauncherActivity extends BaseActivity {
                 target = SettingsHubFragment.class;
                 break;
             default:
-                target = MainFragmentV3.class;
+                target = MainFragmentV4.class;
                 tag = NAV_LAUNCH;
                 break;
         }
@@ -265,7 +302,7 @@ public class LauncherActivity extends BaseActivity {
     private void syncNavWithFragment(Fragment f) {
         if (f == null) return;
         Class<? extends Fragment> cls = f.getClass();
-        if (cls == MainFragmentV3.class) highlightNavButton(NAV_LAUNCH);
+        if (cls == MainFragmentV4.class) highlightNavButton(NAV_LAUNCH);
         else if (cls == DownloadHubFragment.class) highlightNavButton(NAV_DOWNLOAD);
         else if (cls == OnlineHubFragment.class) highlightNavButton(NAV_MULTIPLAYER);
         else if (cls == KeyBindingFragment.class) highlightNavButton(NAV_KEYBINDING);
@@ -279,9 +316,9 @@ public class LauncherActivity extends BaseActivity {
         ContextExecutor.setActivity(this);
         mInstallTracker.attach();
         Fragment current = getSupportFragmentManager().findFragmentById(mFragmentView.getId());
-        if (current instanceof MainFragmentV3) {
-            ((MainFragmentV3) current).refreshVersion();
-            ((MainFragmentV3) current).refreshAccount();
+        if (current instanceof MainFragmentV4) {
+            ((MainFragmentV4) current).refreshVersion();
+            ((MainFragmentV4) current).refreshAccount();
         }
     }
 
@@ -311,7 +348,7 @@ public class LauncherActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         Fragment current = getSupportFragmentManager().findFragmentById(mFragmentView.getId());
-        if (current != null && !(current instanceof MainFragmentV3)) {
+        if (current != null && !(current instanceof MainFragmentV4)) {
             selectNav(NAV_LAUNCH);
             return;
         }
@@ -343,7 +380,10 @@ public class LauncherActivity extends BaseActivity {
             return;
         }
 
-        if (mAccountSpinner == null || mAccountSpinner.getSelectedAccount() == null) {
+        // v0.0.8 检查账户：直接从磁盘读取账户文件
+        File accountsDir = new File(Tools.DIR_ACCOUNT_NEW);
+        File[] accounts = accountsDir.listFiles();
+        if (accounts == null || accounts.length == 0) {
             Toast.makeText(this, R.string.no_saved_accounts, Toast.LENGTH_LONG).show();
             openAccountPicker();
             return;
@@ -351,20 +391,6 @@ public class LauncherActivity extends BaseActivity {
 
         String normalizedVersionId = AsyncMinecraftDownloader.normalizeVersionId(prof.lastVersionId);
         JMinecraftVersionList.Version mcVersion = AsyncMinecraftDownloader.getListedVersion(normalizedVersionId);
-
-        if (mAccountSpinner.getSelectedAccount().isDemo()) {
-            boolean isOlderThan13 = true;
-            if (mcVersion != null) {
-                try {
-                    isOlderThan13 = DateUtils.dateBefore(DateUtils.parseReleaseDate(mcVersion.releaseTime), 2012, 6, 22);
-                } catch (ParseException ignored) {
-                }
-            }
-            if (isOlderThan13) {
-                Toast.makeText(this, R.string.toast_not_available_demo, Toast.LENGTH_LONG).show();
-                return;
-            }
-        }
 
         new MinecraftDownloader().start(
                 this,
@@ -379,22 +405,13 @@ public class LauncherActivity extends BaseActivity {
         selectNav(NAV_DOWNLOAD);
     }
 
-    /** 打开账户选择（弹账户下拉） */
+    /** 打开账户选择：跳到 SelectAuthFragment（v0.0.8 内置 Microsoft + 离线登录） */
     public void openAccountPicker() {
-        if (mAccountSpinner != null) {
-            try {
-                mAccountSpinner.performClick();
-                return;
-            } catch (Exception ignored) {
-            }
-        }
-        // fallback：跳到内置 SelectAuthFragment
         try {
             Tools.swapFragment(this, SelectAuthFragment.class, SelectAuthFragment.TAG, null);
-            return;
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            Toast.makeText(this, "账户系统未初始化", Toast.LENGTH_SHORT).show();
         }
-        Toast.makeText(this, "账户系统未初始化", Toast.LENGTH_SHORT).show();
     }
 
     /** 打开版本编辑器 */
@@ -422,23 +439,10 @@ public class LauncherActivity extends BaseActivity {
         mUpdateManager.checkForUpdates();
     }
 
-    public mcAccountSpinner getAccountSpinner() {
-        return mAccountSpinner;
-    }
-
-    /* ----------- 权限 ----------- */
-
-    private void checkNotificationPermission() {
-        if (LauncherPreferences.PREF_SKIP_NOTIFICATION_PERMISSION_CHECK ||
-                checkForNotificationPermission()) {
-            return;
-        }
-        if (ActivityCompat.shouldShowRequestPermissionRationale(
-                this, Manifest.permission.POST_NOTIFICATIONS)) {
-            showNotificationPermissionReasoning();
-            return;
-        }
-        askForNotificationPermission(null);
+    public boolean checkForNotificationPermission() {
+        return Build.VERSION.SDK_INT < 33 || ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_DENIED;
     }
 
     private void showNotificationPermissionReasoning() {
@@ -458,17 +462,27 @@ public class LauncherActivity extends BaseActivity {
         Toast.makeText(this, R.string.notification_permission_toast, Toast.LENGTH_LONG).show();
     }
 
-    public boolean checkForNotificationPermission() {
-        return Build.VERSION.SDK_INT < 33 || ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_DENIED;
-    }
-
     public void askForNotificationPermission(Runnable onSuccessRunnable) {
         if (Build.VERSION.SDK_INT < 33) return;
         if (onSuccessRunnable != null) {
             mRequestNotificationPermissionRunnable = new WeakReference<>(onSuccessRunnable);
         }
         mRequestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+    }
+
+    /* ----------- 权限 ----------- */
+
+    private void checkNotificationPermission() {
+        if (LauncherPreferences.PREF_SKIP_NOTIFICATION_PERMISSION_CHECK ||
+                checkForNotificationPermission()) {
+            return;
+        }
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                this, Manifest.permission.POST_NOTIFICATIONS)) {
+            showNotificationPermissionReasoning();
+            return;
+        }
+        askForNotificationPermission(null);
     }
 }

@@ -26,7 +26,6 @@ import net.kdt.pojavlaunch.LauncherActivity;
 import net.kdt.pojavlaunch.R;
 import net.kdt.pojavlaunch.Tools;
 import net.kdt.pojavlaunch.agreement.AgreementDialog;
-import net.kdt.pojavlaunch.multirt.MultiRTConfigDialog;
 import net.kdt.pojavlaunch.prefs.LauncherPreferences;
 import net.kdt.pojavlaunch.multirt.MultiRTConfigDialog;
 
@@ -63,13 +62,12 @@ public class SettingsHubFragment extends Fragment {
         mItems.add(new SettingItem(R.drawable.ic_setting_video, "全局布局", "调节启动器全局布局参数", SettingItem.ACTION_LAYOUT));
         mItems.add(new SettingItem(R.drawable.ic_download, "下载源", "选择 Minecraft 版本与资源的下载镜像", SettingItem.ACTION_DOWNLOAD_SOURCE));
         mItems.add(new SettingItem(R.drawable.ic_download, "检查更新", "检测并下载最新版本", SettingItem.ACTION_UPDATE));
-        mItems.add(new SettingItem(R.drawable.ic_setting_java_runtime, "Java 运行时", "管理 Java 多版本运行时", SettingItem.ACTION_MULTIRT));
+        mItems.add(new SettingItem(R.drawable.ic_setting_java_runtime, "Java 运行时", "一键下载 / 管理 Java 多版本", SettingItem.ACTION_MULTIRT));
         mItems.add(new SettingItem(R.drawable.ic_menu_custom_controls, "控制布局", "自定义虚拟按键", SettingItem.ACTION_CONTROLS));
-        mItems.add(new SettingItem(R.drawable.ic_multiplayer, "第三方登录", "导入第三方服务器地址并登录", SettingItem.ACTION_THIRD_LOGIN));
-        mItems.add(new SettingItem(R.drawable.ic_agreement, "用户协议", "查看 v0.0.6 协议与开源信息", SettingItem.ACTION_AGREEMENT));
+        mItems.add(new SettingItem(R.drawable.ic_agreement, "重看协议", "重新查看使用须知（强制弹出）", SettingItem.ACTION_AGREEMENT));
         mItems.add(new SettingItem(R.drawable.ic_menu_custom_controls, "游戏内悬浮窗", "查看现代化悬浮窗面板预览", SettingItem.ACTION_OVERLAY));
         mItems.add(new SettingItem(R.drawable.ic_setting_misc, "开源与项目源码", "查看本项目与依赖项目链接", SettingItem.ACTION_OPEN_SOURCE));
-        mItems.add(new SettingItem(R.drawable.ic_sharp_settings_24, "关于此项目", "StarDockLauncher v0.0.6", SettingItem.ACTION_ABOUT));
+        mItems.add(new SettingItem(R.drawable.ic_sharp_settings_24, "关于此项目", "StarDockLauncher v0.0.8", SettingItem.ACTION_ABOUT));
 
         mAdapter = new SettingAdapter();
         list.setAdapter(mAdapter);
@@ -100,16 +98,14 @@ public class SettingsHubFragment extends Fragment {
                 openThirdPartyLogin();
                 break;
             case SettingItem.ACTION_MULTIRT: {
-                MultiRTConfigDialog dialog = new MultiRTConfigDialog();
-                dialog.prepare(requireContext(), null);
-                dialog.show();
+                OneClickJavaActivity.showDialog(requireActivity());
                 break;
             }
             case SettingItem.ACTION_CONTROLS:
                 startActivity(new Intent(requireContext(), CustomControlsActivity.class));
                 break;
             case SettingItem.ACTION_AGREEMENT:
-                AgreementDialog.showOpenSourceLicense(requireActivity());
+                AgreementDialog.showForce(requireActivity(), () -> {}, requireActivity()::finish);
                 break;
             case SettingItem.ACTION_OVERLAY:
                 Tools.swapFragment(requireActivity(), OverlayHubFragment.class, OverlayHubFragment.TAG, null);
