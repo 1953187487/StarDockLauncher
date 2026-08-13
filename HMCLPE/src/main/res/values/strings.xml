@@ -6,7 +6,7 @@
     <string name="app_bar_title" translatable="false">StarDockLauncher v1.0.0</string>
 
     <string name="dialog_outdated_warning_title">Warning</string>
-    <string name="dialog_outdated_warning_msg">StarDockLauncher 1.0 正式版\n\nStarDockLauncher 是由本开源作者基于 HMCL-PE 二次开发的 Minecraft Java 版 Android 启动器。\n\n本应用致力于：\n· 持续修复 HMCL-PE 停更后的遗留问题\n· 增强联机、模组、版本管理体验\n· 长期维护与版本更新\n\n所有最新版本请前往本仓库获取。\n\n注：本项目由开源作者独立维护，与 HMCL-dev 无关。</string>
+    <string name="dialog_outdated_warning_msg">\u26a0 StarDockLauncher v1.0.1 公告\n\n本应用是一款由本开源作者基于 HMCL-PE（2.0.8）二次开发的 Minecraft Java 版 Android 启动器。\n\n⚠️ HMCL-PE 已停更\nHMCL-PE 原作者已停止维护。本项目继承其核心引擎（Boat + PojavLauncher）与 UI 框架，由本开源作者独立维护和迭代。\n\n\u2728 本版本主要变更\n· 品牌重塑：StarDockLauncher\n· 公告、关于、反馈、捐赠页全面重写\n· 关于页加入启动器版本检测（从通用移到此）\n· 反馈入口改为邮箱一键复制\n· 捐赠换为微信 + 支付宝两张图\n· 通用设置中启动器版本检测已迁移\n\n\u2728 关于\n本项目与 HMCL-dev 无关，由本开源作者独立维护。如有 Bug 或建议，请联系：1953187487@qq.com</string>
     <string name="dialog_outdated_warning_hide">Don\'t show again</string>
     <string name="dialog_outdated_warning_positive">Got it</string>
 
@@ -38,7 +38,26 @@
     <string name="dialog_color_selector_arrow" translatable="false">→</string>
     <string name="download_setting_ui_source_bmclapi" translatable="false">BMCLAPI（bangbang93，https://bmclapi2.bangbang93.com/）</string>
     <string name="ui_about_hmclpe_main" translatable="false">StarDockLauncher</string>
-    <string name="ui_about_hmclpe_sub" translatable="false">1.0.0</string>
+    <string name="ui_about_hmclpe_sub" translatable="false">1.0.1</string>
+    <string name="about_intro_title">关于本项目</string>
+    <string name="about_intro_author">作者：本开源作者（独立维护）</string>
+    <string name="about_intro_email">邮箱：1953187487@qq.com</string>
+    <string name="about_intro_repo">仓库：github.com/1953187487/StarDockLauncher</string>
+    <string name="about_basis_title">基于</string>
+    <string name="about_basis_core">核心：基于 HMCL-PE 2.0.8 二次开发（HMCL-PE 已停更）</string>
+    <string name="about_basis_engine">渲染引擎：Boat + PojavLauncher（OpenGL ES 2.1 / 3.0 / 4.x）</string>
+    <string name="about_basis_stack">技术栈：Android (Java) + AGP 7.2.2 + Gradle 7.3.3 + jcenter(已迁移阿里云镜像) + AndroidX + Material 1.11</string>
+    <string name="about_features_title">功能与修复</string>
+    <string name="about_features_body">1.0.0 全面接入 HMCL-PE 引擎与渲染器\n1.0.1 品牌重塑、公告重写、关于页重写、反馈改为邮箱、捐赠换为微信/支付宝两张图、启动器版本检测迁到此处、通用中联机入口前置</string>
+    <string name="about_update_title">启动器版本检测</string>
+    <string name="about_update_status_default">点击右侧按钮检查最新版本</string>
+    <string name="about_update_status_checking">正在检查…</string>
+    <string name="about_update_status_latest">已是最新版本</string>
+    <string name="about_update_status_available">有新版本可用，请前往仓库更新</string>
+    <string name="about_update_status_error">检查失败</string>
+    <string name="about_update_check_btn">检查更新</string>
+    <string name="about_version_title">当前版本</string>
+    <string name="about_version_name">StarDockLauncher v1.0.1</string>
     <string name="ui_about_tungsten_main" translatable="false">Tungsten</string>
     <string name="ui_about_tungsten_sub" translatable="false">B 站 ID：@念小六</string>
     <string name="ui_about_shirosakimio_main" translatable="false">ShirosakiMio</string>
@@ -720,9 +739,12 @@
     <string name="download_setting_ui_download_num">Threads</string>
     <string name="download_setting_ui_download_alert">Information</string>
     <string name="download_setting_ui_download_alert_text">Too many threads may cause your system to freeze, and your download speed may be affected by your ISP and download servers. It is not always the case that more threads increase your download speed.</string>
-    <string name="feedback_ui_join_discord">Join Discord</string>
-    <string name="feedback_ui_github_issues">Go to Github</string>
-    <string name="donate_ui_text">Hello Minecraft! Launcher Pocket Edition is an Android Minecraft launcher which allows users to manage multiple Minecraft instances easily. You can donate to us on Afdian to support our file hosting and project development. Click here for more information.</string>
+    <string name="feedback_ui_intro">StarDockLauncher 由本开源作者独立维护，欢迎反馈 Bug、建议、合作意向。点击下方邮箱可一键复制并唤起邮箱客户端。</string>
+    <string name="feedback_ui_email_label">作者邮箱</string>
+    <string name="feedback_ui_email">1953187487@qq.com</string>
+    <string name="donate_ui_text">StarDockLauncher 由本开源作者独立维护，免费开源。如觉得本项目对你有帮助，欢迎扫码支持作者继续开发。两张图分别为：左微信 / 右支付宝。</string>
+    <string name="donate_wechat">微信</string>
+    <string name="donate_alipay">支付宝</string>
     <string name="dialog_manage_controller_title">Manage Touch Layout Pattern</string>
     <string name="dialog_manage_controller_import">Import layout from local file</string>
     <string name="dialog_manage_controller_create">Create new layout pattern</string>
