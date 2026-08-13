@@ -6,6 +6,7 @@ import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -24,6 +25,11 @@ import androidx.fragment.app.FragmentManager;
 import com.kdt.mcgui.ProgressLayout;
 
 import net.kdt.pojavlaunch.agreement.AgreementDialog;
+import net.kdt.pojavlaunch.authenticator.listener.DoneListener;
+import net.kdt.pojavlaunch.authenticator.listener.ErrorListener;
+import net.kdt.pojavlaunch.authenticator.listener.ProgressListener;
+import net.kdt.pojavlaunch.authenticator.microsoft.PresentedException;
+import net.kdt.pojavlaunch.authenticator.microsoft.MicrosoftBackgroundLogin;
 import net.kdt.pojavlaunch.contracts.OpenDocumentWithExtension;
 import net.kdt.pojavlaunch.extra.ExtraConstants;
 import net.kdt.pojavlaunch.extra.ExtraCore;
@@ -49,6 +55,7 @@ import net.kdt.pojavlaunch.tasks.MinecraftDownloader;
 import net.kdt.pojavlaunch.update.UpdateManager;
 import net.kdt.pojavlaunch.utils.DateUtils;
 import net.kdt.pojavlaunch.utils.NotificationUtils;
+import net.kdt.pojavlaunch.value.MinecraftAccount;
 import net.kdt.pojavlaunch.value.launcherprofiles.LauncherProfiles;
 import net.kdt.pojavlaunch.value.launcherprofiles.MinecraftProfile;
 
@@ -99,6 +106,38 @@ public class LauncherActivity extends BaseActivity {
         return false;
     };
 
+    private final ProgressListener mProgressListener = step -> { };
+
+    private final DoneListener mMsDoneListener = account -> {
+        PojavProfile.setCurrentProfile(this, account.username);
+        Toast.makeText(this, R.string.main_login_done, Toast.LENGTH_SHORT).show();
+        for (Fragment f : getSupportFragmentManager().getFragments()) {
+            if (f instanceof MainFragmentV4 && f.isAdded()) {
+                ((MainFragmentV4) f).refreshAccount();
+            }
+        }
+    };
+
+    private final ErrorListener mMsErrorListener = errorMessage -> {
+        if (errorMessage instanceof PresentedException) {
+            PresentedException exception = (PresentedException) errorMessage;
+            if (exception.getCause() == null) {
+                Tools.dialog(this, getString(R.string.global_error), exception.toString(this));
+            } else {
+                Tools.showError(this, exception.toString(this), exception.getCause());
+            }
+        } else {
+            Tools.showError(this, errorMessage);
+        }
+    };
+
+    /** v0.0.9 微软登录回调：WebView 拿到 code 后在此完成 OAuth 全链路，替代已移除的 mcAccountSpinner */
+    private final ExtraListener<Uri> mMicrosoftLoginListener = (key, value) -> {
+        new MicrosoftBackgroundLogin(false, value.getQueryParameter("code")).performLogin(
+                mProgressListener, mMsDoneListener, mMsErrorListener);
+        return false;
+    };
+
     private final FragmentManager.FragmentLifecycleCallbacks mFragmentCallbackListener = new FragmentManager.FragmentLifecycleCallbacks() {
         @Override
         public void onFragmentResumed(@NonNull FragmentManager fm, @NonNull Fragment f) {
@@ -146,6 +185,7 @@ public class LauncherActivity extends BaseActivity {
                 }
         );
         getWindow().setBackgroundDrawable(null);
+        ExtraCore.addExtraListener(ExtraConstants.MICROSOFT_LOGIN_TODO, mMicrosoftLoginListener);
         bindViews();
         setupLeftNavigation();
         checkNotificationPermission();
@@ -342,6 +382,7 @@ public class LauncherActivity extends BaseActivity {
         ProgressKeeper.removeTaskCountListener(mProgressLayout);
         ProgressKeeper.removeTaskCountListener(mProgressServiceKeeper);
         ExtraCore.removeExtraListenerFromValue(ExtraConstants.LAUNCH_GAME, mLaunchGameListener);
+        ExtraCore.removeExtraListenerFromValue(ExtraConstants.MICROSOFT_LOGIN_TODO, mMicrosoftLoginListener);
         getSupportFragmentManager().unregisterFragmentLifecycleCallbacks(mFragmentCallbackListener);
     }
 
