@@ -1,0 +1,122 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2,
+						3
+					],
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.4.1"
+					},
+					"projectIndex" : 0,
+					"source" : "."
+				},
+				{
+					"build" : "boat",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.4.1"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "boat",
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"build" : "loadme",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.4.1"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "loadme",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"build" : "security",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.4.1"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "security",
+					"targetIndexes" : 
+					[
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					],
+					"name" : "Project",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "boat::@057c1fe1dc6fc82b8a05",
+					"jsonFile" : "target-boat-Debug-20b4004a60fe7a80827d.json",
+					"name" : "boat",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "loadme::@dd741a0f2f36159b1b97",
+					"jsonFile" : "target-loadme-Debug-c79cec5ff8ae7219c20f.json",
+					"name" : "loadme",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "security::@10414145323772df86d6",
+					"jsonFile" : "target-security-Debug-fa1649e0bc4fa1374fd5.json",
+					"name" : "security",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/workspace/Boat/.cxx/Debug/6d2n1v2r/x86_64",
+		"source" : "/workspace/Boat/src/main/jni"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 1
+	}
+}

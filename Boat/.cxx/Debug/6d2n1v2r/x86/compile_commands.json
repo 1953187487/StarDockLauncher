@@ -1,0 +1,62 @@
+[
+{
+  "directory": "/workspace/Boat/.cxx/Debug/6d2n1v2r/x86",
+  "command": "/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/bin/clang --target=i686-none-linux-android26 --gcc-toolchain=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dboat_EXPORTS -I/workspace/Boat/src/main/jni/boat/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c99 -O2 -Wall -Werror -DBUILD_BOAT -O0 -fno-limit-debug-info  -fPIC -o boat/CMakeFiles/boat.dir/boat.c.o -c /workspace/Boat/src/main/jni/boat/boat.c",
+  "file": "/workspace/Boat/src/main/jni/boat/boat.c"
+},
+{
+  "directory": "/workspace/Boat/.cxx/Debug/6d2n1v2r/x86",
+  "command": "/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/bin/clang --target=i686-none-linux-android26 --gcc-toolchain=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dboat_EXPORTS -I/workspace/Boat/src/main/jni/boat/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c99 -O2 -Wall -Werror -DBUILD_BOAT -O0 -fno-limit-debug-info  -fPIC -o boat/CMakeFiles/boat.dir/boat_clipboard.c.o -c /workspace/Boat/src/main/jni/boat/boat_clipboard.c",
+  "file": "/workspace/Boat/src/main/jni/boat/boat_clipboard.c"
+},
+{
+  "directory": "/workspace/Boat/.cxx/Debug/6d2n1v2r/x86",
+  "command": "/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/bin/clang --target=i686-none-linux-android26 --gcc-toolchain=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dboat_EXPORTS -I/workspace/Boat/src/main/jni/boat/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c99 -O2 -Wall -Werror -DBUILD_BOAT -O0 -fno-limit-debug-info  -fPIC -o boat/CMakeFiles/boat.dir/boat_event.c.o -c /workspace/Boat/src/main/jni/boat/boat_event.c",
+  "file": "/workspace/Boat/src/main/jni/boat/boat_event.c"
+},
+{
+  "directory": "/workspace/Boat/.cxx/Debug/6d2n1v2r/x86",
+  "command": "/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/bin/clang --target=i686-none-linux-android26 --gcc-toolchain=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dloadme_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c99 -O2 -Wall -Werror -O0 -fno-limit-debug-info  -fPIC -o loadme/CMakeFiles/loadme.dir/loadme.c.o -c /workspace/Boat/src/main/jni/loadme/loadme.c",
+  "file": "/workspace/Boat/src/main/jni/loadme/loadme.c"
+},
+{
+  "directory": "/workspace/Boat/.cxx/Debug/6d2n1v2r/x86",
+  "command": "/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/bin/clang --target=i686-none-linux-android26 --gcc-toolchain=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dloadme_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c99 -O2 -Wall -Werror -O0 -fno-limit-debug-info  -fPIC -o loadme/CMakeFiles/loadme.dir/xh_core.c.o -c /workspace/Boat/src/main/jni/loadme/xh_core.c",
+  "file": "/workspace/Boat/src/main/jni/loadme/xh_core.c"
+},
+{
+  "directory": "/workspace/Boat/.cxx/Debug/6d2n1v2r/x86",
+  "command": "/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/bin/clang --target=i686-none-linux-android26 --gcc-toolchain=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dloadme_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c99 -O2 -Wall -Werror -O0 -fno-limit-debug-info  -fPIC -o loadme/CMakeFiles/loadme.dir/xh_elf.c.o -c /workspace/Boat/src/main/jni/loadme/xh_elf.c",
+  "file": "/workspace/Boat/src/main/jni/loadme/xh_elf.c"
+},
+{
+  "directory": "/workspace/Boat/.cxx/Debug/6d2n1v2r/x86",
+  "command": "/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/bin/clang --target=i686-none-linux-android26 --gcc-toolchain=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dloadme_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c99 -O2 -Wall -Werror -O0 -fno-limit-debug-info  -fPIC -o loadme/CMakeFiles/loadme.dir/xh_jni.c.o -c /workspace/Boat/src/main/jni/loadme/xh_jni.c",
+  "file": "/workspace/Boat/src/main/jni/loadme/xh_jni.c"
+},
+{
+  "directory": "/workspace/Boat/.cxx/Debug/6d2n1v2r/x86",
+  "command": "/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/bin/clang --target=i686-none-linux-android26 --gcc-toolchain=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dloadme_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c99 -O2 -Wall -Werror -O0 -fno-limit-debug-info  -fPIC -o loadme/CMakeFiles/loadme.dir/xh_log.c.o -c /workspace/Boat/src/main/jni/loadme/xh_log.c",
+  "file": "/workspace/Boat/src/main/jni/loadme/xh_log.c"
+},
+{
+  "directory": "/workspace/Boat/.cxx/Debug/6d2n1v2r/x86",
+  "command": "/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/bin/clang --target=i686-none-linux-android26 --gcc-toolchain=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dloadme_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c99 -O2 -Wall -Werror -O0 -fno-limit-debug-info  -fPIC -o loadme/CMakeFiles/loadme.dir/xh_util.c.o -c /workspace/Boat/src/main/jni/loadme/xh_util.c",
+  "file": "/workspace/Boat/src/main/jni/loadme/xh_util.c"
+},
+{
+  "directory": "/workspace/Boat/.cxx/Debug/6d2n1v2r/x86",
+  "command": "/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/bin/clang --target=i686-none-linux-android26 --gcc-toolchain=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dloadme_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c99 -O2 -Wall -Werror -O0 -fno-limit-debug-info  -fPIC -o loadme/CMakeFiles/loadme.dir/xh_version.c.o -c /workspace/Boat/src/main/jni/loadme/xh_version.c",
+  "file": "/workspace/Boat/src/main/jni/loadme/xh_version.c"
+},
+{
+  "directory": "/workspace/Boat/.cxx/Debug/6d2n1v2r/x86",
+  "command": "/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/bin/clang --target=i686-none-linux-android26 --gcc-toolchain=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dloadme_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c99 -O2 -Wall -Werror -O0 -fno-limit-debug-info  -fPIC -o loadme/CMakeFiles/loadme.dir/xhook.c.o -c /workspace/Boat/src/main/jni/loadme/xhook.c",
+  "file": "/workspace/Boat/src/main/jni/loadme/xhook.c"
+},
+{
+  "directory": "/workspace/Boat/.cxx/Debug/6d2n1v2r/x86",
+  "command": "/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=i686-none-linux-android26 --gcc-toolchain=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dsecurity_EXPORTS -I/workspace/Boat/src/main/jni/security/. -I/workspace/Boat/src/main/jni/security/../boat -I/workspace/Boat/src/main/jni/security/../boat/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -O0 -fno-limit-debug-info  -fPIC -o security/CMakeFiles/security.dir/security.cpp.o -c /workspace/Boat/src/main/jni/security/security.cpp",
+  "file": "/workspace/Boat/src/main/jni/security/security.cpp"
+}
+]

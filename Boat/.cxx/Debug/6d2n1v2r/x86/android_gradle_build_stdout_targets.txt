@@ -1,0 +1,2 @@
+ninja: Entering directory `/workspace/Boat/.cxx/Debug/6d2n1v2r/x86'
+ninja: no work to do.

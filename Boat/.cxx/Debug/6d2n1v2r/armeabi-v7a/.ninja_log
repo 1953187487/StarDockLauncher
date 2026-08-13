@@ -1,0 +1,16 @@
+# ninja log v5
+0	261	1786620391	boat/CMakeFiles/boat.dir/boat.c.o	ba0f8ad45c0e90d9
+1	345	1786620391	boat/CMakeFiles/boat.dir/boat_event.c.o	8ea61326e7e2494c
+1	351	1786620391	boat/CMakeFiles/boat.dir/boat_clipboard.c.o	1a8828fa057e77c1
+261	366	1786620391	loadme/CMakeFiles/loadme.dir/loadme.c.o	5baaf242678e43b5
+352	476	1786620391	/workspace/Boat/build/intermediates/cxx/Debug/6d2n1v2r/obj/armeabi-v7a/libboat.so	4520255a80a710d7
+477	501	1786620391	loadme/CMakeFiles/loadme.dir/xh_jni.c.o	7b80ff630f8aa4b0
+501	514	1786620391	loadme/CMakeFiles/loadme.dir/xh_log.c.o	8ccfeb49bdd8774f
+514	542	1786620391	loadme/CMakeFiles/loadme.dir/xh_util.c.o	510e0c5500ad4dd4
+543	555	1786620391	loadme/CMakeFiles/loadme.dir/xh_version.c.o	31ff609e16ae94d3
+345	558	1786620391	loadme/CMakeFiles/loadme.dir/xh_core.c.o	1bcf1619b8f268f1
+556	573	1786620391	loadme/CMakeFiles/loadme.dir/xhook.c.o	e070c67953071321
+367	619	1786620391	loadme/CMakeFiles/loadme.dir/xh_elf.c.o	d1349a28c945ce44
+620	634	1786620391	/workspace/Boat/build/intermediates/cxx/Debug/6d2n1v2r/obj/armeabi-v7a/libloadme.so	6269c16b4ac8a2e4
+558	981	1786620392	security/CMakeFiles/security.dir/security.cpp.o	c431dfb54dae445c
+981	1110	1786620392	/workspace/Boat/build/intermediates/cxx/Debug/6d2n1v2r/obj/armeabi-v7a/libsecurity.so	1174f5860bc21824

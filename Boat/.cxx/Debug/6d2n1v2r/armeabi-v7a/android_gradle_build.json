@@ -1,0 +1,57 @@
+{
+  "buildFiles": [
+    "/workspace/Boat/src/main/jni/CMakeLists.txt",
+    "/workspace/Boat/src/main/jni/boat/CMakeLists.txt",
+    "/workspace/Boat/src/main/jni/loadme/CMakeLists.txt",
+    "/workspace/Boat/src/main/jni/security/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/opt/android-sdk/cmake/3.18.1/bin/ninja",
+      "-C",
+      "/workspace/Boat/.cxx/Debug/6d2n1v2r/armeabi-v7a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/opt/android-sdk/cmake/3.18.1/bin/ninja",
+    "-C",
+    "/workspace/Boat/.cxx/Debug/6d2n1v2r/armeabi-v7a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "boat::@057c1fe1dc6fc82b8a05": {
+      "toolchain": "toolchain",
+      "abi": "armeabi-v7a",
+      "artifactName": "boat",
+      "output": "/workspace/Boat/build/intermediates/cxx/Debug/6d2n1v2r/obj/armeabi-v7a/libboat.so",
+      "runtimeFiles": []
+    },
+    "loadme::@dd741a0f2f36159b1b97": {
+      "toolchain": "toolchain",
+      "abi": "armeabi-v7a",
+      "artifactName": "loadme",
+      "output": "/workspace/Boat/build/intermediates/cxx/Debug/6d2n1v2r/obj/armeabi-v7a/libloadme.so",
+      "runtimeFiles": []
+    },
+    "security::@10414145323772df86d6": {
+      "toolchain": "toolchain",
+      "abi": "armeabi-v7a",
+      "artifactName": "security",
+      "output": "/workspace/Boat/build/intermediates/cxx/Debug/6d2n1v2r/obj/armeabi-v7a/libsecurity.so",
+      "runtimeFiles": []
+    }
+  },
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+      "cppCompilerExecutable": "/opt/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++"
+    }
+  },
+  "cFileExtensions": [
+    "c"
+  ],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

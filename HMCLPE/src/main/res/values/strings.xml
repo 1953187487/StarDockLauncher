@@ -57,7 +57,28 @@
     <string name="about_update_status_error">检查失败</string>
     <string name="about_update_check_btn">检查更新</string>
     <string name="about_version_title">当前版本</string>
-    <string name="about_version_name">StarDockLauncher v1.0.1</string>
+    <string name="about_version_name">StarDockLauncher v1.0.2</string>
+
+    <string name="multiplayer_tab_title">联机</string>
+    <string name="multiplayer_tab_terra">淘瓦联机</string>
+    <string name="multiplayer_tab_tunnel">内网穿透联机</string>
+    <string name="multiplayer_terra_create">创建房间</string>
+    <string name="multiplayer_terra_join">加入房间</string>
+    <string name="multiplayer_terra_intro">淘瓦联机说明：\n1. 创建房间：启动游戏，自动开启局域网开关，生成邀请码\n2. 邀请码会复制到剪贴板，发给访客\n3. 访客加入房间：粘贴邀请码，在多人游戏中进入</string>
+    <string name="multiplayer_tunnel_import">导入内网穿透文件</string>
+    <string name="multiplayer_tunnel_enable">启用联机</string>
+    <string name="multiplayer_tunnel_join">加入房间</string>
+    <string name="multiplayer_tunnel_intro">内网穿透联机说明：\n1. 先在主界面导入内网穿透配置文件\n2. 启动游戏，自动读取局域网 IP\n3. 通过内网穿透转换为连接 ID 并复制\n4. 访客在加入房间中粘贴 ID 进入</string>
+    <string name="multiplayer_tunnel_imported">已导入：</string>
+    <string name="multiplayer_floating_button">联机菜单</string>
+    <string name="multiplayer_floating_service_started">悬浮窗服务已启动</string>
+    <string name="multiplayer_floating_service_stopped">悬浮窗服务已停止</string>
+    <string name="multiplayer_enable_switch">启用悬浮窗联机</string>
+    <string name="multiplayer_terra_code_copied">邀请码已复制到剪贴板</string>
+    <string name="multiplayer_tunnel_id_copied">连接 ID 已复制到剪贴板</string>
+    <string name="multiplayer_no_tunnel">未导入内网穿透文件</string>
+    <string name="quick_launch_switch">一键启动</string>
+    <string name="quick_launch_switch_desc">开启后跳过启动器配置确认，直接拉起游戏</string>
     <string name="ui_about_tungsten_main" translatable="false">Tungsten</string>
     <string name="ui_about_tungsten_sub" translatable="false">B 站 ID：@念小六</string>
     <string name="ui_about_shirosakimio_main" translatable="false">ShirosakiMio</string>
@@ -654,8 +675,11 @@
     <string name="game_setting_ui_alert_jump">Edit Current Instance Settings</string>
     <string name="game_setting_ui_java_path">Java Path</string>
     <string name="game_setting_ui_java_path_auto">Automatically Select</string>
-    <string name="game_setting_ui_java_path_8">1.8.0 (64 bit)</string>
-    <string name="game_setting_ui_java_path_17">17 (64 bit)</string>
+    <string name="game_setting_ui_java_path_8">Java 8 (1.8.0, 64 bit)</string>
+    <string name="game_setting_ui_java_path_17">Java 17 (64 bit)</string>
+    <string name="game_setting_ui_java_path_21">Java 21 (64 bit)</string>
+    <string name="game_setting_ui_java_path_25">Java 25 (64 bit)</string>
+    <string name="game_setting_ui_java_25_download">一键下载 Java 25</string>
     <string name="game_setting_ui_version_isolation">Working Directory</string>
     <string name="game_setting_ui_version_isolation_default">Default (.minecraft/)</string>
     <string name="game_setting_ui_version_isolation_isolate">Isolated (.minecraft/versions/&#60;instance name>/, except for assets and libraries)</string>

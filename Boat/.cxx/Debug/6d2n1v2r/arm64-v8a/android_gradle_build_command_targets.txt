@@ -1,0 +1,9 @@
+Executable : /opt/android-sdk/cmake/3.18.1/bin/ninja
+arguments : 
+-C
+/workspace/Boat/.cxx/Debug/6d2n1v2r/arm64-v8a
+boat
+loadme
+security
+jvmArgs : 
+

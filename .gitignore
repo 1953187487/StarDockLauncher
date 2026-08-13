@@ -30,3 +30,8 @@ StarDockLauncher-v*.apk
 
 # Keep PojavLauncher upstream source tracked (with its own .git removed)
 !PojavLauncher/.git/
+
+# Backup / unrelated copies (never commit)
+ZalithLauncher/
+PojavLauncher_legacy/
+HMCLPE/release/

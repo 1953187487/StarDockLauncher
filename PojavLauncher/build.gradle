@@ -1,33 +1,42 @@
-import java.io.IOException
-plugins{
-    id 'com.android.application' version '8.7.2' apply false
-    id 'com.android.library' version '8.7.2' apply false
+plugins {
+    id 'com.android.library'
 }
 
-String getGitHash(String project) {
-    def command = Runtime.getRuntime().exec("git rev-list -1 HEAD " + project)
-    def returnCode = command.waitFor()
-    if (returnCode != 0) {
-        throw new IOException("Command 'getGitHash()' exited with " + returnCode)
+android {
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 26
+        targetSdk 34
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
     }
-    String gitCommitHash = command.inputStream.text.trim()
-    return gitCommitHash
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    externalNativeBuild {
+        ndkBuild {
+            path file('src/main/jni/Android.mk')
+        }
+    }
 }
 
-Boolean gitUsed() {
-    def returnCode = Runtime.getRuntime().exec("git rev-parse --is-inside-work-tree").waitFor()
-    switch(returnCode){
-        case 127:
-          println("git not found");
-          return false;
-          break;
-        case 128:
-          println("not inside a git repository");
-          return false;
-          break;
-        case 0:
-          return true;
-        default:
-          throw new IOException("Command 'gitUsed()' exited with " + returnCode)
-  }
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'commons-codec:commons-codec:1.16.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
