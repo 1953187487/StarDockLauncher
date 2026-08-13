@@ -9,5 +9,24 @@ local.properties
 **/.gradle/
 **/local.properties
 
+# HMCL-PE assets/runtime binaries (large, regenerated)
+HMCLPE/src/main/assets/app_runtime/
+HMCLPE/src/main/assets/control/
+HMCLPE/src/main/assets/plugin/
+HMCLPE/src/main/assets/img/
+HMCLPE/libs/
+HMCLPE/key-store.jks
+HMCLPE/debug.keystore
+Boat/libs/
+PojavLauncher/libs/
+PojavLauncher/.git/
+PojavLauncher/.git.bak/
+FilePicker/libs/
+ZipTools/libs/
+
+# StarDockLauncher root (only added for releases, see .gitattributes)
+StarDockLauncher-v*.apk
+*.apk
+
 # Keep PojavLauncher upstream source tracked (with its own .git removed)
 !PojavLauncher/.git/

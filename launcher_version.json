@@ -1,0 +1,16 @@
+{
+  "latestRelease": {
+    "versionCode": 1,
+    "versionName": "1.0.0",
+    "date": "2026.08.13",
+    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.0/StarDockLauncher-v1.0.0.apk"],
+    "updateLog": "StarDockLauncher 1.0.0 正式版：基于 HMCL-PE 二次开发，全栈替换 PojavLauncher 引擎，加入联机、Java 8-25 一键下载、UI 全面修复、品牌重塑。"
+  },
+  "latestPrerelease": {
+    "versionCode": 1,
+    "versionName": "1.0.0",
+    "date": "2026.08.13",
+    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.0/StarDockLauncher-v1.0.0.apk"],
+    "updateLog": "StarDockLauncher 1.0.0 正式版：基于 HMCL-PE 二次开发，全栈替换 PojavLauncher 引擎，加入联机、Java 8-25 一键下载、UI 全面修复、品牌重塑。"
+  }
+}
