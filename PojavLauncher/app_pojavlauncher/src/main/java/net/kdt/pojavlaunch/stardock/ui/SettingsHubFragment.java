@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,6 +26,8 @@ import net.kdt.pojavlaunch.LauncherActivity;
 import net.kdt.pojavlaunch.R;
 import net.kdt.pojavlaunch.Tools;
 import net.kdt.pojavlaunch.agreement.AgreementDialog;
+import net.kdt.pojavlaunch.multirt.MultiRTConfigDialog;
+import net.kdt.pojavlaunch.prefs.LauncherPreferences;
 import net.kdt.pojavlaunch.multirt.MultiRTConfigDialog;
 
 import java.util.ArrayList;
@@ -58,13 +61,15 @@ public class SettingsHubFragment extends Fragment {
         mItems.add(new SettingItem(R.drawable.ic_setting_engine, "主题颜色", "调节启动器全局主题色", SettingItem.ACTION_THEME));
         mItems.add(new SettingItem(R.drawable.ic_setting_misc, "字体导入", "导入 .ttf / .otf 自定义字体", SettingItem.ACTION_FONT));
         mItems.add(new SettingItem(R.drawable.ic_setting_video, "全局布局", "调节启动器全局布局参数", SettingItem.ACTION_LAYOUT));
+        mItems.add(new SettingItem(R.drawable.ic_download, "下载源", "选择 Minecraft 版本与资源的下载镜像", SettingItem.ACTION_DOWNLOAD_SOURCE));
         mItems.add(new SettingItem(R.drawable.ic_download, "检查更新", "检测并下载最新版本", SettingItem.ACTION_UPDATE));
         mItems.add(new SettingItem(R.drawable.ic_setting_java_runtime, "Java 运行时", "管理 Java 多版本运行时", SettingItem.ACTION_MULTIRT));
         mItems.add(new SettingItem(R.drawable.ic_menu_custom_controls, "控制布局", "自定义虚拟按键", SettingItem.ACTION_CONTROLS));
-        mItems.add(new SettingItem(R.drawable.ic_agreement, "用户协议", "查看 v0.0.5 协议与开源信息", SettingItem.ACTION_AGREEMENT));
+        mItems.add(new SettingItem(R.drawable.ic_multiplayer, "第三方登录", "导入第三方服务器地址并登录", SettingItem.ACTION_THIRD_LOGIN));
+        mItems.add(new SettingItem(R.drawable.ic_agreement, "用户协议", "查看 v0.0.6 协议与开源信息", SettingItem.ACTION_AGREEMENT));
         mItems.add(new SettingItem(R.drawable.ic_menu_custom_controls, "游戏内悬浮窗", "查看现代化悬浮窗面板预览", SettingItem.ACTION_OVERLAY));
         mItems.add(new SettingItem(R.drawable.ic_setting_misc, "开源与项目源码", "查看本项目与依赖项目链接", SettingItem.ACTION_OPEN_SOURCE));
-        mItems.add(new SettingItem(R.drawable.ic_sharp_settings_24, "关于此项目", "StarDockLauncher v0.0.5", SettingItem.ACTION_ABOUT));
+        mItems.add(new SettingItem(R.drawable.ic_sharp_settings_24, "关于此项目", "StarDockLauncher v0.0.6", SettingItem.ACTION_ABOUT));
 
         mAdapter = new SettingAdapter();
         list.setAdapter(mAdapter);
@@ -87,6 +92,12 @@ public class SettingsHubFragment extends Fragment {
                 if (getActivity() instanceof LauncherActivity) {
                     ((LauncherActivity) getActivity()).triggerUpdateCheck();
                 }
+                break;
+            case SettingItem.ACTION_DOWNLOAD_SOURCE:
+                showDownloadSourceDialog();
+                break;
+            case SettingItem.ACTION_THIRD_LOGIN:
+                openThirdPartyLogin();
                 break;
             case SettingItem.ACTION_MULTIRT: {
                 MultiRTConfigDialog dialog = new MultiRTConfigDialog();
@@ -141,13 +152,88 @@ public class SettingsHubFragment extends Fragment {
                 .show();
     }
 
-    private void showAboutDialog() {
+    private void showDownloadSourceDialog() {
+        final String[] opts = {
+                getString(R.string.sd_v6_source_bmclapi),
+                getString(R.string.sd_v6_source_mojang),
+                getString(R.string.sd_v6_source_custom)
+        };
+        final String[] urls = {
+                "https://bmclapi2.bangbang93.com",
+                "https://launchermeta.mojang.com",
+                ""
+        };
+        new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.sd_v6_download_source)
+                .setItems(opts, (d, w) -> {
+                    if (w == 2) {
+                        showCustomSourceDialog();
+                    } else {
+                        LauncherPreferences.DEFAULT_PREF.edit()
+                                .putString("download_source", urls[w])
+                                .apply();
+                        Toast.makeText(requireContext(),
+                                "下载源已切换：" + opts[w],
+                                Toast.LENGTH_LONG).show();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    private void showCustomSourceDialog() {
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_server_input, null);
+        EditText address = dialogView.findViewById(R.id.server_address);
+        EditText port = dialogView.findViewById(R.id.server_port);
+        address.setHint("https://your-mirror.com");
+        port.setVisibility(View.GONE);
+        new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.sd_v6_source_custom)
+                .setView(dialogView)
+                .setPositiveButton("保存", (d, w) -> {
+                    String url = address.getText().toString().trim();
+                    if (url.isEmpty()) return;
+                    LauncherPreferences.DEFAULT_PREF.edit()
+                            .putString("download_source", url)
+                            .apply();
+                    Toast.makeText(requireContext(), "已保存：" + url, Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    private void openThirdPartyLogin() {
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_server_input, null);
+        EditText address = dialogView.findViewById(R.id.server_address);
+        EditText port = dialogView.findViewById(R.id.server_port);
+        address.setHint("https://your-server.com/api/authserver");
+        port.setVisibility(View.GONE);
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.sd_v6_account_third)
+                .setMessage("粘贴第三方 Yggdrasil 服务器地址以登录\n（不支持 Yggdrasil 时仅导入 URL）")
+                .setView(dialogView)
+                .setPositiveButton("继续", (d, w) -> {
+                    String url = address.getText().toString().trim();
+                    if (url.isEmpty()) {
+                        Toast.makeText(requireContext(), "请填写服务器地址", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Toast.makeText(requireContext(),
+                            "已导入服务器：" + url,
+                            Toast.LENGTH_LONG).show();
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    public static void showAboutDialogStatic(androidx.fragment.app.FragmentActivity activity) {
         String version;
         try {
-            version = requireContext().getPackageManager()
-                    .getPackageInfo(requireContext().getPackageName(), 0).versionName;
+            version = activity.getPackageManager()
+                    .getPackageInfo(activity.getPackageName(), 0).versionName;
         } catch (Exception e) {
-            version = "0.0.5";
+            version = "0.0.6";
         }
         String content =
                 "StarDockLauncher v" + version + "\n\n" +
@@ -156,13 +242,17 @@ public class SettingsHubFragment extends Fragment {
                 "前端 UI 与交互由本项目独立设计与实现。\n\n" +
                 "项目仓库：\n  https://github.com/1953187487/StarDockLauncher\n\n" +
                 "与 Mojang / Microsoft 无任何官方关联。";
-        new AlertDialog.Builder(requireContext())
+        new androidx.appcompat.app.AlertDialog.Builder(activity)
                 .setTitle("关于此项目")
                 .setMessage(content)
                 .setPositiveButton(android.R.string.ok, null)
-                .setNeutralButton("查看 GitHub", (d, w) -> Tools.openURL(requireActivity(),
+                .setNeutralButton("查看 GitHub", (d, w) -> Tools.openURL(activity,
                         "https://github.com/1953187487/StarDockLauncher"))
                 .show();
+    }
+
+    private void showAboutDialog() {
+        showAboutDialogStatic(requireActivity());
     }
 
     private void showOpenSourceDialog() {
@@ -205,6 +295,8 @@ public class SettingsHubFragment extends Fragment {
         static final int ACTION_OPEN_SOURCE = 8;
         static final int ACTION_ABOUT = 9;
         static final int ACTION_OVERLAY = 10;
+        static final int ACTION_DOWNLOAD_SOURCE = 11;
+        static final int ACTION_THIRD_LOGIN = 12;
 
         final int iconRes;
         final String title;

@@ -30,6 +30,39 @@
     <string name="sd_keybinding_preset_pvp">PVP 版</string>
     <string name="sd_keybinding_preset_redstone">红石版</string>
 
+    <!-- v0.0.6 现代化 UI -->
+    <string name="sd_v6_account_offline">未登录</string>
+    <string name="sd_v6_account_official">正版账号</string>
+    <string name="sd_v6_account_third">第三方登录</string>
+    <string name="sd_v6_account_local">离线账号</string>
+    <string name="sd_v6_no_version">未选择版本</string>
+    <string name="sd_v6_play">启动游戏</string>
+    <string name="sd_v6_manage">管理版本</string>
+    <string name="sd_v6_about_app">关于应用</string>
+    <string name="sd_v6_share_logs">分享日志</string>
+    <string name="sd_v6_open_dir">打开目录</string>
+    <string name="sd_v6_install_jar">安装 Jar</string>
+
+    <!-- v0.0.6 键位市场 -->
+    <string name="sd_v6_keymarket">键位市场</string>
+    <string name="sd_v6_keymarket_upload">上传我的键位</string>
+    <string name="sd_v6_keymarket_published">我的发布</string>
+    <string name="sd_v6_keymarket_downloads">下载次数</string>
+    <string name="sd_v6_keymarket_likes">收藏数</string>
+    <string name="sd_v6_keymarket_apply">应用到游戏</string>
+
+    <!-- v0.0.6 版本下载修复 -->
+    <string name="sd_v6_download_source">下载源</string>
+    <string name="sd_v6_source_bmclapi">BMCLAPI (国内镜像, 推荐)</string>
+    <string name="sd_v6_source_mojang">Mojang 官方</string>
+    <string name="sd_v6_source_custom">自定义镜像</string>
+    <string name="sd_v6_search_hint">搜索版本 (如 1.20.4)</string>
+    <string name="sd_v6_download">下载</string>
+    <string name="sd_v6_installed">已下载</string>
+    <string name="sd_v6_version_detail">版本详情</string>
+    <string name="sd_v6_version_delete">删除版本</string>
+    <string name="sd_v6_version_open_dir">打开版本目录</string>
+
     <!-- v0.0.5 主界面 -->
     <string name="sd_launch_title">启动游戏</string>
     <string name="sd_manage_versions">管理版本</string>

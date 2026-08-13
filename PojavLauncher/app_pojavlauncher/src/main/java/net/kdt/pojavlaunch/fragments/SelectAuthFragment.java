@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment;
 
 import net.kdt.pojavlaunch.R;
 import net.kdt.pojavlaunch.Tools;
-import net.kdt.pojavlaunch.stardock.ui.MainFragmentV2;
+import net.kdt.pojavlaunch.stardock.ui.MainFragmentV3;
 
 /**
  * v0.0.5 登录方式选择：离线 / 正版 (Microsoft)
@@ -38,7 +38,7 @@ public class SelectAuthFragment extends Fragment {
 
         if (mThirdPartyButton != null) {
             mThirdPartyButton.setOnClickListener(v ->
-                    Tools.swapFragment(requireActivity(), MainFragmentV2.class, MainFragmentV2.TAG, null));
+                    Tools.swapFragment(requireActivity(), MainFragmentV3.class, MainFragmentV3.TAG, null));
         }
     }
 }

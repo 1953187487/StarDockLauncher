@@ -39,7 +39,8 @@ import net.kdt.pojavlaunch.progresskeeper.TaskCountListener;
 import net.kdt.pojavlaunch.services.ProgressServiceKeeper;
 import net.kdt.pojavlaunch.stardock.ui.DownloadHubFragment;
 import net.kdt.pojavlaunch.stardock.ui.KeyBindingFragment;
-import net.kdt.pojavlaunch.stardock.ui.MainFragmentV2;
+import net.kdt.pojavlaunch.stardock.ui.KeyMarketFragment;
+import net.kdt.pojavlaunch.stardock.ui.MainFragmentV3;
 import net.kdt.pojavlaunch.stardock.ui.OnlineHubFragment;
 import net.kdt.pojavlaunch.stardock.ui.SettingsHubFragment;
 import net.kdt.pojavlaunch.tasks.AsyncMinecraftDownloader;
@@ -65,6 +66,7 @@ public class LauncherActivity extends BaseActivity {
     public static final String NAV_DOWNLOAD = "nav_download";
     public static final String NAV_MULTIPLAYER = "nav_multiplayer";
     public static final String NAV_KEYBINDING = "nav_keybinding";
+    public static final String NAV_KEYMARKET = "nav_keymarket";
     public static final String NAV_SETTINGS = "nav_settings";
 
     public final ActivityResultLauncher<Object> modInstallerLauncher =
@@ -100,9 +102,9 @@ public class LauncherActivity extends BaseActivity {
         @Override
         public void onFragmentResumed(@NonNull FragmentManager fm, @NonNull Fragment f) {
             syncNavWithFragment(f);
-            if (f instanceof MainFragmentV2) {
-                ((MainFragmentV2) f).refreshVersions();
-                ((MainFragmentV2) f).refreshAccount();
+            if (f instanceof MainFragmentV3) {
+                ((MainFragmentV3) f).refreshVersion();
+                ((MainFragmentV3) f).refreshAccount();
             }
         }
     };
@@ -127,7 +129,7 @@ public class LauncherActivity extends BaseActivity {
             fragmentManager.beginTransaction()
                     .setReorderingAllowed(true)
                     .addToBackStack("ROOT")
-                    .add(R.id.container_fragment, MainFragmentV2.class, null, NAV_LAUNCH).commit();
+                    .add(R.id.container_fragment, MainFragmentV3.class, null, NAV_LAUNCH).commit();
         }
 
         IconCacheJanitor.runJanitor();
@@ -169,12 +171,8 @@ public class LauncherActivity extends BaseActivity {
 
     private void bindViews() {
         mFragmentView = findViewById(R.id.container_fragment);
-        mAccountSpinner = findViewById(R.id.account_spinner);
         mProgressLayout = findViewById(R.id.progress_layout);
-        if (mAccountSpinner == null) {
-            View root = findViewById(android.R.id.content);
-            mAccountSpinner = root.findViewById(R.id.account_spinner);
-        }
+        mAccountSpinner = null;
     }
 
     private void setupLeftNavigation() {
@@ -182,12 +180,14 @@ public class LauncherActivity extends BaseActivity {
         View navDownload = findViewById(R.id.nav_download);
         View navMultiplayer = findViewById(R.id.nav_multiplayer);
         View navKeybinding = findViewById(R.id.nav_keybinding);
+        View navKeymarket = findViewById(R.id.nav_keymarket);
         View navSettings = findViewById(R.id.nav_settings);
 
         navLaunch.setOnClickListener(v -> selectNav(NAV_LAUNCH));
         navDownload.setOnClickListener(v -> selectNav(NAV_DOWNLOAD));
         navMultiplayer.setOnClickListener(v -> selectNav(NAV_MULTIPLAYER));
         navKeybinding.setOnClickListener(v -> selectNav(NAV_KEYBINDING));
+        navKeymarket.setOnClickListener(v -> selectNav(NAV_KEYMARKET));
         navSettings.setOnClickListener(v -> selectNav(NAV_SETTINGS));
     }
 
@@ -203,11 +203,14 @@ public class LauncherActivity extends BaseActivity {
             case NAV_KEYBINDING:
                 target = KeyBindingFragment.class;
                 break;
+            case NAV_KEYMARKET:
+                target = KeyMarketFragment.class;
+                break;
             case NAV_SETTINGS:
                 target = SettingsHubFragment.class;
                 break;
             default:
-                target = MainFragmentV2.class;
+                target = MainFragmentV3.class;
                 tag = NAV_LAUNCH;
                 break;
         }
@@ -231,8 +234,8 @@ public class LauncherActivity extends BaseActivity {
     }
 
     private void highlightNavButton(String tag) {
-        int[] ids = {R.id.nav_launch, R.id.nav_download, R.id.nav_multiplayer, R.id.nav_keybinding, R.id.nav_settings};
-        String[] tags = {NAV_LAUNCH, NAV_DOWNLOAD, NAV_MULTIPLAYER, NAV_KEYBINDING, NAV_SETTINGS};
+        int[] ids = {R.id.nav_launch, R.id.nav_download, R.id.nav_multiplayer, R.id.nav_keybinding, R.id.nav_keymarket, R.id.nav_settings};
+        String[] tags = {NAV_LAUNCH, NAV_DOWNLOAD, NAV_MULTIPLAYER, NAV_KEYBINDING, NAV_KEYMARKET, NAV_SETTINGS};
         for (int i = 0; i < ids.length; i++) {
             View v = findViewById(ids[i]);
             if (v != null) v.setSelected(tags[i].equals(tag));
@@ -242,10 +245,11 @@ public class LauncherActivity extends BaseActivity {
     private void syncNavWithFragment(Fragment f) {
         if (f == null) return;
         Class<? extends Fragment> cls = f.getClass();
-        if (cls == MainFragmentV2.class) highlightNavButton(NAV_LAUNCH);
+        if (cls == MainFragmentV3.class) highlightNavButton(NAV_LAUNCH);
         else if (cls == DownloadHubFragment.class) highlightNavButton(NAV_DOWNLOAD);
         else if (cls == OnlineHubFragment.class) highlightNavButton(NAV_MULTIPLAYER);
         else if (cls == KeyBindingFragment.class) highlightNavButton(NAV_KEYBINDING);
+        else if (cls == KeyMarketFragment.class) highlightNavButton(NAV_KEYMARKET);
         else if (cls == SettingsHubFragment.class) highlightNavButton(NAV_SETTINGS);
     }
 
@@ -255,9 +259,9 @@ public class LauncherActivity extends BaseActivity {
         ContextExecutor.setActivity(this);
         mInstallTracker.attach();
         Fragment current = getSupportFragmentManager().findFragmentById(mFragmentView.getId());
-        if (current instanceof MainFragmentV2) {
-            ((MainFragmentV2) current).refreshVersions();
-            ((MainFragmentV2) current).refreshAccount();
+        if (current instanceof MainFragmentV3) {
+            ((MainFragmentV3) current).refreshVersion();
+            ((MainFragmentV3) current).refreshAccount();
         }
     }
 
@@ -287,7 +291,7 @@ public class LauncherActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         Fragment current = getSupportFragmentManager().findFragmentById(mFragmentView.getId());
-        if (current != null && !(current instanceof MainFragmentV2)) {
+        if (current != null && !(current instanceof MainFragmentV3)) {
             selectNav(NAV_LAUNCH);
             return;
         }
@@ -371,6 +375,20 @@ public class LauncherActivity extends BaseActivity {
     /** 打开版本编辑器 */
     public void openVersionEditor(int position) {
         Toast.makeText(this, "打开版本编辑器 #" + position, Toast.LENGTH_SHORT).show();
+    }
+
+    /** 显示应用关于对话框 */
+    public void showAboutDialog() {
+        SettingsHubFragment.showAboutDialogStatic(this);
+    }
+
+    /** 安装 jar（mod 安装器） */
+    public void installJar() {
+        if (ProgressKeeper.getTaskCount() == 0) {
+            Tools.installMod(this, false);
+        } else {
+            Toast.makeText(this, R.string.tasks_ongoing, Toast.LENGTH_LONG).show();
+        }
     }
 
     /** 触发更新检查 */

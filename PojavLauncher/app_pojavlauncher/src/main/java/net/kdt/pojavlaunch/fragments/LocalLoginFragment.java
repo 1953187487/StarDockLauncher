@@ -13,7 +13,7 @@ import net.kdt.pojavlaunch.R;
 import net.kdt.pojavlaunch.Tools;
 import net.kdt.pojavlaunch.extra.ExtraConstants;
 import net.kdt.pojavlaunch.extra.ExtraCore;
-import net.kdt.pojavlaunch.stardock.ui.MainFragmentV2;
+import net.kdt.pojavlaunch.stardock.ui.MainFragmentV3;
 
 import java.io.File;
 import java.util.regex.Matcher;
@@ -43,7 +43,7 @@ public class LocalLoginFragment extends Fragment {
             ExtraCore.setValue(ExtraConstants.MOJANG_LOGIN_TODO, new String[]{
                     mUsernameEditText.getText().toString(), "" });
 
-            Tools.swapFragment(requireActivity(), MainFragmentV2.class, MainFragmentV2.TAG, null);
+            Tools.swapFragment(requireActivity(), MainFragmentV3.class, MainFragmentV3.TAG, null);
         });
     }
 

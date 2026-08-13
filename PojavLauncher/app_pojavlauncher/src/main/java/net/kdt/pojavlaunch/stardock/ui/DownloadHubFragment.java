@@ -16,8 +16,9 @@ import androidx.fragment.app.FragmentContainerView;
 import net.kdt.pojavlaunch.R;
 
 /**
- * v0.0.5 下载中心：5 tab 横向切换
- * - 版本 / 模组 / 光影 / 存档 / 资源包
+ * v0.0.6 下载中心 hub：
+ * 5 个 tab → 全部跳到 VersionDownloadFragment（v0.0.6 聚焦版本下载/管理）
+ * 模组 / 光影 / 存档 / 资源包 tab 提示"敬请期待"或在后续版本支持
  */
 public class DownloadHubFragment extends Fragment {
     public static final String TAG = "DownloadHubFragment";
@@ -63,29 +64,22 @@ public class DownloadHubFragment extends Fragment {
             mTabViews[i] = tv;
         }
 
-        if (getChildFragmentManager().findFragmentById(R.id.download_tab_container) == null) {
-            showTab(0);
-        }
-        updateTabStyle(0);
+        showTab(0);
     }
 
     private void showTab(int idx) {
+        Fragment target;
+        if (idx == 0) {
+            target = new VersionDownloadFragment();
+        } else {
+            target = DownloadCenterV2Fragment.newInstance(idx);
+        }
         getChildFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
-                .replace(R.id.download_tab_container, DownloadCenterV2Fragment.newInstance(idx), "tab_" + idx)
+                .replace(R.id.download_tab_container, target, "tab_" + idx)
                 .commit();
-        updateTabStyle(idx);
-    }
-
-    private void updateTabStyle(int active) {
         for (int i = 0; i < 5; i++) {
-            TextView tv = mTabViews[i];
-            if (tv == null) continue;
-            if (i == active) {
-                tv.setSelected(true);
-            } else {
-                tv.setSelected(false);
-            }
+            if (mTabViews[i] != null) mTabViews[i].setSelected(i == idx);
         }
     }
 

@@ -115,4 +115,31 @@
         <item name="android:textColor">@color/nav_inactive</item>
         <item name="android:textSize">@dimen/_10ssp</item>
     </style>
+
+    <!-- v0.0.6 菜单卡片 -->
+    <style name="StarDockMenuCard">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/_12sdp</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">@drawable/background_item</item>
+        <item name="android:padding">@dimen/_16sdp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="StarDockMenuCardIcon">
+        <item name="android:layout_width">@dimen/_28sdp</item>
+        <item name="android:layout_height">@dimen/_28sdp</item>
+        <item name="android:layout_marginEnd">@dimen/_16sdp</item>
+        <item name="android:tint">@color/brand_primary</item>
+    </style>
+
+    <style name="StarDockMenuCardLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">@dimen/_14ssp</item>
+    </style>
 </resources>

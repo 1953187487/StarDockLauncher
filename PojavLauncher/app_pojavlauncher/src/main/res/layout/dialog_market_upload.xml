@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/_20sdp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="键位名称"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/_11ssp" />
+
+    <EditText
+        android:id="@+id/upload_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:background="@drawable/background_input"
+        android:hint="如：我的战斗版"
+        android:padding="@dimen/_12sdp"
+        android:textColor="@color/text_primary"
+        android:textColorHint="@color/text_secondary"
+        android:textSize="@dimen/_14ssp"
+        android:inputType="text" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:text="作者"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/_11ssp" />
+
+    <EditText
+        android:id="@+id/upload_author"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:background="@drawable/background_input"
+        android:hint="您的玩家名"
+        android:padding="@dimen/_12sdp"
+        android:textColor="@color/text_primary"
+        android:textColorHint="@color/text_secondary"
+        android:textSize="@dimen/_14ssp"
+        android:inputType="text" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:text="简介"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/_11ssp" />
+
+    <EditText
+        android:id="@+id/upload_summary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:background="@drawable/background_input"
+        android:hint="布局描述、适用场景等"
+        android:padding="@dimen/_12sdp"
+        android:textColor="@color/text_primary"
+        android:textColorHint="@color/text_secondary"
+        android:textSize="@dimen/_14ssp"
+        android:inputType="textMultiLine"
+        android:minLines="2"
+        android:maxLines="4" />
+</LinearLayout>

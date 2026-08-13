@@ -6,68 +6,67 @@
     android:orientation="horizontal"
     android:background="@color/background_app">
 
-    <!-- 左侧导航 -->
-    <LinearLayout
-        android:id="@+id/left_nav_v2"
-        android:layout_width="@dimen/_88sdp"
+    <!-- 左侧导航栏（可下滑） -->
+    <ScrollView
+        android:id="@+id/left_scroll"
+        android:layout_width="@dimen/_100sdp"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:overScrollMode="never"
+        android:scrollbars="none"
         android:background="@color/background_nav_bar"
-        android:paddingVertical="@dimen/_12sdp">
+        android:fillViewport="true">
 
         <LinearLayout
+            android:id="@+id/left_nav_v2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:paddingBottom="@dimen/_12sdp">
+            android:orientation="vertical"
+            android:paddingVertical="@dimen/_14sdp">
 
-            <ImageView
-                android:layout_width="@dimen/_40sdp"
-                android:layout_height="@dimen/_40sdp"
-                android:src="@drawable/ic_launcher_foreground" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:paddingBottom="@dimen/_14sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_44sdp"
+                    android:layout_height="@dimen/_44sdp"
+                    android:src="@drawable/ic_launcher_foreground" />
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/nav_launch" style="@style/StarDockNavRail">
+                <ImageView style="@style/StarDockNavRailIcon" android:src="@drawable/ic_menu_home" />
+                <TextView style="@style/StarDockNavRailLabel" android:text="@string/nav_launch" />
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/nav_download" style="@style/StarDockNavRail">
+                <ImageView style="@style/StarDockNavRailIcon" android:src="@drawable/ic_download" />
+                <TextView style="@style/StarDockNavRailLabel" android:text="@string/nav_download" />
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/nav_multiplayer" style="@style/StarDockNavRail">
+                <ImageView style="@style/StarDockNavRailIcon" android:src="@drawable/ic_multiplayer" />
+                <TextView style="@style/StarDockNavRailLabel" android:text="@string/nav_multiplayer" />
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/nav_keybinding" style="@style/StarDockNavRail">
+                <ImageView style="@style/StarDockNavRailIcon" android:src="@drawable/ic_menu_custom_controls" />
+                <TextView style="@style/StarDockNavRailLabel" android:text="@string/sd_nav_keybinding" />
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/nav_keymarket" style="@style/StarDockNavRail">
+                <ImageView style="@style/StarDockNavRailIcon" android:src="@drawable/ic_setting_misc" />
+                <TextView style="@style/StarDockNavRailLabel" android:text="@string/sd_v6_keymarket" />
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/nav_settings" style="@style/StarDockNavRail">
+                <ImageView style="@style/StarDockNavRailIcon" android:src="@drawable/ic_menu_settings" />
+                <TextView style="@style/StarDockNavRailLabel" android:text="@string/nav_settings" />
+            </LinearLayout>
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/nav_launch"
-            style="@style/StarDockNavRail">
-            <ImageView style="@style/StarDockNavRailIcon" android:src="@drawable/ic_menu_home" />
-            <TextView style="@style/StarDockNavRailLabel" android:text="@string/nav_launch" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/nav_download"
-            style="@style/StarDockNavRail">
-            <ImageView style="@style/StarDockNavRailIcon" android:src="@drawable/ic_download" />
-            <TextView style="@style/StarDockNavRailLabel" android:text="@string/nav_download" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/nav_multiplayer"
-            style="@style/StarDockNavRail">
-            <ImageView style="@style/StarDockNavRailIcon" android:src="@drawable/ic_multiplayer" />
-            <TextView style="@style/StarDockNavRailLabel" android:text="@string/nav_multiplayer" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/nav_keybinding"
-            style="@style/StarDockNavRail">
-            <ImageView style="@style/StarDockNavRailIcon" android:src="@drawable/ic_menu_custom_controls" />
-            <TextView style="@style/StarDockNavRailLabel" android:text="@string/sd_nav_keybinding" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <LinearLayout
-            android:id="@+id/nav_settings"
-            style="@style/StarDockNavRail">
-            <ImageView style="@style/StarDockNavRailIcon" android:src="@drawable/ic_menu_settings" />
-            <TextView style="@style/StarDockNavRailLabel" android:text="@string/nav_settings" />
-        </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 
     <!-- 右侧内容 -->
     <androidx.fragment.app.FragmentContainerView
