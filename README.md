@@ -1,10 +1,26 @@
 # StarDockLauncher
 
-> 我的世界 Java 版 · 新一代手机启动器
+> 我的世界 Java 版 · 移动端启动器
 
-StarDockLauncher 是一款面向 Android 的《Minecraft：Java Edition》启动器（APK，兼容 Android 8.0 – Android 15）。自 v1.0.0 起，项目以开源启动器 [HMCL-PE](https://github.com/HMCL-dev/HMCL-PE)（GPL-3.0 协议）源码为基座进行二次开发与品牌化改造，在保留其成熟启动内核与丰富功能的基础上，重写了品牌信息、关于 / 反馈 / 捐赠等页面，并持续迭代界面与扩展能力。
+StarDockLauncher 是一款面向 Android 的《Minecraft：Java Edition》启动器（APK，兼容 Android 8.0 – Android 15）。自 v1.0.0 正式版起，项目以开源启动器 [HMCL-PE](https://github.com/HMCL-dev/HMCL-PE)（GPL-3.0 协议）源码为基座进行二次开发与品牌化改造，在保留其成熟启动内核与丰富功能的基础上，重写了品牌信息、关于 / 反馈 / 捐赠等页面，并持续迭代界面与扩展能力。
 
-> 版本沿革：早期预测试版（v0.0.1 – v0.0.9）基于 [PojavLauncher](https://github.com/PojavLauncherTeam/PojavLauncher)（MIT 协议）源码二次开发；自 v1.0.0 正式版起切换至 HMCL-PE 基座。
+> **版本沿革**：早期预测试版（v0.0.1 – v0.0.9）基于 [PojavLauncher](https://github.com/PojavLauncherTeam/PojavLauncher)（MIT 协议）源码二次开发；自 v1.0.0 正式版起切换至 HMCL-PE 基座，并启用 StarDockLauncher 全新品牌。
+
+## 基于 HMCL-PE 引入了什么
+
+自 v1.0.0 切换基座以来，StarDockLauncher 直接继承并启用了 HMCL-PE 团队以下能力：
+
+- **完整的游戏启动内核**：基于 PojavLauncher 内核的 JVM 启动、OpenGL 渲染桥接、输入桥接与资源加载链路，整体通过 `PojavLauncher` 模块复用。
+- **多版本下载与加载器支持**：官方正式版 / 快照版 / 远古版本一键下载；Fabric、Forge、OptiFine、Quilt、LiteLoader 等加载器全自动安装。
+- **下载中心**：Modrinth / CurseForge / MCBBS 多来源的模组检索，资源包、光影、整合包、地图存档统一管理。
+- **多下载源**：官方源 / BMCLAPI / MCBBS 镜像自由切换，国内下载更稳定。
+- **多模式登录**：离线账户、Microsoft 正版账户、Mojang 账户、authlib-injector 第三方验证服务器。
+- **游戏管理器**：模组启用 / 禁用 / 删除 / 更新检查，世界存档创建、导入与导出，版本独立设置。
+- **Java 运行时自动获取**：Java 8 / 17 / 21 / 25 运行时自动下载安装，按版本自动匹配。
+- **多套渲染器**：GL4ES 与 VirGL 渲染器（Pojav / Boat 两个内核）可按需切换，兼容不同 GPU 与驱动。
+- **图形化控制布局**：键位自定义、按键映射与控制方案导入。
+- **多语言与外观自定义**：简体中文、繁体中文、英文等多种语言；启动器背景与主题可切换。
+- **自动更新检测**：启动器在线版本检测，一键跳转下载最新版本。
 
 ## 特性
 
@@ -32,13 +48,13 @@ StarDockLauncher 是一款面向 Android 的《Minecraft：Java Edition》启动
 - **模组管理器**：已装模组的启用 / 禁用 / 删除 / 更新检查，版本冲突一目了然。
 - **世界管理器**：世界存档的创建、导入与导出。
 - **版本设置**：每个版本单独配置 Java、内存、分辨率、渲染器等。
-- **自动安装**：本地安装包（forge / fabric 等）自动识别导入。
+- **自动安装**：本地安装包（Forge / Fabric 等）自动识别导入。
 
 ### 运行设置
 
 - **Java 运行时自动获取**：Java 8 / 17 / 21 / 25 运行时自动下载安装，按版本自动匹配。
 - **内存分配**：图形化内存滑条，按需分配，自动推荐。
-- **渲染器切换**：多套渲染器自由切换，性能与画质自行权衡。
+- **渲染器切换**：Pojav / Boat 两套内核各支持 GL4ES 与 VirGL 渲染器，性能与画质自行权衡。
 - **控制布局**：图形化自定义按键布局，适配手机触屏操作。
 
 ### 启动器设置
@@ -51,7 +67,7 @@ StarDockLauncher 是一款面向 Android 的《Minecraft：Java Edition》启动
 
 ## 屏幕截图
 
-> v0.0.1 预发布版本，界面截图持续更新中。
+> 截图持续更新中。
 
 ## 项目结构
 
@@ -60,12 +76,12 @@ StarDockLauncher 是一款面向 Android 的《Minecraft：Java Edition》启动
 ```
 HMCLPE/           Android 应用主模块（UI、启动、下载、联机、设置等）
 PojavLauncher/    游戏启动内核组件（JVM 启动、渲染、输入桥接等）
-Boat/             渲染器组件
+Boat/             Boat 渲染器组件（替代启动内核的可选实现）
 FilePicker/       文件选择器组件
 ZipTools/         压缩解压工具组件
 ```
 
-> 早期预测试版（v0.0.x，基于 PojavLauncher）的模块结构为 `app_pojavlauncher`（主模块）、`jre_lwjgl3glfw`、`forge_installer`、`arc_dns_injector`。
+> 早期预测试版（v0.0.x，基于 PojavLauncher）的模块结构为 `app_pojavlauncher`（主模块）、`jre_lwjgl3glfw`、`forge_installer`、`arc_dns_injector`，相关代码归档于 `PojavLauncher_legacy/`，仅作历史参考。
 
 ## 构建
 
@@ -76,6 +92,10 @@ ZipTools/         压缩解压工具组件
 ```
 
 构建产物位于 `HMCLPE/build/outputs/apk/debug/`。
+
+## 版本与更新
+
+版本发布遵循 [语义化版本](https://semver.org/lang/zh-CN/)：大版本切换基座或重大功能，小版本迭代功能，补丁号修复问题。启动器内置在线更新检测，应用内即可收到新版本提示。
 
 ## 致谢
 
