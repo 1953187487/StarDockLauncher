@@ -14,6 +14,61 @@
     <string name="nav_music">Music</string>
     <string name="nav_settings">Settings</string>
 
+    <!-- v0.0.5 键位系统 -->
+    <string name="sd_nav_keybinding">键位</string>
+    <string name="sd_keybinding_title">键位系统</string>
+    <string name="sd_keybinding_preset_title">键位预设</string>
+    <string name="sd_keybinding_preset_summary">为不同游戏版本选择合适的键位布局</string>
+    <string name="sd_keybinding_open_editor">打开控制编辑器</string>
+    <string name="sd_keybinding_apply_preset">应用预设</string>
+    <string name="sd_keybinding_reset">恢复默认键位</string>
+    <string name="sd_keybinding_import">导入键位文件</string>
+    <string name="sd_keybinding_share">分享当前键位</string>
+    <string name="sd_keybinding_preset_combat">战斗版 (4x4)</string>
+    <string name="sd_keybinding_preset_build">建筑版 (5x5)</string>
+    <string name="sd_keybinding_preset_minimal">极简版 (3x3)</string>
+    <string name="sd_keybinding_preset_pvp">PVP 版</string>
+    <string name="sd_keybinding_preset_redstone">红石版</string>
+
+    <!-- v0.0.5 主界面 -->
+    <string name="sd_launch_title">启动游戏</string>
+    <string name="sd_manage_versions">管理版本</string>
+    <string name="sd_versions">已下载版本</string>
+    <string name="sd_no_versions">暂无已下载版本，点击「管理版本」下载</string>
+    <string name="sd_account_login">点击登录</string>
+    <string name="sd_account_logged_in">已登录</string>
+    <string name="sd_offline">离线模式</string>
+
+    <!-- 下载中心 5 tab -->
+    <string name="sd_tab_versions">版本</string>
+    <string name="sd_tab_mods">模组</string>
+    <string name="sd_tab_shaders">光影</string>
+    <string name="sd_tab_worlds">存档</string>
+    <string name="sd_tab_resourcepacks">资源包</string>
+
+    <!-- 联机中心 -->
+    <string name="sd_mp_lan">局域网联机</string>
+    <string name="sd_mp_server">外置服务器联机</string>
+    <string name="sd_mp_tunnel">内网穿透联机</string>
+    <string name="sd_mp_lan_hint">打开热点，与同局域网玩家联机</string>
+    <string name="sd_mp_server_hint">连接至任意 Minecraft Java 版服务器</string>
+    <string name="sd_mp_tunnel_hint">导入 .stardock-tunnel 文件或粘贴连接地址</string>
+    <string name="sd_mp_open_panel">打开联机面板</string>
+
+    <!-- 设置 -->
+    <string name="sd_setting_theme">主题颜色</string>
+    <string name="sd_setting_font">字体导入</string>
+    <string name="sd_setting_layout">全局布局</string>
+    <string name="sd_setting_about">关于项目</string>
+    <string name="sd_setting_check_update">检查更新</string>
+    <string name="sd_setting_open_source">开源与项目源码</string>
+    <string name="sd_setting_font_pick">选择字体文件 (.ttf/.otf)</string>
+    <string name="sd_setting_font_reset">恢复默认字体</string>
+
+    <!-- 协议 v0.0.5 -->
+    <string name="agreement_title_v2">StarDockLauncher 使用须知</string>
+    <string name="agreement_content_v2">欢迎使用 StarDockLauncher v0.0.5。本应用为本项目独立设计与开发，启动内核使用 PojavLauncher (MIT License) 进行合法的二次开发与封装。\n\n【一、关于项目】\n本项目为开源项目，源代码以 MIT 协议发布。\n项目主页：https://github.com/1953187487/StarDockLauncher\n\n【二、关于内核】\n后端启动内核使用 PojavLauncher 项目 (MIT License)。\n  https://github.com/PojavLauncherTeam/PojavLauncher\n\n【三、关于 Minecraft】\nMinecraft 商标及游戏内容版权归 Mojang / Microsoft 所有。\n本项目与 Mojang / Microsoft 无任何官方关联。\n\n【四、用户须知】\n  1. 本项目仅供学习交流，使用产生的一切后果由用户自行承担；\n  2. 请勿用于商业用途；\n  3. 请遵守当地法律法规。\n\n【五、权限说明】\n接受协议后将自动请求：\n  • 麦克风：AI 助手语音输入；\n  • 媒体音频 / 存储：本地音乐扫描与导入；\n  • 通知：游戏运行时通知。\n\n【六、免责声明】\n本项目按「现状」提供，不对任何使用损失承担责任。\n\n继续使用即视为同意以上全部内容。</string>
+
     <!-- Agreement dialog -->
     <string name="agreement_title">User Agreement &amp; Notice</string>
     <string name="agreement_accept">I Agree</string>

@@ -5,23 +5,29 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Outer cube face -->
+    <!-- 渐变圆形底（星空蓝 → 深紫） -->
     <path
-        android:fillColor="#57CC33"
-        android:pathData="M22,30 L54,18 L86,30 L86,78 L54,90 L22,78 Z" />
+        android:fillColor="#4F8BFF"
+        android:pathData="M54,54m-32,0a32,32 0,1 1,64 0a32,32 0,1 1,-64 0" />
 
-    <!-- Top face highlight -->
+    <!-- 内圈高光 -->
     <path
-        android:fillColor="#7EE05A"
-        android:pathData="M22,30 L54,18 L86,30 L54,42 Z" />
+        android:fillColor="#6FA6FF"
+        android:pathData="M54,54m-26,0a26,26 0,1 1,52 0a26,26 0,1 1,-52 0" />
 
-    <!-- Left face shadow -->
+    <!-- 顶光圆弧（拟物高光） -->
     <path
-        android:fillColor="#3E9E22"
-        android:pathData="M22,30 L54,42 L54,90 L22,78 Z" />
+        android:fillColor="#9CC3FF"
+        android:fillAlpha="0.55"
+        android:pathData="M54,30m-22,0a22,22 0,1 1,44 0a22,22 0,1 1,-44 0" />
 
-    <!-- "S" letter as 3 stacked bars -->
+    <!-- 星形（4 角星） -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M40,46 L68,46 L68,52 L46,52 L46,56 L64,56 L64,72 L40,72 L40,66 L62,66 L62,62 L44,62 L44,52 L40,52 Z" />
+        android:pathData="M54,38 L57,49 L68,50 L60,57 L63,68 L54,62 L45,68 L48,57 L40,50 L51,49 Z" />
+
+    <!-- 底部 "S" 字母（圆角矩形构成） -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M44,72 L64,72 L64,76 L48,76 L48,79 L60,79 L60,87 L44,87 L44,83 L60,83 L60,80 L48,80 L48,72 Z" />
 </vector>

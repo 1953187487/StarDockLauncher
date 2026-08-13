@@ -16,6 +16,10 @@
     <!-- StarDock theme -->
     <color name="brand_primary">#57CC33</color>
     <color name="brand_primary_dark">#3E9E22</color>
+    <color name="brand_primary_blue">#4F8BFF</color>
+    <color name="brand_primary_purple">#A06BFF</color>
+    <color name="brand_primary_amber">#FFA94D</color>
+    <color name="brand_primary_rose">#FF5C8A</color>
     <color name="background_top_bar">#1B1E23</color>
     <color name="background_nav_bar">#14171C</color>
     <color name="background_card">#23272E</color>

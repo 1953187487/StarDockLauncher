@@ -3,26 +3,27 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="@drawable/background_card"
     android:gravity="center_vertical"
-    android:padding="@dimen/_14sdp"
+    android:background="@drawable/background_item"
+    android:padding="@dimen/_16sdp"
     android:layout_marginVertical="@dimen/_4sdp">
 
     <ImageView
         android:id="@+id/setting_item_icon"
         android:layout_width="@dimen/_28sdp"
         android:layout_height="@dimen/_28sdp"
-        android:layout_marginEnd="@dimen/_14sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
         android:tint="@color/brand_primary" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/setting_item_title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/text_primary"
             android:textSize="@dimen/_14ssp"
@@ -30,7 +31,7 @@
 
         <TextView
             android:id="@+id/setting_item_summary"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_2sdp"
             android:textColor="@color/text_secondary"

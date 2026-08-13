@@ -10,10 +10,11 @@ import androidx.fragment.app.Fragment;
 
 import net.kdt.pojavlaunch.R;
 import net.kdt.pojavlaunch.Tools;
-import net.kdt.pojavlaunch.stardock.auth.ThirdPartyServerFragment;
+import net.kdt.pojavlaunch.stardock.ui.MainFragmentV2;
 
 /**
- * Login method picker — three options: Offline, Microsoft (premium), Third-party auth server.
+ * v0.0.5 登录方式选择：离线 / 正版 (Microsoft)
+ * 第三方登录入口已移除
  */
 public class SelectAuthFragment extends Fragment {
     public static final String TAG = "AUTH_SELECT_FRAGMENT";
@@ -28,13 +29,16 @@ public class SelectAuthFragment extends Fragment {
         Button mLocalButton = view.findViewById(R.id.button_local_authentication);
         View mThirdPartyButton = view.findViewById(R.id.button_third_party_authentication);
 
-        if (mMicrosoftButton == null || mLocalButton == null || mThirdPartyButton == null) return;
+        if (mMicrosoftButton == null || mLocalButton == null) return;
 
         mMicrosoftButton.setOnClickListener(v ->
                 Tools.swapFragment(requireActivity(), MicrosoftLoginFragment.class, MicrosoftLoginFragment.TAG, null));
         mLocalButton.setOnClickListener(v ->
                 Tools.swapFragment(requireActivity(), LocalLoginFragment.class, LocalLoginFragment.TAG, null));
-        mThirdPartyButton.setOnClickListener(v ->
-                Tools.swapFragment(requireActivity(), ThirdPartyServerFragment.class, ThirdPartyServerFragment.TAG, null));
+
+        if (mThirdPartyButton != null) {
+            mThirdPartyButton.setOnClickListener(v ->
+                    Tools.swapFragment(requireActivity(), MainFragmentV2.class, MainFragmentV2.TAG, null));
+        }
     }
 }

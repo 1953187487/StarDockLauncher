@@ -57,9 +57,10 @@ public class AgreementDialog {
         View dialogView = LayoutInflater.from(activity).inflate(R.layout.dialog_agreement, null);
         TextView contentView = dialogView.findViewById(R.id.agreement_content);
         contentView.setMovementMethod(new ScrollingMovementMethod());
+        contentView.setText(R.string.agreement_content_v2);
 
         AlertDialog dialog = new AlertDialog.Builder(activity)
-                .setTitle(R.string.agreement_title)
+                .setTitle(R.string.agreement_title_v2)
                 .setView(dialogView)
                 .setCancelable(false)
                 .setPositiveButton(R.string.agreement_accept, null)
@@ -91,31 +92,23 @@ public class AgreementDialog {
         dialog.show();
     }
 
-    /** Show the open-source license dialog at any time (linked from the about screen). */
+    /** Show the v0.0.5 open-source license dialog (linked from the about screen). */
     public static void showOpenSourceLicense(Activity activity) {
         String content =
-                "本应用基于 PojavLauncher（MIT License）进行二次开发。\n\n" +
+                "本项目源码与协议：\n" +
+                "  StarDockLauncher — MIT License\n" +
+                "  https://github.com/1953187487/StarDockLauncher\n\n" +
                 "──────────────────\n" +
-                "【上游内核协议】\n" +
-                "PojavLauncher — MIT License\n" +
-                "https://github.com/PojavLauncherTeam/PojavLauncher\n\n" +
-                "【本项目协议】\n" +
-                "StarDockLauncher — MIT License\n" +
-                "https://github.com/1953187487/StarDockLauncher\n\n" +
+                "依赖 / 内核项目：\n" +
+                "  • PojavLauncher — MIT License\n" +
+                "    https://github.com/PojavLauncherTeam/PojavLauncher\n" +
+                "  • LWJGL3 — BSD-3-Clause\n" +
+                "    https://github.com/LWJGL/lwjgl3\n\n" +
                 "──────────────────\n" +
-                "【授权说明】\n" +
-                "应用接受协议后将自动请求以下权限：\n" +
-                "  • 麦克风：AI 助手语音输入\n" +
-                "  • 媒体音频 / 存储：本地音乐扫描与导入\n" +
-                "  • 通知：游戏运行时前台服务\n\n" +
-                "【下载与后端说明】\n" +
-                "  • 游戏版本、Java 运行时由官方镜像 / PojavLauncher\n" +
-                "    内置 multirt 流程下载；\n" +
-                "  • 模组 / 资源包 / 光影来自 Modrinth；\n" +
-                "  • 前端 UI 由本项目原创；后端启动内核为 PojavLauncher。\n\n" +
-                "感谢 PojavLauncher 团队与社区贡献者。";
+                "前端 UI、悬浮窗、协议内容、交互逻辑全部由本项目独立设计。\n\n" +
+                "如对协议有疑问，可在「设置 → 开源与项目源码」查看详细列表。";
         new AlertDialog.Builder(activity)
-                .setTitle(R.string.agreement_open_source_view)
+                .setTitle(R.string.sd_setting_open_source)
                 .setMessage(content)
                 .setPositiveButton(android.R.string.ok, null)
                 .setNeutralButton(R.string.agreement_open_source, (d, w) ->
