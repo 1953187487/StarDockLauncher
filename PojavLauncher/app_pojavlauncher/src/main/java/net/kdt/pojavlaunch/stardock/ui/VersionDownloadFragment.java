@@ -103,15 +103,15 @@ public class VersionDownloadFragment extends Fragment {
         mStatusText.setText("点击「刷新列表」获取最新版本");
     }
 
-    private final ExtraListener<JMinecraftVersionList.Version[]> mReleaseListener = (key, value) -> {
-        if (value == null) return false;
+    private final ExtraListener<JMinecraftVersionList> mReleaseListener = (key, value) -> {
+        if (value == null || value.versions == null) return false;
         Tools.runOnUiThread(() -> {
-            List<JMinecraftVersionList.Version> all = Arrays.asList(value);
+            JMinecraftVersionList.Version[] all = value.versions;
             mSearchResultsList.clear();
-            mSearchResultsList.addAll(all);
+            mSearchResultsList.addAll(Arrays.asList(all));
             mSearchAdapter.notifyDataSetChanged();
             mSearchEmpty.setVisibility(mSearchResultsList.isEmpty() ? View.VISIBLE : View.GONE);
-            mStatusText.setText("已加载 " + mSearchResultsList.size() + " 个版本（共" + all.size() + " 个）");
+            mStatusText.setText("已加载 " + mSearchResultsList.size() + " 个版本（共" + all.length + " 个）");
         });
         return false;
     };

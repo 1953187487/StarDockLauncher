@@ -37,6 +37,7 @@ import net.kdt.pojavlaunch.prefs.LauncherPreferences;
 import net.kdt.pojavlaunch.progresskeeper.ProgressKeeper;
 import net.kdt.pojavlaunch.progresskeeper.TaskCountListener;
 import net.kdt.pojavlaunch.services.ProgressServiceKeeper;
+import net.kdt.pojavlaunch.fragments.SelectAuthFragment;
 import net.kdt.pojavlaunch.stardock.ui.DownloadHubFragment;
 import net.kdt.pojavlaunch.stardock.ui.KeyBindingFragment;
 import net.kdt.pojavlaunch.stardock.ui.KeyMarketFragment;
@@ -80,6 +81,7 @@ public class LauncherActivity extends BaseActivity {
     private ProgressServiceKeeper mProgressServiceKeeper;
     private ModloaderInstallTracker mInstallTracker;
     private NotificationManager mNotificationManager;
+    private android.widget.LinearLayout mHiddenAccountContainer;
 
     private ActivityResultLauncher<String> mRequestNotificationPermissionLauncher;
     private WeakReference<Runnable> mRequestNotificationPermissionRunnable;
@@ -123,6 +125,7 @@ public class LauncherActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pojav_launcher);
+        applyModernWindowFlags();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (fragmentManager.getBackStackEntryCount() < 1) {
@@ -172,7 +175,24 @@ public class LauncherActivity extends BaseActivity {
     private void bindViews() {
         mFragmentView = findViewById(R.id.container_fragment);
         mProgressLayout = findViewById(R.id.progress_layout);
-        mAccountSpinner = null;
+        // 全局 mcAccountSpinner：用于账户选择下拉与状态查询
+        mAccountSpinner = new mcAccountSpinner(this);
+        mAccountSpinner.setLayoutParams(new android.widget.LinearLayout.LayoutParams(1, 1));
+        mAccountSpinner.setVisibility(android.view.View.GONE);
+        addContentView(mAccountSpinner, mAccountSpinner.getLayoutParams());
+    }
+
+    /** v0.0.6b 现代窗口：透明状态栏 + 深色背景 + 沉浸式 */
+    private void applyModernWindowFlags() {
+        try {
+            getWindow().setStatusBarColor(0x00000000);
+            getWindow().setNavigationBarColor(0x00000000);
+            int flags = android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+            getWindow().getDecorView().setSystemUiVisibility(flags);
+        } catch (Throwable ignored) {
+        }
     }
 
     private void setupLeftNavigation() {
@@ -364,12 +384,17 @@ public class LauncherActivity extends BaseActivity {
         if (mAccountSpinner != null) {
             try {
                 mAccountSpinner.performClick();
+                return;
             } catch (Exception ignored) {
-                Toast.makeText(this, "请前往设置登录账户", Toast.LENGTH_SHORT).show();
             }
-        } else {
-            Toast.makeText(this, "账户系统未初始化", Toast.LENGTH_SHORT).show();
         }
+        // fallback：跳到内置 SelectAuthFragment
+        try {
+            Tools.swapFragment(this, SelectAuthFragment.class, SelectAuthFragment.TAG, null);
+            return;
+        } catch (Exception ignored) {
+        }
+        Toast.makeText(this, "账户系统未初始化", Toast.LENGTH_SHORT).show();
     }
 
     /** 打开版本编辑器 */

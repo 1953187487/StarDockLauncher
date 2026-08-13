@@ -47,13 +47,9 @@ public class AgreementDialog {
                 .edit().putBoolean(KEY_ACCEPTED, true).apply();
     }
 
-    /** Show the dialog; call {@code onAgree} when accepted, {@code onExit} when declined. */
+    /** Show the dialog; call {@code onAgree} when accepted, {@code onExit} when declined.
+     *  v0.0.6 起每次启动都强制弹出协议（除非用户在同一会话内已同意）。 */
     public static void show(Activity activity, Runnable onAgree, Runnable onExit) {
-        if (isAccepted(activity)) {
-            onAgree.run();
-            return;
-        }
-
         View dialogView = LayoutInflater.from(activity).inflate(R.layout.dialog_agreement, null);
         TextView contentView = dialogView.findViewById(R.id.agreement_content);
         contentView.setMovementMethod(new ScrollingMovementMethod());
