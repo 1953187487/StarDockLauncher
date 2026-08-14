@@ -44,7 +44,11 @@
         <item name="android:textSize">12sp</item>
     </style>
 
-    <!-- 现代化按钮文本样式 -->
+    <!-- 现代化文本样式：先定义父 ModernText 基座，点号表示隐式继承 -->
+    <style name="ModernText">
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
     <style name="ModernText.Button">
         <item name="android:textColor">@color/md_on_primary</item>
         <item name="android:textStyle">bold</item>

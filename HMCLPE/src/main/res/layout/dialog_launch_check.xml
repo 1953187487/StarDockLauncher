@@ -1,30 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="15dp"
+    android:padding="18dp"
     android:orientation="vertical"
+    android:background="@drawable/modern_card_surface"
     android:layout_width="500dp"
-    android:layout_height="265dp">
+    android:layout_height="wrap_content">
 
     <TextView
         android:singleLine="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_middle"
-        android:textColor="@color/colorPureBlack"
+        android:textSize="16sp"
+        android:textColor="@color/md_on_surface"
         android:textStyle="bold"
         android:text="@string/launch_check_dialog_title"/>
 
+    <!-- Java 检测行 -->
     <LinearLayout
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="14dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="6dp"
+        android:background="@drawable/modern_card_item">
 
         <ImageView
-            android:layout_marginStart="5dp"
-            android:layout_width="12dp"
-            android:layout_height="12sp"
+            android:layout_marginStart="4dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:background="@drawable/ic_baseline_arrow_forward_black"
             android:layout_gravity="center"
             android:id="@+id/check_java_state"/>
@@ -35,22 +39,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="@dimen/text_size_middle"
-            android:textColor="@color/colorPureBlack"
+            android:textSize="14sp"
+            android:textColor="@color/md_on_surface"
             android:text="@string/launch_check_dialog_java"/>
 
     </LinearLayout>
 
+    <!-- 游戏库检测行 -->
     <LinearLayout
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="6dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="6dp"
+        android:background="@drawable/modern_card_item">
 
         <ImageView
-            android:layout_marginStart="5dp"
-            android:layout_width="12dp"
-            android:layout_height="12sp"
+            android:layout_marginStart="4dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:background="@drawable/ic_baseline_arrow_forward_black"
             android:layout_gravity="center"
             android:id="@+id/check_lib_state"/>
@@ -61,8 +68,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="@dimen/text_size_middle"
-            android:textColor="@color/colorPureBlack"
+            android:textSize="14sp"
+            android:textColor="@color/md_on_surface"
             android:text="@string/launch_check_dialog_lib"/>
 
     </LinearLayout>
@@ -72,20 +79,23 @@
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="27dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="10dp"
         app:maxRecyclerHeight="42" />
 
+    <!-- 账号检测行 -->
     <LinearLayout
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="6dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="6dp"
+        android:background="@drawable/modern_card_item">
 
         <ImageView
-            android:layout_marginStart="5dp"
-            android:layout_width="12dp"
-            android:layout_height="12sp"
+            android:layout_marginStart="4dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:background="@drawable/ic_baseline_arrow_forward_black"
             android:layout_gravity="center"
             android:id="@+id/check_account_state"/>
@@ -96,22 +106,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="@dimen/text_size_middle"
-            android:textColor="@color/colorPureBlack"
+            android:textSize="14sp"
+            android:textColor="@color/md_on_surface"
             android:text="@string/launch_check_dialog_login"/>
 
     </LinearLayout>
 
+    <!-- 启动游戏行 -->
     <LinearLayout
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="6dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="6dp"
+        android:background="@drawable/modern_card_item">
 
         <ImageView
-            android:layout_marginStart="5dp"
-            android:layout_width="12dp"
-            android:layout_height="12sp"
+            android:layout_marginStart="4dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:background="@drawable/ic_baseline_arrow_forward_black"
             android:layout_gravity="center"
             android:id="@+id/check_launch_state"/>
@@ -122,29 +135,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="@dimen/text_size_middle"
-            android:textColor="@color/colorPureBlack"
+            android:textSize="14sp"
+            android:textColor="@color/md_on_surface"
             android:text="@string/launch_check_dialog_launch"/>
 
     </LinearLayout>
 
-    <View
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
-
     <LinearLayout
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
         <TextView
             android:singleLine="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="@color/colorPureBlack"
+            android:textColor="@color/md_on_surface_medium"
             android:textSize="@dimen/text_size_middle"
             android:id="@+id/download_speed_text"/>
 
@@ -156,13 +164,16 @@
         <Button
             android:singleLine="true"
             android:textAllCaps="false"
-            android:layout_width="50dp"
-            android:layout_height="32dp"
+            android:layout_width="wrap_content"
+            android:minWidth="72dp"
+            android:layout_height="36dp"
             android:gravity="center"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
             android:text="@string/dialog_install_game_exit"
             android:textSize="@dimen/text_size_middle"
-            android:textColor="@color/colorPureBlack"
-            android:background="@drawable/launcher_button_parent"
+            android:textColor="@color/md_on_surface"
+            android:background="@drawable/modern_button_secondary"
             android:id="@+id/cancel_launch_game"/>
 
     </LinearLayout>

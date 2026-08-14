@@ -27,9 +27,16 @@ public class NetPingManager {
     private IOnNetPingListener mIOnNetPingListener; // 将监控日志上报到前段页面
     private HandlerThread mHandlerThread;
 
-    private static int DELAY_TIME = 1000;
+    // 修复：DELAY_TIME 与 TIME_OUT 非静态，避免实例间状态互相污染
+    private int DELAY_TIME = 3500;
+    private int TIME_OUT = 6000;
     private ConnectivityManager manager;
     private final Handler mHandleMessage;
+    // 修复：只做一次测速（不是周期性），防止连接检测无限循环
+    private volatile boolean mPingDone = false;
+    private static final int CONN_TIMES = 4;
+    private static final int PORT = 80;
+    private final long[] RttTimes = new long[CONN_TIMES];
 
     /**
      * 延迟
@@ -57,9 +64,9 @@ public class NetPingManager {
                         //每次请求清空上传集合
                         if (null != mAddressIpList)
                             mAddressIpList.clear();
+                        // 修复：一次性 ping，不再 sendEmptyMessageDelayed 循环
                         startNetDiagnosis();
-                        if (null != mHandlerThread)
-                            mHandleMessage.sendEmptyMessageDelayed(0, DELAY_TIME);
+                        mPingDone = true;
                         break;
                 }
             }
@@ -140,12 +147,6 @@ public class NetPingManager {
         }
         return false;
     }
-
-    private static final int PORT = 80;
-    private static final int CONN_TIMES = 4;
-    // 设置每次连接的timeout时间
-    private int TIME_OUT = 6000;
-    private final long[] RttTimes = new long[CONN_TIMES];// 用于存储三次测试中每次的RTT值
 
     /**
      * 返回某个IP进行5次connect的最终结果

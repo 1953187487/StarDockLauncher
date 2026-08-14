@@ -16,4 +16,41 @@
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:popupMenuStyle">@style/MenuStyle</item>
     </style>
+
+    <style name="ModernText">
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="ModernText.Button">
+        <item name="android:textColor">@color/md_on_primary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="ModernText.Title">
+        <item name="android:textColor">@color/md_on_background</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="ModernText.Subtitle">
+        <item name="android:textColor">@color/md_on_surface_medium</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="ModernText.Body">
+        <item name="android:textColor">@color/md_on_surface</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="MenuStyle" parent="Widget.AppCompat.PopupMenu">
+        <item name="dropdownListPreferredItemHeight">42dp</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/MenuTextStyle</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/MenuTextStyle</item>
+    </style>
+
+    <style name="MenuTextStyle">
+        <item name="android:textColor">@color/md_on_surface</item>
+        <item name="android:textSize">12sp</item>
+    </style>
 </resources>
