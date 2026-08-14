@@ -1,16 +1,16 @@
 {
   "latestRelease": {
-    "versionCode": 2,
-    "versionName": "1.0.1",
-    "date": "2026.08.13",
-    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.1/StarDockLauncher-v1.0.1.apk"],
-    "updateLog": "StarDockLauncher 1.0.1：公告重写、关于重写（作者+技术栈+项目介绍）、反馈改邮箱一键复制、捐赠换微信/支付宝图、启动器版本检测移到关于、通用中删掉原 update 块。"
+    "versionCode": 3,
+    "versionName": "1.0.2",
+    "date": "2026.08.14",
+    "url": ["https://api.stardock.net/releases/StarDockLauncher-v1.0.2.apk"],
+    "updateLog": "StarDockLauncher 1.0.2：UI全面重构、启动动画重写、下载源更换为 StarDock 镜像、完全联机功能实现。"
   },
   "latestPrerelease": {
-    "versionCode": 2,
-    "versionName": "1.0.1",
-    "date": "2026.08.13",
-    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.1/StarDockLauncher-v1.0.1.apk"],
-    "updateLog": "StarDockLauncher 1.0.1：公告重写、关于重写（作者+技术栈+项目介绍）、反馈改邮箱一键复制、捐赠换微信/支付宝图、启动器版本检测移到关于、通用中删掉原 update 块。"
+    "versionCode": 3,
+    "versionName": "1.0.2",
+    "date": "2026.08.14",
+    "url": ["https://api.stardock.net/releases/StarDockLauncher-v1.0.2.apk"],
+    "updateLog": "StarDockLauncher 1.0.2：UI全面重构、启动动画重写、下载源更换为 StarDock 镜像、完全联机功能实现。"
   }
 }

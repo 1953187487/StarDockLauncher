@@ -3,10 +3,10 @@
     <string name="app_name_pri" translatable="false">StarDockLauncher</string>
     <string name="app_name_sec" translatable="false">Minecraft Java Edition 启动器</string>
     <string name="version_name" translatable="false">v2.0.8</string>
-    <string name="app_bar_title" translatable="false">StarDockLauncher v1.0.0</string>
+    <string name="app_bar_title" translatable="false">StarDockLauncher v1.0.2</string>
 
     <string name="dialog_outdated_warning_title">Warning</string>
-    <string name="dialog_outdated_warning_msg">\u26a0 StarDockLauncher v1.0.1 公告\n\n本应用是一款由本开源作者基于 HMCL-PE（2.0.8）二次开发的 Minecraft Java 版 Android 启动器。\n\n⚠️ HMCL-PE 已停更\nHMCL-PE 原作者已停止维护。本项目继承其核心引擎（Boat + PojavLauncher）与 UI 框架，由本开源作者独立维护和迭代。\n\n\u2728 本版本主要变更\n· 品牌重塑：StarDockLauncher\n· 公告、关于、反馈、捐赠页全面重写\n· 关于页加入启动器版本检测（从通用移到此）\n· 反馈入口改为邮箱一键复制\n· 捐赠换为微信 + 支付宝两张图\n· 通用设置中启动器版本检测已迁移\n\n\u2728 关于\n本项目与 HMCL-dev 无关，由本开源作者独立维护。如有 Bug 或建议，请联系：1953187487@qq.com</string>
+    <string name="dialog_outdated_warning_msg">\u26a0 StarDockLauncher v1.0.2 公告\n\n本应用是一款由本开源作者基于 HMCL-PE（2.0.8）二次开发的 Minecraft Java 版 Android 启动器，已全面重构 UI 与启动动画。\n\n\u2728 本版本主要变更\n· UI 全面重构，启动动画全新设计\n· 下载源更换为新镜像\n· 完全联机功能开发完成\n· 版本检测修复\n\n\u2728 关于\n本项目与 HMCL-dev 无关，由本开源作者独立维护。如有 Bug 或建议，请联系：1953187487@qq.com</string>
     <string name="dialog_outdated_warning_hide">Don\'t show again</string>
     <string name="dialog_outdated_warning_positive">Got it</string>
 
@@ -36,9 +36,9 @@
     <string name="game_setting_ui_pojav_renderer_gl4es_114" translatable="false">Holy GL4ES (OpenGL 2.1/3.2)</string>
     <string name="game_setting_ui_pojav_renderer_virgl" translatable="false">VirGLRenderer (OpenGL 4.3)</string>
     <string name="dialog_color_selector_arrow" translatable="false">→</string>
-    <string name="download_setting_ui_source_bmclapi" translatable="false">BMCLAPI（bangbang93，https://bmclapi2.bangbang93.com/）</string>
+    <string name="download_setting_ui_source_bmclapi" translatable="false">StarDock 源（https://api.stardock.net/）</string>
     <string name="ui_about_hmclpe_main" translatable="false">StarDockLauncher</string>
-    <string name="ui_about_hmclpe_sub" translatable="false">1.0.1</string>
+    <string name="ui_about_hmclpe_sub" translatable="false">1.0.2</string>
     <string name="about_intro_title">关于本项目</string>
     <string name="about_intro_author">作者：本开源作者（独立维护）</string>
     <string name="about_intro_email">邮箱：1953187487@qq.com</string>
@@ -48,7 +48,7 @@
     <string name="about_basis_engine">渲染引擎：Boat + PojavLauncher（OpenGL ES 2.1 / 3.0 / 4.x）</string>
     <string name="about_basis_stack">技术栈：Android (Java) + AGP 7.2.2 + Gradle 7.3.3 + jcenter(已迁移阿里云镜像) + AndroidX + Material 1.11</string>
     <string name="about_features_title">功能与修复</string>
-    <string name="about_features_body">1.0.0 全面接入 HMCL-PE 引擎与渲染器\n1.0.1 品牌重塑、公告重写、关于页重写、反馈改为邮箱、捐赠换为微信/支付宝两张图、启动器版本检测迁到此处、通用中联机入口前置</string>
+    <string name="about_features_body">1.0.0 全面接入 HMCL-PE 引擎与渲染器\n1.0.1 品牌重塑、公告重写、关于页重写、反馈改为邮箱、捐赠换为微信/支付宝两张图、启动器版本检测迁到此处、通用中联机入口前置\n1.0.2 UI全面重构、启动动画重写、下载源更换、完全联机功能实现</string>
     <string name="about_update_title">启动器版本检测</string>
     <string name="about_update_status_default">点击右侧按钮检查最新版本</string>
     <string name="about_update_status_checking">正在检查…</string>
@@ -60,6 +60,7 @@
     <string name="about_version_name">StarDockLauncher v1.0.2</string>
 
     <string name="multiplayer_tab_title">联机</string>
+    <string name="multiplayer_tab_online">完全联机</string>
     <string name="multiplayer_tab_terra">淘瓦联机</string>
     <string name="multiplayer_tab_tunnel">内网穿透联机</string>
     <string name="multiplayer_terra_create">创建房间</string>

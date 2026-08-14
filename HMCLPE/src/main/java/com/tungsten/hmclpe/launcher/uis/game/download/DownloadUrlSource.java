@@ -30,13 +30,13 @@ public class DownloadUrlSource {
     };
 
     public static String[] BMCLAPI_URLS = {
-            "https://bmclapi2.bangbang93.com/mc/game/version_manifest.json",
-            "https://bmclapi2.bangbang93.com",
-            "https://bmclapi2.bangbang93.com",
-            "https://bmclapi2.bangbang93.com",
-            "https://bmclapi2.bangbang93.com/assets",
-            "https://bmclapi2.bangbang93.com/maven",
-            "https://bmclapi2.bangbang93.com/maven"
+            "https://api.stardock.net/mc/game/version_manifest.json",
+            "https://api.stardock.net",
+            "https://api.stardock.net",
+            "https://api.stardock.net",
+            "https://api.stardock.net/assets",
+            "https://api.stardock.net/maven",
+            "https://api.stardock.net/maven"
     };
 
     public static String[] MCBBS_URLS = {

@@ -83,7 +83,7 @@
         android:autoSizeMinTextSize="5sp"
         android:autoSizeTextType="uniform"
         android:text="@string/loading_hint"
-        android:textColor="@color/colorPureBlack"
+        android:textColor="@color/colorPrimary"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintVertical_bias="0.85"
         app:layout_constraintWidth_percent="0.5"

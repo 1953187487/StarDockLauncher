@@ -51,7 +51,7 @@ public class ForgeDownloadTask extends AsyncTask<ForgeVersion,Integer,Exception>
         ForgeVersion forgeVersion = forgeVersions[0];
         String mirror = null;
         try {
-            String baseUrl = "https://bmclapi2.bangbang93.com/forge/download/" + forgeVersion.getBuild();
+            String baseUrl = "https://api.stardock.net/forge/download/" + forgeVersion.getBuild();
             Request request = new Request.Builder().url(baseUrl).build();
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
             builder.sslSocketFactory(SSLSocketClient.getSSLSocketFactory(),(X509TrustManager) SSLSocketClient.getTrustManager()[0]);
@@ -70,7 +70,7 @@ public class ForgeDownloadTask extends AsyncTask<ForgeVersion,Integer,Exception>
                 base = "https://maven.minecraftforge.net";
             }
             else if (DownloadUrlSource.getSource(activity.launcherSetting.downloadUrlSource) == 1) {
-                base = "https://bmclapi2.bangbang93.com/maven";
+                base = "https://api.stardock.net/maven";
             }
             else {
                 base = "https://download.mcbbs.net/maven";
