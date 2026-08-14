@@ -137,6 +137,15 @@
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:id="@+id/update_progress"/>
 
+    <TextView
+        android:layout_marginTop="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="@color/colorPureBlack"
+        android:id="@+id/update_speed"
+        android:text=""/>
+
     <LinearLayout
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"

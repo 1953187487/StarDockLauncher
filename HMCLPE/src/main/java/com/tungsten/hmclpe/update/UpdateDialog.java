@@ -37,6 +37,7 @@ public class UpdateDialog extends Dialog implements View.OnClickListener {
     private TextView log;
 
     private ProgressBar progressBar;
+    private TextView speedView;
     private Button update;
     private Button ignore;
 
@@ -58,6 +59,7 @@ public class UpdateDialog extends Dialog implements View.OnClickListener {
         date = findViewById(R.id.update_date);
         type = findViewById(R.id.update_type);
         log = findViewById(R.id.update_log);
+        speedView = findViewById(R.id.update_speed);
 
         versionName.setText(version.versionName);
         date.setText(version.date);
@@ -90,7 +92,6 @@ public class UpdateDialog extends Dialog implements View.OnClickListener {
             progressBar.setVisibility(View.VISIBLE);
             String finalUrl = version.url.get(0);
             new Thread(() -> {
-                if (FileUtils.deleteDirectory(AppManifest.DEFAULT_CACHE_DIR + "/update")) {
                     DownloadUtil.downloadSingleFile(getContext(), new DownloadTaskListBean("", finalUrl, AppManifest.DEFAULT_CACHE_DIR + "/update/latest.apk",null), new DownloadTask.Feedback() {
                         @Override
                         public void addTask(DownloadTaskListBean bean) {
@@ -104,7 +105,7 @@ public class UpdateDialog extends Dialog implements View.OnClickListener {
 
                         @Override
                         public void updateSpeed(String speed) {
-
+                            handler.post(() -> speedView.setText(speed));
                         }
 
                         @Override
@@ -132,7 +133,6 @@ public class UpdateDialog extends Dialog implements View.OnClickListener {
 
                         }
                     });
-                }
             }).start();
         }
         if (view == ignore) {

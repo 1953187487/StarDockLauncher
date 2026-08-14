@@ -37,7 +37,7 @@ public class OutdatedWarningDialog extends Dialog implements View.OnClickListene
 
     public static void init(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("warning", Context.MODE_PRIVATE);
-        boolean shouldShow = sharedPreferences.getBoolean("outdated_warning", true);
+        boolean shouldShow = sharedPreferences.getBoolean("outdated_warning", false);
         if (shouldShow) {
             OutdatedWarningDialog dialog = new OutdatedWarningDialog(context);
             dialog.show();
