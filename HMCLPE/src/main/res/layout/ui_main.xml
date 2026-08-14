@@ -4,371 +4,421 @@
     android:visibility="invisible"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/md_background"
+    android:padding="12dp">
 
-    <ScrollView
-        android:background="@color/launcher_ui_background"
-        android:layout_width="200dp"
-        android:layout_height="match_parent">
+    <!-- 左侧导航栏：现代化卡片式侧边栏 -->
+    <LinearLayout
+        android:background="@drawable/modern_card_surface"
+        android:layout_width="230dp"
+        android:layout_height="match_parent"
+        android:elevation="@dimen/md_elevation_sm"
+        android:orientation="vertical"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
 
-        <LinearLayout
-            android:orientation="vertical"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:singleLine="true"
-                android:paddingTop="12dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/launcher_scroll_text_account"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/colorPureBlack"/>
-
-            <View
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/colorPureBlack"/>
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:padding="6dp">
 
             <LinearLayout
-                android:background="@drawable/launcher_button_parent"
-                android:focusable="true"
-                android:clickable="true"
-                android:id="@+id/start_ui_account"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="10dp">
+                android:layout_height="wrap_content">
 
-                <RelativeLayout
-                    android:layout_gravity="center"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp">
-
-                    <ImageView
-                        android:layout_width="26.6666dp"
-                        android:layout_height="26.6666dp"
-                        android:id="@+id/account_skin_face"
-                        android:src="@drawable/ic_steve"
-                        android:layout_centerInParent="true" />
-
-                    <ImageView
-                        android:id="@+id/account_skin_hat"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp" />
-
-                </RelativeLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="35dp"
-                    android:layout_weight="1"
-                    android:weightSum="2"
-                    android:layout_gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:singleLine="true"
-                        android:id="@+id/account_name_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="@string/launcher_scroll_account_name"
-                        android:textSize="@dimen/text_size_middle"/>
-
-                    <TextView
-                        android:singleLine="true"
-                        android:id="@+id/account_state_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="@string/launcher_scroll_account_state"
-                        android:textSize="@dimen/text_size_small"/>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <TextView
-                android:singleLine="true"
-                android:paddingTop="12dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:text="@string/launcher_scroll_text_game"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/colorPureBlack"/>
-
-            <View
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/colorPureBlack"/>
-
-            <LinearLayout
-                android:background="@drawable/launcher_button_parent"
-                android:focusable="true"
-                android:id="@+id/start_ui_game_manager"
-                android:clickable="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="10dp">
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:id="@+id/current_version_icon"
-                    android:background="@drawable/ic_grass"/>
-
-                <LinearLayout
-                    android:id="@+id/no_version_alert_text"
-                    android:layout_width="0dp"
-                    android:layout_height="35dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:singleLine="true"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="@string/launcher_scroll_game_manager"
-                        android:textSize="@dimen/text_size_middle"/>
-
-                    <TextView
-                        android:singleLine="true"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="@string/launcher_scroll_game_none"
-                        android:textSize="@dimen/text_size_small"/>
-
-                </LinearLayout>
-
+                <!-- 账户分组标题 -->
                 <TextView
                     android:singleLine="true"
+                    android:paddingStart="6dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/launcher_scroll_text_account"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/md_on_surface_medium"/>
+
+                <!-- 账户卡片 -->
+                <LinearLayout
+                    android:background="@drawable/modern_card_item"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:id="@+id/start_ui_account"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    android:layout_marginBottom="4dp">
+
+                    <RelativeLayout
+                        android:layout_gravity="center"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/launcher_view_blue"
+                        android:padding="4dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/account_skin_face"
+                            android:src="@drawable/ic_steve"
+                            android:layout_centerInParent="true" />
+
+                        <ImageView
+                            android:id="@+id/account_skin_hat"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:orientation="vertical"
+                        android:layout_marginStart="10dp">
+
+                        <TextView
+                            android:singleLine="true"
+                            android:id="@+id/account_name_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/launcher_scroll_account_name"
+                            android:textStyle="bold"
+                            android:textColor="@color/md_on_surface"
+                            android:textSize="@dimen/text_size_middle"/>
+
+                        <TextView
+                            android:singleLine="true"
+                            android:id="@+id/account_state_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/launcher_scroll_account_state"
+                            android:textColor="@color/md_on_surface_medium"
+                            android:textSize="@dimen/text_size_small"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- 游戏分组标题 -->
+                <TextView
+                    android:singleLine="true"
+                    android:paddingStart="6dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/launcher_scroll_text_game"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/md_on_surface_medium"/>
+
+                <!-- 当前版本卡片 -->
+                <LinearLayout
+                    android:background="@drawable/modern_card_item"
+                    android:focusable="true"
+                    android:id="@+id/start_ui_game_manager"
+                    android:clickable="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    android:layout_marginBottom="4dp">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:id="@+id/current_version_icon"
+                        android:background="@drawable/launcher_view_blue"
+                        android:padding="6dp"/>
+
+                    <LinearLayout
+                        android:id="@+id/no_version_alert_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:orientation="vertical"
+                        android:layout_marginStart="10dp">
+
+                        <TextView
+                            android:singleLine="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/launcher_scroll_game_manager"
+                            android:textStyle="bold"
+                            android:textColor="@color/md_on_surface"
+                            android:textSize="@dimen/text_size_middle"/>
+
+                        <TextView
+                            android:singleLine="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/launcher_scroll_game_none"
+                            android:textColor="@color/md_on_surface_medium"
+                            android:textSize="@dimen/text_size_small"/>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:singleLine="true"
+                        android:visibility="gone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_marginStart="6dp"
+                        android:id="@+id/current_version_name_text"
+                        android:textStyle="bold"
+                        android:textColor="@color/md_primary"
+                        android:textSize="@dimen/text_size_middle"/>
+
+                </LinearLayout>
+
+                <!-- 版本列表项 -->
+                <LinearLayout
+                    android:background="@drawable/modern_card_item"
+                    android:focusable="true"
+                    android:id="@+id/start_ui_version_list"
+                    android:clickable="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    android:layout_marginBottom="4dp">
+
+                    <ImageView
+                        android:id="@+id/version_list_icon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/launcher_view_white"
+                        android:padding="6dp"
+                        android:src="@drawable/ic_bookshelf"/>
+
+                    <TextView
+                        android:singleLine="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/launcher_scroll_version_list"
+                        android:textColor="@color/md_on_surface"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/text_size_middle"/>
+
+                </LinearLayout>
+
+                <!-- 下载项 -->
+                <LinearLayout
+                    android:background="@drawable/modern_card_item"
+                    android:focusable="true"
+                    android:id="@+id/start_ui_download"
+                    android:clickable="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    android:layout_marginBottom="4dp">
+
+                    <ImageView
+                        android:id="@+id/download_icon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/launcher_view_white"
+                        android:padding="6dp"
+                        android:src="@drawable/ic_chest"/>
+
+                    <TextView
+                        android:singleLine="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/launcher_scroll_download"
+                        android:textColor="@color/md_on_surface"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/text_size_middle"/>
+
+                </LinearLayout>
+
+                <!-- 通用功能分组标题 -->
+                <TextView
+                    android:singleLine="true"
+                    android:paddingStart="6dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/launcher_scroll_text_universal"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/md_on_surface_medium"/>
+
+                <!-- 联机项 -->
+                <LinearLayout
                     android:visibility="gone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:layout_marginStart="6dp"
-                    android:id="@+id/current_version_name_text"
-                    android:textSize="@dimen/text_size_middle"/>
+                    android:background="@drawable/modern_card_item"
+                    android:focusable="true"
+                    android:id="@+id/start_ui_multi_player"
+                    android:clickable="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    android:layout_marginBottom="4dp">
+
+                    <ImageView
+                        android:id="@+id/multiplayer_icon"
+                        android:layout_gravity="center"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/launcher_view_white"
+                        android:padding="6dp"
+                        android:src="@drawable/ic_command"/>
+
+                    <TextView
+                        android:singleLine="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/launcher_scroll_multi_player"
+                        android:textColor="@color/md_on_surface"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/text_size_middle"/>
+
+                </LinearLayout>
+
+                <!-- 设置项 -->
+                <LinearLayout
+                    android:background="@drawable/modern_card_item"
+                    android:focusable="true"
+                    android:layout_marginBottom="5dp"
+                    android:id="@+id/start_ui_setting"
+                    android:clickable="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:id="@+id/setting_icon"
+                        android:layout_gravity="center"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/launcher_view_white"
+                        android:padding="6dp"
+                        android:src="@drawable/ic_command"/>
+
+                    <TextView
+                        android:singleLine="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/launcher_scroll_setting"
+                        android:textColor="@color/md_on_surface"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/text_size_middle"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
-            <LinearLayout
-                android:background="@drawable/launcher_button_parent"
-                android:focusable="true"
-                android:id="@+id/start_ui_version_list"
-                android:clickable="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="10dp">
+        </ScrollView>
 
-                <ImageView
-                    android:id="@+id/version_list_icon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/ic_bookshelf"/>
+        <!-- 底部版本号 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/version_name"
+            android:textColor="@color/md_on_surface_medium"
+            android:textSize="10sp"
+            android:paddingBottom="6dp"/>
 
-                <TextView
-                    android:singleLine="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:layout_marginStart="6dp"
-                    android:text="@string/launcher_scroll_version_list"
-                    android:textSize="@dimen/text_size_middle"/>
+    </LinearLayout>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:background="@drawable/launcher_button_parent"
-                android:focusable="true"
-                android:id="@+id/start_ui_download"
-                android:clickable="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="10dp">
-
-                <ImageView
-                    android:id="@+id/download_icon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/ic_chest"/>
-
-                <TextView
-                    android:singleLine="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:layout_marginStart="6dp"
-                    android:text="@string/launcher_scroll_download"
-                    android:textSize="@dimen/text_size_middle"/>
-
-            </LinearLayout>
-
-            <TextView
-                android:singleLine="true"
-                android:paddingTop="12dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:text="@string/launcher_scroll_text_universal"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/colorPureBlack"/>
-
-            <View
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/colorPureBlack"/>
-
-            <LinearLayout
-                android:visibility="gone"
-                android:background="@drawable/launcher_button_parent"
-                android:focusable="true"
-                android:id="@+id/start_ui_multi_player"
-                android:clickable="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="10dp">
-
-                <ImageView
-                    android:id="@+id/multiplayer_icon"
-                    android:layout_gravity="center"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:background="@drawable/ic_command"/>
-
-                <TextView
-                    android:singleLine="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:layout_marginStart="6dp"
-                    android:text="@string/launcher_scroll_multi_player"
-                    android:textSize="@dimen/text_size_middle"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:background="@drawable/launcher_button_parent"
-                android:focusable="true"
-                android:layout_marginBottom="5dp"
-                android:id="@+id/start_ui_setting"
-                android:clickable="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="10dp">
-
-                <ImageView
-                    android:id="@+id/setting_icon"
-                    android:layout_gravity="center"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:background="@drawable/ic_command"/>
-
-                <TextView
-                    android:singleLine="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:layout_marginStart="6dp"
-                    android:text="@string/launcher_scroll_setting"
-                    android:textSize="@dimen/text_size_middle"/>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </ScrollView>
-
+    <!-- 右侧主内容区 -->
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginStart="12dp">
 
+        <!-- 现代化「开始游戏」浮动按钮：大尺寸 + 渐变 + 高圆角 -->
         <LinearLayout
             android:tag="tint_accent_color"
             android:id="@+id/launcher_play_button"
             android:focusable="true"
             android:clickable="true"
-            android:background="@drawable/launcher_button_blue"
-            android:layout_width="200dp"
-            android:layout_height="55dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="24dp"
+            android:background="@drawable/modern_button_primary"
+            android:layout_width="240dp"
+            android:layout_height="68dp"
+            android:layout_marginEnd="28dp"
+            android:layout_marginBottom="28dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:elevation="@dimen/md_elevation_lg">
 
             <LinearLayout
-                android:layout_width="179dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:weightSum="2"
-                android:paddingTop="9dp"
-                android:paddingBottom="9dp"
+                android:layout_weight="1"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="8dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:singleLine="true"
-                    android:layout_weight="1"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="start|center_vertical"
                     android:text="@string/launcher_button_launch"
-                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
                     android:textColor="@color/colorPureWhite"/>
 
                 <TextView
-                    android:paddingLeft="7dp"
-                    android:paddingRight="7dp"
                     android:id="@+id/launch_version_text"
-                    android:layout_weight="1"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="start|center_vertical"
                     android:singleLine="true"
                     android:text="@string/launcher_button_current_version"
-                    android:textSize="@dimen/text_size_small"
-                    android:textColor="@color/colorPureWhite"/>
+                    android:textColor="#E0D8FF"
+                    android:textSize="@dimen/text_size_small"/>
 
             </LinearLayout>
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="@color/colorGray"/>
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="14dp"
+                android:background="#26FFFFFF"/>
 
             <RelativeLayout
-                android:layout_width="20dp"
+                android:layout_width="40dp"
                 android:layout_height="match_parent">
 
                 <TextView
@@ -377,7 +427,7 @@
                     android:gravity="center"
                     android:text="@string/launcher_spinner_text"
                     android:textColor="@color/colorPureWhite"
-                    android:textSize="8sp"/>
+                    android:textSize="10sp"/>
 
                 <androidx.appcompat.widget.AppCompatSpinner
                     android:overlapAnchor="false"

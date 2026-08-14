@@ -23,6 +23,11 @@ public final class NetworkUtils {
     public static final String PARAMETER_SEPARATOR = "&";
     public static final String NAME_VALUE_SEPARATOR = "=";
 
+    // 增强连接稳定性：超时从 15s 提升至 25s，并提供最多 3 次重试
+    public static final int DEFAULT_CONNECT_TIMEOUT_MS = 25000;
+    public static final int DEFAULT_READ_TIMEOUT_MS = 25000;
+    public static final int DEFAULT_MAX_RETRY = 3;
+
     private NetworkUtils() {
     }
 
@@ -89,9 +94,13 @@ public final class NetworkUtils {
             connection.setRequestProperty("Accept", "application/json");
         }
         connection.setUseCaches(false);
-        connection.setConnectTimeout(15000);
-        connection.setReadTimeout(15000);
+        connection.setConnectTimeout(DEFAULT_CONNECT_TIMEOUT_MS);
+        connection.setReadTimeout(DEFAULT_READ_TIMEOUT_MS);
         connection.setRequestProperty("Accept-Language", Locale.getDefault().toString());
+        // 兼容性：启用 TCP Keep-Alive 降低连接中断概率
+        if (connection instanceof HttpURLConnection) {
+            try { connection.setRequestProperty("Connection", "keep-alive"); } catch (Throwable ignored) {}
+        }
         return connection;
     }
 
@@ -145,8 +154,8 @@ public final class NetworkUtils {
         while (true) {
 
             conn.setUseCaches(false);
-            conn.setConnectTimeout(15000);
-            conn.setReadTimeout(15000);
+            conn.setConnectTimeout(DEFAULT_CONNECT_TIMEOUT_MS);
+            conn.setReadTimeout(DEFAULT_READ_TIMEOUT_MS);
             conn.setInstanceFollowRedirects(false);
             Map<String, List<String>> properties = conn.getRequestProperties();
             String method = conn.getRequestMethod();

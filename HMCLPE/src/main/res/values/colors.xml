@@ -1,13 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#5C6BC0</color>
-    <color name="colorSecondary">#283593</color>
-    <color name="colorThird">#43A047</color>
-    <color name="colorForth">#E67E22</color>
+    <!-- 现代化主题配色：靛青→蓝紫渐变主色系 -->
+    <color name="md_primary">#5E35B1</color>
+    <color name="md_primary_variant">#311B92</color>
+    <color name="md_primary_light">#9575CD</color>
+    <color name="md_secondary">#00BFA5</color>
+    <color name="md_secondary_variant">#00695C</color>
+    <color name="md_accent">#7C4DFF</color>
+    <color name="md_background">#F5F6FA</color>
+    <color name="md_surface">#FFFFFF</color>
+    <color name="md_surface_variant">#EFF0F5</color>
+    <color name="md_on_primary">#FFFFFF</color>
+    <color name="md_on_secondary">#FFFFFF</color>
+    <color name="md_on_background">#1A1B22</color>
+    <color name="md_on_surface">#1A1B22</color>
+    <color name="md_on_surface_medium">#535763</color>
+    <color name="md_divider">#E3E5EF</color>
+    <color name="md_error">#E53935</color>
+    <color name="md_success">#43A047</color>
+    <color name="md_warning">#FB8C00</color>
+
+    <!-- 兼容原来的 key，保持引用不崩 -->
+    <color name="colorPrimary">@color/md_primary</color>
+    <color name="colorPrimaryDark">@color/md_primary_variant</color>
+    <color name="colorSecondary">@color/md_secondary</color>
+    <color name="colorThird">@color/md_success</color>
+    <color name="colorForth">@color/md_warning</color>
     <color name="colorFifth">#9C27B0</color>
-    <color name="colorSixth">#B71C1C</color>
-    <color name="colorPrimaryDark">#CB5C6BC0</color>
-    <color name="colorAccent">#5C6BC0</color>
+    <color name="colorSixth">@color/md_error</color>
+    <color name="colorAccent">@color/md_primary</color>
 
     <color name="colorTransparent">#00FFFFFF</color>
     <color name="colorPureWhite">#FFFFFF</color>
@@ -19,9 +40,9 @@
     <color name="colorLightGray">#0D000000</color>
     <color name="colorWhiteGray">#E3E3E3</color>
     <color name="colorLightBlue">#655C6BC0</color>
-    <color name="colorGreen">#3DFF2C</color>
+    <color name="colorGreen">@color/md_success</color>
     <color name="colorYellow">#F0FF00</color>
-    <color name="colorRed">#FF0000</color>
+    <color name="colorRed">@color/md_error</color>
     <color name="colorLinkBlue">#03A9F4</color>
     <color name="colorLinkBlueDark">#005D8F</color>
     <color name="colorTextBlue">#D5F1FF</color>
@@ -29,7 +50,11 @@
     <color name="colorEndRockerBlue">#3300C4FF</color>
     <color name="colorBrown">#835300</color>
 
-    <color name="launcher_ui_background">#9AFFFFFF</color>
-    <color name="launcher_ui_background_light">#4DFFFFFF</color>
-    <color name="colorPressed">#BDBDBD</color>
+    <!-- 现代化 UI 背景层 -->
+    <color name="launcher_ui_background">#CCFFFFFF</color>
+    <color name="launcher_ui_background_light">#66FFFFFF</color>
+    <color name="launcher_card_background">#F5F6FA</color>
+    <color name="launcher_card_surface">#FFFFFF</color>
+    <color name="launcher_sidebar_background">#EDE8F7</color>
+    <color name="colorPressed">#D1D5DB</color>
 </resources>

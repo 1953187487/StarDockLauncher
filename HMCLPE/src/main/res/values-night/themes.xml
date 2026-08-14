@@ -1,21 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Theme.HelloMinecraftLauncherPocketEdition" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryVariant">@color/colorPrimary</item>
-        <item name="colorOnPrimary">@color/colorPrimary</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/colorPrimary</item>
-        <item name="colorSecondaryVariant">@color/colorPrimary</item>
-        <item name="colorOnSecondary">@color/colorPrimary</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">@color/colorPrimary</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/md_primary</item>
+        <item name="colorPrimaryDark">@color/md_primary_variant</item>
+        <item name="colorAccent">@color/md_accent</item>
+        <item name="colorSecondary">@color/md_secondary</item>
+        <item name="colorOnPrimary">@color/md_on_primary</item>
+        <item name="colorOnSecondary">@color/md_on_secondary</item>
+        <item name="android:windowBackground">@color/md_background</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/md_primary_variant</item>
+        <item name="android:navigationBarColor" tools:targetApi="l">@color/md_primary_variant</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
-        <!-- Customize your theme here. -->
+        <item name="android:popupMenuStyle">@style/MenuStyle</item>
     </style>
 </resources>

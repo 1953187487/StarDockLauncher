@@ -1,4 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<network-security-config xmlns:android="http://schemas.android.com/apk/res/android">
-    <base-config cleartextTrafficPermitted="true" />
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system"/>
+            <certificates src="user"/>
+        </trust-anchors>
+    </base-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">127.0.0.1</domain>
+        <domain includeSubdomains="true">localhost</domain>
+        <trust-anchors>
+            <certificates src="user"/>
+            <certificates src="system"/>
+        </trust-anchors>
+    </domain-config>
+    <!-- 主下载源域名显式允许，增强连接稳定性 -->
+    <domain-config>
+        <domain includeSubdomains="true">piston-meta.mojang.com</domain>
+        <domain includeSubdomains="true">resources.download.minecraft.net</domain>
+        <domain includeSubdomains="true">launchermeta.mojang.com</domain>
+        <domain includeSubdomains="true">launcher.mojang.com</domain>
+        <domain includeSubdomains="true">bmclapi2.bangbang93.com</domain>
+        <domain includeSubdomains="true">bmclapi.bangbang93.com</domain>
+        <domain includeSubdomains="true">download.mcbbs.net</domain>
+        <domain includeSubdomains="true">files.minecraftforge.net</domain>
+        <domain includeSubdomains="true">maven.minecraftforge.net</domain>
+        <domain includeSubdomains="true">maven.fabricmc.net</domain>
+        <domain includeSubdomains="true">maven.quiltmc.org</domain>
+        <domain includeSubdomains="true">repo1.maven.org</domain>
+        <domain includeSubdomains="true">meta.fabricmc.net</domain>
+    </domain-config>
 </network-security-config>

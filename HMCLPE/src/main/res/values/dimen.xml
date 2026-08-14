@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="text_size_small">10sp</dimen>
-    <dimen name="text_size_middle">13sp</dimen>
+    <dimen name="text_size_small">11sp</dimen>
+    <dimen name="text_size_middle">14sp</dimen>
     <dimen name="text_size_big">20sp</dimen>
+
+    <!-- 现代化圆角/间距/阴影 -->
+    <dimen name="md_radius_xs">4dp</dimen>
+    <dimen name="md_radius_sm">8dp</dimen>
+    <dimen name="md_radius_md">12dp</dimen>
+    <dimen name="md_radius_lg">16dp</dimen>
+    <dimen name="md_radius_xl">24dp</dimen>
+    <dimen name="md_elevation_sm">2dp</dimen>
+    <dimen name="md_elevation_md">4dp</dimen>
+    <dimen name="md_elevation_lg">8dp</dimen>
+    <dimen name="md_spacing_xs">4dp</dimen>
+    <dimen name="md_spacing_sm">8dp</dimen>
+    <dimen name="md_spacing_md">12dp</dimen>
+    <dimen name="md_spacing_lg">16dp</dimen>
+    <dimen name="md_spacing_xl">24dp</dimen>
+    <dimen name="md_card_min_height">48dp</dimen>
 </resources>

@@ -64,9 +64,13 @@ public class LiteLoaderInstallTask extends AsyncTask<LiteLoaderVersion,Integer, 
             if (libUrl == null || libUrl.isEmpty()
                     || libUrl.startsWith("https://libraries.minecraft.net")
                     || libUrl.startsWith("http://dl.liteloader.com/versions/")
-                    || libUrl.startsWith("https://dl.liteloader.com/versions/")) {
+                    || libUrl.startsWith("https://dl.liteloader.com/versions/")
+                    // 修复 LiteLoader 死链：原仓库 repo.mumfrey.info / repo.hypixel.net 已下线
+                    || libUrl.contains("mumfrey.info")
+                    || libUrl.contains("repo.hypixel.net")) {
                 if (downloadSource == 0) {
-                    head = "https://libraries.minecraft.net/";
+                    // 官方源：回退到 Maven Central + 旧 Forge Maven 上可用的 LiteLoader 工件
+                    head = "https://repo1.maven.org/maven2/";
                 }
                 else if (downloadSource == 1) {
                     head = "https://bmclapi2.bangbang93.com/maven/";

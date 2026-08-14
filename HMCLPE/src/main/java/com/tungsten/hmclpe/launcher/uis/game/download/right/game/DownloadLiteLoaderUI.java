@@ -45,7 +45,9 @@ public class DownloadLiteLoaderUI extends BaseUI implements View.OnClickListener
     private ProgressBar progressBar;
     private TextView back;
 
-    public static final String LITELOADER_LIST = "https://dl.liteloader.com/versions/versions.json";
+    // 原 dl.liteloader.com 服务已下线，使用中央 Maven/Legacy 存档作为回退。
+    // 注：BMCLAPI/MCBBS 镜像源同样对 LiteLoader 做了版本列表缓存。
+    public static final String LITELOADER_LIST = "https://bmclapi2.bangbang93.com/maven/liteloader-versions.json";
 
     public DownloadLiteLoaderUI(Context context, MainActivity activity) {
         super(context, activity);

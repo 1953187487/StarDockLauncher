@@ -4,47 +4,55 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:animateLayoutChanges="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/md_background">
 
     <LinearLayout
         android:id="@+id/launcher_layout"
-        android:background="@drawable/ic_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         android:orientation="vertical">
 
+        <!-- 现代化 AppBar：渐变靛青背景 + 更大更圆润的图标 -->
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorAccent"
+            android:layout_height="56dp"
+            android:background="@drawable/modern_gradient_primary"
             android:id="@+id/app_bar"
-            app:titleTextColor="@color/colorPureWhite">
+            android:elevation="@dimen/md_elevation_sm"
+            app:contentInsetStartWithNavigation="0dp"
+            app:titleTextColor="@color/md_on_primary">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:animateLayoutChanges="true"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp">
 
+                <!-- 标题区：logo + app名 -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:id="@+id/app_bar_title"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
                     <ImageView
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/ic_craft_table"/>
+                        android:src="@drawable/ic_craft_table"/>
 
                     <TextView
                         android:singleLine="true"
                         android:textStyle="bold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/text_size_middle"
+                        android:textSize="16sp"
                         android:layout_marginStart="10dp"
                         android:layout_gravity="center"
                         android:text="@string/app_bar_title"
@@ -52,31 +60,40 @@
 
                 </LinearLayout>
 
+                <!-- 返回上一级 -->
                 <ImageButton
                     android:visibility="gone"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:layout_gravity="center"
                     android:id="@+id/back_to_last_ui"
-                    android:background="@drawable/ic_baseline_arrow_white"/>
+                    android:background="@drawable/launcher_button_white"
+                    android:src="@drawable/ic_baseline_arrow_white"
+                    android:padding="4dp"/>
 
+                <!-- 关闭当前 UI -->
                 <ImageButton
                     android:visibility="gone"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginStart="10dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="8dp"
                     android:layout_gravity="center"
                     android:id="@+id/close_current_ui"
-                    android:background="@drawable/ic_baseline_close_white"/>
+                    android:background="@drawable/launcher_button_white"
+                    android:src="@drawable/ic_baseline_close_white"
+                    android:padding="4dp"/>
 
+                <!-- 返回主界面 -->
                 <ImageButton
                     android:visibility="gone"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginStart="10dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="8dp"
                     android:layout_gravity="center"
                     android:id="@+id/back_to_home"
-                    android:background="@drawable/ic_baseline_home_white"/>
+                    android:background="@drawable/launcher_button_white"
+                    android:src="@drawable/ic_baseline_home_white"
+                    android:padding="4dp"/>
 
                 <TextView
                     android:singleLine="true"
@@ -84,33 +101,38 @@
                     android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size_middle"
+                    android:textSize="15sp"
                     android:layout_marginStart="10dp"
                     android:layout_gravity="center"
                     android:id="@+id/text_current_ui"
                     android:textColor="@color/colorPureWhite"/>
-                
+
                 <View
                     android:background="@color/colorTransparent"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"/>
 
+                <!-- 最小化 -->
                 <ImageButton
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:layout_gravity="center"
                     android:id="@+id/back_to_desktop"
-                    android:background="@drawable/ic_baseline_horizontal_white"/>
+                    android:background="@drawable/launcher_button_white"
+                    android:src="@drawable/ic_baseline_horizontal_white"
+                    android:padding="4dp"/>
 
+                <!-- 关闭应用 -->
                 <ImageButton
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="8dp"
                     android:layout_gravity="center"
                     android:id="@+id/close_app"
-                    android:background="@drawable/ic_baseline_close_white"/>
+                    android:background="@drawable/launcher_button_white"
+                    android:src="@drawable/ic_baseline_close_white"
+                    android:padding="4dp"/>
 
             </LinearLayout>
 
