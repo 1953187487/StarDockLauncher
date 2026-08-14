@@ -2,8 +2,8 @@
     <string name="app_name" translatable="false">StarDockLauncher</string>
     <string name="app_name_pri" translatable="false">StarDockLauncher</string>
     <string name="app_name_sec" translatable="false">Minecraft Java Edition 启动器</string>
-    <string name="version_name" translatable="false">v2.0.8</string>
-    <string name="app_bar_title" translatable="false">StarDockLauncher v1.0.0</string>
+    <string name="version_name" translatable="false">v1.0.2</string>
+    <string name="app_bar_title" translatable="false">StarDockLauncher v1.0.2</string>
 
     <string name="dialog_outdated_warning_title">Warning</string>
     <string name="dialog_outdated_warning_msg">\u26a0 StarDockLauncher v1.0.1 公告\n\n本应用是一款由本开源作者基于 HMCL-PE（2.0.8）二次开发的 Minecraft Java 版 Android 启动器。\n\n⚠️ HMCL-PE 已停更\nHMCL-PE 原作者已停止维护。本项目继承其核心引擎（Boat + PojavLauncher）与 UI 框架，由本开源作者独立维护和迭代。\n\n\u2728 本版本主要变更\n· 品牌重塑：StarDockLauncher\n· 公告、关于、反馈、捐赠页全面重写\n· 关于页加入启动器版本检测（从通用移到此）\n· 反馈入口改为邮箱一键复制\n· 捐赠换为微信 + 支付宝两张图\n· 通用设置中启动器版本检测已迁移\n\n\u2728 关于\n本项目与 HMCL-dev 无关，由本开源作者独立维护。如有 Bug 或建议，请联系：1953187487@qq.com</string>

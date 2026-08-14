@@ -66,77 +66,84 @@ public class DownloadUrlSource {
         }
     }
 
-    static long official = 0;
-    static long bmclapi = 0;
-    static long mcbbs = 0;
+    public static volatile long official = 0;
+    public static volatile long bmclapi = 0;
+    public static volatile long mcbbs = 0;
+    public static volatile boolean pingFinished = false;
 
     public static void getBalancedSource(Context context){
-        /*
-        NetPingManager officialNetPingService = new NetPingManager(context, "www.minecraft.net", new NetPingManager.IOnNetPingListener() {
+        // 重新启用自动测速选源。修复原逻辑中 mcbbs 计数被错误累加到 bmclapi、
+        // 以及三个源全部 ping 失败时无回退导致的连接/下载源问题。
+        official = 0;
+        bmclapi = 0;
+        mcbbs = 0;
+        pingFinished = false;
+
+        NetPingManager officialNetPingService = new NetPingManager(context, "piston-meta.mojang.com", new NetPingManager.IOnNetPingListener() {
             @Override
             public void onDelay(NetPingManager netPingManager,long log) {
-                official += log;
-                System.out.println("---------------------------------------------------------------official:" + log);
+                official = log;
                 netPingManager.release();
             }
 
             @Override
             public void onError(NetPingManager netPingManager) {
-                official = 10000000;
+                official = Long.MAX_VALUE;
                 netPingManager.release();
-                System.out.println("---------------------------------------------------------------official:error");
             }
         });
-        NetPingManager bmclapiNetPingService = new NetPingManager(context, "download.mcbbs.net", new NetPingManager.IOnNetPingListener() {
+        NetPingManager bmclapiNetPingService = new NetPingManager(context, "bmclapi2.bangbang93.com", new NetPingManager.IOnNetPingListener() {
             @Override
             public void onDelay(NetPingManager netPingManager,long log) {
-                bmclapi += log;
-                System.out.println("---------------------------------------------------------------bmclapi:" + log);
+                bmclapi = log;
                 netPingManager.release();
             }
 
             @Override
             public void onError(NetPingManager netPingManager) {
-                bmclapi = 10000000;
+                bmclapi = Long.MAX_VALUE;
                 netPingManager.release();
-                System.out.println("---------------------------------------------------------------bmclapi:error");
             }
         });
         NetPingManager mcbbsNetPingService = new NetPingManager(context, "download.mcbbs.net", new NetPingManager.IOnNetPingListener() {
             @Override
             public void onDelay(NetPingManager netPingManager,long log) {
-                bmclapi += log;
-                System.out.println("---------------------------------------------------------------mcbbs:" + log);
+                mcbbs = log;
                 netPingManager.release();
             }
 
             @Override
             public void onError(NetPingManager netPingManager) {
-                bmclapi = 10000000;
+                mcbbs = Long.MAX_VALUE;
                 netPingManager.release();
-                System.out.println("---------------------------------------------------------------mcbbs:error");
             }
         });
         officialNetPingService.startGetDelay();
         bmclapiNetPingService.startGetDelay();
         mcbbsNetPingService.startGetDelay();
 
-         */
+        // 标记测速已发起。getSource 会在结果未就绪时回退到稳定的 BMCLAPI 镜像。
+        new Thread(() -> {
+            try { Thread.sleep(8000); } catch (InterruptedException ignored) {}
+            pingFinished = true;
+        }).start();
     }
 
     public static int getSource(SourceSetting sourceSetting) {
         if (sourceSetting.autoSelect) {
             if (sourceSetting.autoSourceType == 0) {
+                // 优先官方源
                 return 0;
             }
             else if (sourceSetting.autoSourceType == 1) {
-                /*
-                long faster = Math.min(official,bmclapi);
-                long fastest = Math.min(faster,mcbbs);
-                if (official == bmclapi && official == 0 && mcbbs == 0) {
+                // 自动测速：选取延迟最低的可用源。
+                // 若测速尚未完成或全部失败，回退到国内稳定的 BMCLAPI 镜像。
+                if (!pingFinished || (official == 0 && bmclapi == 0 && mcbbs == 0)) {
                     return 1;
                 }
-                else if (fastest == official) {
+                long faster = Math.min(official, bmclapi);
+                long fastest = Math.min(faster, mcbbs);
+                if (fastest == official) {
                     return 0;
                 }
                 else if (fastest == bmclapi) {
@@ -145,12 +152,10 @@ public class DownloadUrlSource {
                 else {
                     return 2;
                 }
-
-                 */
-                return 0;
             }
             else {
-                return 2;
+                // autoSourceType == 2：国内镜像优先
+                return 1;
             }
         }
         else {
