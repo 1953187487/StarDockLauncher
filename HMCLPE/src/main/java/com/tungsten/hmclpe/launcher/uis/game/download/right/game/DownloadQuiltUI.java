@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -20,6 +21,7 @@ import com.tungsten.hmclpe.launcher.MainActivity;
 import com.tungsten.hmclpe.launcher.download.quilt.QuiltGameVersion;
 import com.tungsten.hmclpe.launcher.download.quilt.QuiltLoaderVersion;
 import com.tungsten.hmclpe.launcher.list.download.minecraft.DownloadQuiltListAdapter;
+import com.tungsten.hmclpe.launcher.uis.game.download.DownloadUrlSource;
 import com.tungsten.hmclpe.launcher.uis.tools.BaseUI;
 import com.tungsten.hmclpe.utils.animation.CustomAnimationUtils;
 import com.tungsten.hmclpe.utils.io.NetworkUtils;
@@ -41,8 +43,11 @@ public class DownloadQuiltUI extends BaseUI implements View.OnClickListener {
     private ProgressBar progressBar;
     private TextView back;
 
-    private static final String LOADER_META_URL = "https://meta.quiltmc.org/v3/versions/loader";
-    private static final String GAME_META_URL = "https://meta.quiltmc.org/v3/versions/game";
+    private static final String OFFICIAL_LOADER_META_URL = "https://meta.quiltmc.org/v3/versions/loader";
+    private static final String OFFICIAL_GAME_META_URL = "https://meta.quiltmc.org/v3/versions/game";
+
+    private static final String BMCLAPI_LOADER_META_URL = "https://bmclapi2.bangbang93.com/quilt-meta/v3/versions/loader";
+    private static final String BMCLAPI_GAME_META_URL = "https://bmclapi2.bangbang93.com/quilt-meta/v3/versions/game";
 
     public DownloadQuiltUI(Context context, MainActivity activity) {
         super(context, activity);
@@ -53,8 +58,11 @@ public class DownloadQuiltUI extends BaseUI implements View.OnClickListener {
         super.onCreate();
         downloadQuiltUI = activity.findViewById(R.id.ui_install_quilt_list);
 
-        hintLayout = activity.findViewById(R.id.download_quilt_hint_layout);
-        hintLayout.setOnClickListener(this);
+        View hintView = activity.findViewById(R.id.download_quilt_hint_layout);
+        if (hintView instanceof android.widget.LinearLayout) {
+            hintLayout = (android.widget.LinearLayout) hintView;
+            hintLayout.setOnClickListener(this);
+        }
 
         quiltListView = activity.findViewById(R.id.quilt_version_list);
         progressBar = activity.findViewById(R.id.loading_quilt_list_progress);
@@ -80,10 +88,21 @@ public class DownloadQuiltUI extends BaseUI implements View.OnClickListener {
     private void init(){
         new Thread(() -> {
             loadingHandler.sendEmptyMessage(0);
+            String loaderUrl;
+            String gameUrl;
+            if (DownloadUrlSource.getSource(activity.launcherSetting.downloadUrlSource) == 0) {
+                loaderUrl = OFFICIAL_LOADER_META_URL;
+                gameUrl = OFFICIAL_GAME_META_URL;
+            }
+            else {
+                loaderUrl = BMCLAPI_LOADER_META_URL;
+                gameUrl = BMCLAPI_GAME_META_URL;
+            }
             ArrayList<QuiltGameVersion> gameVersions = new ArrayList<>();
             ArrayList<QuiltLoaderVersion> loaderVersions = new ArrayList<>();
+            final boolean[] success = {false};
             try {
-                String gameResponse = NetworkUtils.doGet(NetworkUtils.toURL(GAME_META_URL));
+                String gameResponse = NetworkUtils.doGet(NetworkUtils.toURL(gameUrl));
                 Gson gson = new Gson();
                 QuiltGameVersion[] quiltGameVersions = gson.fromJson(gameResponse, QuiltGameVersion[].class);
                 gameVersions.addAll(Arrays.asList(quiltGameVersions));
@@ -91,7 +110,7 @@ public class DownloadQuiltUI extends BaseUI implements View.OnClickListener {
                 for (QuiltGameVersion version : gameVersions){
                     mcVersions.add(version.version);
                 }
-                String loaderResponse = NetworkUtils.doGet(NetworkUtils.toURL(LOADER_META_URL));
+                String loaderResponse = NetworkUtils.doGet(NetworkUtils.toURL(loaderUrl));
                 QuiltLoaderVersion[] quiltLoaderVersions = gson.fromJson(loaderResponse, QuiltLoaderVersion[].class);
                 loaderVersions.addAll(Arrays.asList(quiltLoaderVersions));
                 if (!mcVersions.contains(version)){
@@ -101,9 +120,17 @@ public class DownloadQuiltUI extends BaseUI implements View.OnClickListener {
                     DownloadQuiltListAdapter downloadQuiltListAdapter = new DownloadQuiltListAdapter(context,activity,version,loaderVersions,install);
                     activity.runOnUiThread(() -> quiltListView.setAdapter(downloadQuiltListAdapter));
                     loadingHandler.sendEmptyMessage(1);
+                    success[0] = true;
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                activity.runOnUiThread(() -> Toast.makeText(context,
+                        "Quilt 版本列表加载失败：" + e.getMessage()
+                                + "\n请检查网络或切换下载源（设置 → 启动器 → 下载设置）",
+                        Toast.LENGTH_LONG).show());
+            }
+            if (!success[0]) {
+                loadingHandler.sendEmptyMessage(2);
             }
         }).start();
     }

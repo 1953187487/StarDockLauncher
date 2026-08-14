@@ -71,12 +71,28 @@ public class TunnelMultiplayerFragment extends Fragment {
                 Toast.makeText(requireContext(), getString(R.string.multiplayer_no_tunnel), Toast.LENGTH_SHORT).show();
                 return;
             }
-            String localIp = getLocalIpAddress();
-            String id = generateTunnelId(localIp);
-            copyToClipboard(requireContext(), id);
-            Toast.makeText(requireContext(),
-                    getString(R.string.multiplayer_tunnel_id_copied) + "\nID：" + id,
-                    Toast.LENGTH_LONG).show();
+            int port = com.tungsten.hmclpe.multiplayer.Hin2nConfig.getGamePort(requireContext());
+            com.tungsten.hmclpe.multiplayer.MultiplayerSessionManager.get().createRoom(requireContext(),
+                    port,
+                    new com.tungsten.hmclpe.multiplayer.MultiplayerSessionManager.Listener() {
+                        @Override
+                        public void onStateChanged(@NonNull com.tungsten.hmclpe.multiplayer.Hin2nRoom room) {
+                        }
+
+                        @Override
+                        public void onPeerConnected(@NonNull com.tungsten.hmclpe.multiplayer.Hin2nRoom room) {
+                            String id = generateTunnelId(getLocalIpAddress());
+                            copyToClipboard(requireContext(), id);
+                            requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(),
+                                    getString(R.string.multiplayer_tunnel_id_copied) + "\nID：" + id + "\n房间号：" + room.getRoomCode(),
+                                    Toast.LENGTH_LONG).show());
+                        }
+
+                        @Override
+                        public void onError(@NonNull com.tungsten.hmclpe.multiplayer.Hin2nRoom room, @NonNull String message) {
+                            requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show());
+                        }
+                    });
         });
 
         btnJoin.setOnClickListener(v -> {
@@ -89,9 +105,27 @@ public class TunnelMultiplayerFragment extends Fragment {
                 Toast.makeText(requireContext(), "连接 ID 格式无效", Toast.LENGTH_SHORT).show();
                 return;
             }
-            Toast.makeText(requireContext(),
-                    "已尝试通过内网穿透加入：" + id + "\n请启动游戏，在多人游戏中查看",
-                    Toast.LENGTH_LONG).show();
+            String roomCode = id.startsWith("ROOM-") ? id : ("ROOM-" + id.replaceFirst("^TUNNEL-", ""));
+            com.tungsten.hmclpe.multiplayer.MultiplayerSessionManager.get().joinRoom(requireContext(),
+                    roomCode,
+                    com.tungsten.hmclpe.multiplayer.Hin2nConfig.getGamePort(requireContext()),
+                    new com.tungsten.hmclpe.multiplayer.MultiplayerSessionManager.Listener() {
+                        @Override
+                        public void onStateChanged(@NonNull com.tungsten.hmclpe.multiplayer.Hin2nRoom room) {
+                        }
+
+                        @Override
+                        public void onPeerConnected(@NonNull com.tungsten.hmclpe.multiplayer.Hin2nRoom room) {
+                            requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(),
+                                    "已通过内网穿透加入：" + room.getRoomCode(),
+                                    Toast.LENGTH_LONG).show());
+                        }
+
+                        @Override
+                        public void onError(@NonNull com.tungsten.hmclpe.multiplayer.Hin2nRoom room, @NonNull String message) {
+                            requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show());
+                        }
+                    });
         });
     }
 

@@ -38,6 +38,24 @@
     <string name="loading_hint_java_8">正在检查 Java 8…</string>
     <string name="loading_hint_java_17">正在检查 Java 17…</string>
     <string name="loading_hint_ready">准备就绪，即将进入启动器…</string>
+    <string name="agreement_title_first_run">StarDockLauncher 协议与首次启动声明</string>
+    <string name="agreement_title_update">StarDockLauncher 更新与 JAVA 运行时协议</string>
+    <string name="agreement_section_eula_title">用户须知协议（EULA）</string>
+    <string name="agreement_section_gpl_title">开源协议（GPL-3.0）</string>
+    <string name="agreement_section_privacy_title">隐私与权限说明</string>
+    <string name="agreement_section_changelog_title">v1.0.2 更新内容</string>
+    <string name="agreement_section_java_update_title">JAVA 运行时更新</string>
+    <string name="agreement_ack_eula">我已阅读并同意上述《用户须知协议》。</string>
+    <string name="agreement_ack_gpl">我已阅读并同意上述《开源协议（GPL-3.0）》。</string>
+    <string name="agreement_ack_data">我已阅读并同意上述隐私与权限说明。</string>
+    <string name="agreement_action_accept">同意并继续</string>
+    <string name="agreement_action_reject">不同意</string>
+    <string name="agreement_action_later">稍后</string>
+    <string name="agreement_rejected_title">无法继续</string>
+    <string name="agreement_rejected_message">您必须同意协议才能使用 StarDockLauncher，应用即将退出。</string>
+    <string name="agreement_eula_text">欢迎使用 StarDockLauncher，本协议是您与 StarDockLauncher 开发者之间关于使用本启动器的法律协议。请在使用前仔细阅读以下条款：\n\n1. 本启动器为免费开源软件，仅供学习与个人合法用途使用，不得用于任何违反中华人民共和国法律法规的活动。\n2. 启动器不对您因使用本软件而造成的任何损失负责，包括但不限于游戏数据丢失、账号封禁、设备损坏。\n3. 启动器不对 Minecraft、HMCL-PE、Mojang、Microsoft 等任何上游方承担连带责任。\n4. 您使用启动器即表示您已满 18 周岁或在监护人同意下使用。\n5. 启动器不内置任何 Minecraft 客户端本体，需自行准备正版账号。\n6. 您不得对本启动器进行反编译后再发布为闭源产品。</string>
+    <string name="agreement_gpl_summary">本启动器基于 HMCL-PE（GPL-3.0）二次开发，必须遵守 GPL-3.0 强 copyleft 条款：\n\n• 任何基于本启动器的衍生作品必须同样以 GPL-3.0 发布；\n• 任何分发本启动器 APK 的渠道必须同时提供完整对应源代码；\n• 任何分发行为必须随附 GPL-3.0 协议原文与第三方组件声明。\n\n完整 GPL-3.0 协议原文与本启动器对应源代码见「关于」页。</string>
+    <string name="agreement_changelog_v102">v1.0.2 主要更新：\n\n• 补齐 GPL-3.0 合规材料：LICENSE 全文、THIRD-PARTY-LICENSES 第三方声明、关于页提供源代码仓库入口。\n• 修复加载器下载源：Forge 重定向跟随、Fabric/Quilt/LiteLoader 三源切换、BMCLAPI2 镜像替换。\n• 修复搜索网络层 User-Agent 与 15s 超时（适配 Modrinth API）。\n• 重做游戏内联机菜单：补全 Hin2n 房间创建/加入/信息/帮助的完整链路。\n• 修复悬浮窗 onTouchEvent 除零 NaN 风险。\n• 新增首次启动协议与更新协议弹窗，强制同意后才能进入。</string>
     <string name="loading_hint_failed">核心资源安装/更新失败，请检查网络并重启应用，如果无效，请联系开发者</string>
 
     <string name="launcher_scroll_text_account">账户</string>

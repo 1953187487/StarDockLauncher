@@ -233,9 +233,35 @@ public class InstallLauncherFile {
         activity.loadingText.setText(activity.getString(R.string.loading_hint_ready));
         activity.loadingProgress.setProgress(100);
         activity.loadingProgressText.setText("100 %");
-        Intent intent = new Intent(activity,MainActivity.class);
+        com.tungsten.hmclpe.launcher.agreement.AgreementGate.checkAndShow(
+                activity,
+                activity.getString(R.string.agreement_eula_text),
+                activity.getString(R.string.agreement_gpl_summary),
+                activity.getString(R.string.agreement_changelog_v102),
+                new com.tungsten.hmclpe.launcher.agreement.AgreementGate.OnResolved() {
+                    @Override
+                    public void onAccepted() {
+                        activity.runOnUiThread(() -> proceedToMain(activity));
+                    }
+
+                    @Override
+                    public void onRejected() {
+                        activity.runOnUiThread(() -> {
+                            new androidx.appcompat.app.AlertDialog.Builder(activity)
+                                    .setTitle(R.string.agreement_rejected_title)
+                                    .setMessage(R.string.agreement_rejected_message)
+                                    .setCancelable(false)
+                                    .setPositiveButton(android.R.string.ok, (d, w) -> activity.finishAffinity())
+                                    .show();
+                        });
+                    }
+                });
+    }
+
+    private static void proceedToMain(SplashActivity activity) {
+        Intent intent = new Intent(activity, MainActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean("fullscreen",activity.launcherSetting.fullscreen);
+        bundle.putBoolean("fullscreen", activity.launcherSetting.fullscreen);
         intent.putExtras(bundle);
         activity.startActivity(intent);
         activity.finish();

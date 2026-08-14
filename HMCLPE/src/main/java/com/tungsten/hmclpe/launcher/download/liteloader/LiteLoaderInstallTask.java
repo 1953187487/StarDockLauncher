@@ -46,7 +46,7 @@ public class LiteLoaderInstallTask extends AsyncTask<LiteLoaderVersion,Integer, 
         LiteLoaderVersion liteLoaderVersion = liteLoaderVersions[0];
         Library library = new Library(
                 new Artifact("com.mumfrey", "liteloader", liteLoaderVersion.getVersion()),
-                "http://dl.liteloader.com/versions/"
+                "https://bmclapi2.bangbang93.com/liteloader/download?version=" + liteLoaderVersion.getVersion()
         );
         Version rawPatch = new Version(LibraryAnalyzer.LibraryType.LITELOADER.getPatchId(),
                 liteLoaderVersion.getVersion(),
@@ -56,11 +56,19 @@ public class LiteLoaderInstallTask extends AsyncTask<LiteLoaderVersion,Integer, 
                 Lang.merge(liteLoaderVersion.getLibraries(), Collections.singleton(library)))
                 .setLogging(Collections.emptyMap());
         ArrayList<DownloadTaskListBean> list = new ArrayList<>();
+        int downloadSource = DownloadUrlSource.getSource(activity.launcherSetting.downloadUrlSource);
         String head;
         for (Library lib : rawPatch.getLibraries()){
             String url;
-            if (lib.getDownload().getUrl() == null || lib.getDownload().getUrl().equals("") || lib.getDownload().getUrl().startsWith("https://libraries.minecraft.net")) {
-                if (DownloadUrlSource.getSource(activity.launcherSetting.downloadUrlSource) == 1) {
+            String libUrl = lib.getDownload().getUrl();
+            if (libUrl == null || libUrl.isEmpty()
+                    || libUrl.startsWith("https://libraries.minecraft.net")
+                    || libUrl.startsWith("http://dl.liteloader.com/versions/")
+                    || libUrl.startsWith("https://dl.liteloader.com/versions/")) {
+                if (downloadSource == 0) {
+                    head = "https://libraries.minecraft.net/";
+                }
+                else if (downloadSource == 1) {
                     head = "https://bmclapi2.bangbang93.com/maven/";
                 }
                 else {
@@ -68,11 +76,8 @@ public class LiteLoaderInstallTask extends AsyncTask<LiteLoaderVersion,Integer, 
                 }
                 url = head + lib.getPath();
             }
-            else if (lib.getDownload().getUrl().startsWith("http://dl.liteloader.com/versions/")) {
-                url = "https://bmclapi2.bangbang93.com/liteloader/download?version=" + liteLoaderVersion.getVersion();
-            }
             else {
-                url = lib.getDownload().getUrl();
+                url = libUrl;
             }
             DownloadTaskListBean bean = new DownloadTaskListBean(lib.getArtifactFileName(),
                     url,

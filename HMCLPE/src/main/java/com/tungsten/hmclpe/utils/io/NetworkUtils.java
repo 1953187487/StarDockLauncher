@@ -83,12 +83,14 @@ public final class NetworkUtils {
             // Docs: https://alist.nn.ci/zh/guide/drivers/baidu.html
             connection.setRequestProperty("User-Agent", "pan.baidu.com");
         } else {
-            // Default
-            connection.setRequestProperty("User-Agent", "HMCL-PE/2.0.7");
+            // Default: identify as StarDockLauncher so APIs that require a
+            // descriptive User-Agent (Modrinth, CurseForge, etc.) accept us.
+            connection.setRequestProperty("User-Agent", "StarDockLauncher/1.0.2 (https://github.com/1953187487/StarDockLauncher)");
+            connection.setRequestProperty("Accept", "application/json");
         }
         connection.setUseCaches(false);
-        connection.setConnectTimeout(5000);
-        connection.setReadTimeout(5000);
+        connection.setConnectTimeout(15000);
+        connection.setReadTimeout(15000);
         connection.setRequestProperty("Accept-Language", Locale.getDefault().toString());
         return connection;
     }
@@ -143,8 +145,8 @@ public final class NetworkUtils {
         while (true) {
 
             conn.setUseCaches(false);
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(5000);
+            conn.setConnectTimeout(15000);
+            conn.setReadTimeout(15000);
             conn.setInstanceFollowRedirects(false);
             Map<String, List<String>> properties = conn.getRequestProperties();
             String method = conn.getRequestMethod();

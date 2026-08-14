@@ -45,7 +45,7 @@ public class DownloadLiteLoaderUI extends BaseUI implements View.OnClickListener
     private ProgressBar progressBar;
     private TextView back;
 
-    public static final String LITELOADER_LIST = "http://dl.liteloader.com/versions/versions.json";
+    public static final String LITELOADER_LIST = "https://dl.liteloader.com/versions/versions.json";
 
     public DownloadLiteLoaderUI(Context context, MainActivity activity) {
         super(context, activity);
@@ -56,8 +56,11 @@ public class DownloadLiteLoaderUI extends BaseUI implements View.OnClickListener
         super.onCreate();
         downloadLiteLoaderUI = activity.findViewById(R.id.ui_install_lite_loader_list);
 
-        hintLayout = activity.findViewById(R.id.download_lite_loader_hint_layout);
-        hintLayout.setOnClickListener(this);
+        View hintView = activity.findViewById(R.id.download_lite_loader_hint_layout);
+        if (hintView instanceof android.widget.LinearLayout) {
+            hintLayout = (android.widget.LinearLayout) hintView;
+            hintLayout.setOnClickListener(this);
+        }
 
         liteLoaderListView = activity.findViewById(R.id.lite_loader_version_list);
         progressBar = activity.findViewById(R.id.loading_lite_loader_list_progress);
@@ -113,6 +116,11 @@ public class DownloadLiteLoaderUI extends BaseUI implements View.OnClickListener
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                activity.runOnUiThread(() -> android.widget.Toast.makeText(context,
+                        "LiteLoader 版本列表加载失败：" + e.getMessage()
+                                + "\nLiteLoader 已停止维护，新版 MC 可能不可用",
+                        android.widget.Toast.LENGTH_LONG).show());
+                loadingHandler.sendEmptyMessage(2);
             }
         }).start();
     }

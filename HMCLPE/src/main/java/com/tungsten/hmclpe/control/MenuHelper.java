@@ -449,7 +449,11 @@ public class MenuHelper implements CompoundButton.OnCheckedChangeListener, View.
     @Override
     public void onClick(View view) {
         if (view == openHin2nMenu) {
-
+            if (!(context instanceof AppCompatActivity)) {
+                Toast.makeText(context, R.string.multiplayer_unavailable, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            com.tungsten.hmclpe.multiplayer.Hin2nDialogController.show((AppCompatActivity) context);
         }
         if (view == forceExit) {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);

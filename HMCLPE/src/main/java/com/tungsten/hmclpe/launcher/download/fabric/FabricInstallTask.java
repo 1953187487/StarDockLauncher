@@ -50,7 +50,14 @@ public class FabricInstallTask extends AsyncTask<FabricLoaderVersion,Integer, Ve
     @Override
     protected Version doInBackground(FabricLoaderVersion... fabricLoaderVersions) {
         FabricLoaderVersion fabricVersion = fabricLoaderVersions[0];
-        String patchUrl = "https://meta.fabricmc.net/v2/versions/loader/" + mcVersion + "/" + fabricVersion.version + "/profile/json";
+        int downloadSource = DownloadUrlSource.getSource(activity.launcherSetting.downloadUrlSource);
+        String patchUrl;
+        if (downloadSource == 0) {
+            patchUrl = "https://meta.fabricmc.net/v2/versions/loader/" + mcVersion + "/" + fabricVersion.version + "/profile/json";
+        }
+        else {
+            patchUrl = "https://bmclapi2.bangbang93.com/fabric-meta/v2/versions/loader/" + mcVersion + "/" + fabricVersion.version + "/profile/json";
+        }
         try {
             String patchStr = NetworkUtils.doGet(NetworkUtils.toURL(patchUrl));
             Gson gson = JsonUtils.defaultGsonBuilder()
@@ -64,10 +71,10 @@ public class FabricInstallTask extends AsyncTask<FabricLoaderVersion,Integer, Ve
             String head;
             for (Library library : patch.getLibraries()){
                 String url;
-                if (DownloadUrlSource.getSource(activity.launcherSetting.downloadUrlSource) == 0) {
+                if (downloadSource == 0) {
                     url = library.getDownload().getUrl();
                 }
-                else if (DownloadUrlSource.getSource(activity.launcherSetting.downloadUrlSource) == 1) {
+                else if (downloadSource == 1) {
                     head = DownloadUrlSource.getSubUrl(1,DownloadUrlSource.LIBRARIES) + "/";
                     url = head + library.getPath();
                 }

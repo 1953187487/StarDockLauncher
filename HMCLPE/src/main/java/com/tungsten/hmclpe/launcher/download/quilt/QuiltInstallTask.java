@@ -50,7 +50,14 @@ public class QuiltInstallTask extends AsyncTask<QuiltLoaderVersion,Integer, Vers
     @Override
     protected Version doInBackground(QuiltLoaderVersion... quiltLoaderVersions) {
         QuiltLoaderVersion quiltVersion = quiltLoaderVersions[0];
-        String patchUrl = "https://meta.quiltmc.org/v3/versions/loader/" + mcVersion + "/" + quiltVersion.version + "/profile/json";
+        int downloadSource = DownloadUrlSource.getSource(activity.launcherSetting.downloadUrlSource);
+        String patchUrl;
+        if (downloadSource == 0) {
+            patchUrl = "https://meta.quiltmc.org/v3/versions/loader/" + mcVersion + "/" + quiltVersion.version + "/profile/json";
+        }
+        else {
+            patchUrl = "https://bmclapi2.bangbang93.com/quilt-meta/v3/versions/loader/" + mcVersion + "/" + quiltVersion.version + "/profile/json";
+        }
         try {
             String patchStr = NetworkUtils.doGet(NetworkUtils.toURL(patchUrl));
             Gson gson = JsonUtils.defaultGsonBuilder()
@@ -64,10 +71,10 @@ public class QuiltInstallTask extends AsyncTask<QuiltLoaderVersion,Integer, Vers
             String head;
             for (Library library : patch.getLibraries()){
                 String url;
-                if (DownloadUrlSource.getSource(activity.launcherSetting.downloadUrlSource) == 0) {
+                if (downloadSource == 0) {
                     url = library.getDownload().getUrl();
                 }
-                else if (DownloadUrlSource.getSource(activity.launcherSetting.downloadUrlSource) == 1) {
+                else if (downloadSource == 1) {
                     head = DownloadUrlSource.getSubUrl(1,DownloadUrlSource.LIBRARIES) + "/";
                     url = head + library.getPath();
                 }

@@ -1,0 +1,213 @@
+StarDockLauncher — Third-Party Notices and Licenses
+====================================================
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+The full text of the GNU General Public License v3 is available in the
+LICENSE file in the root of this repository, and inside the application
+under the "About / Open Source Licenses" screen.
+
+
+----------------------------------------------------------------------
+Upstream Base Project (this software is a derivative work of)
+----------------------------------------------------------------------
+
+HMCL-PE — Hello Minecraft! Launcher: Pocket Edition
+  Source: https://github.com/HMCL-dev/HMCL-PE  (archived on 2025-08-07,
+          read-only; active community fork: https://github.com/Tungstend/HMCL-PE)
+  License: GNU General Public License v3.0
+  Copyright (c) HMCL-dev and HMCL-PE contributors.
+
+  StarDockLauncher v1.0.0 and later is a derivative of HMCL-PE. The
+  HMCL-PE team is the original author of the launcher kernel, UI
+  framework, download pipeline, account system, Java runtime manager
+  and many of the supporting modules reused or adapted here.
+
+  In accordance with GPL-3.0 §5 and §6, this NOTICE file preserves the
+  upstream copyright statement and lists each upstream component whose
+  source code is reused (in whole or in part) inside StarDockLauncher.
+
+
+----------------------------------------------------------------------
+Network mirror services used at runtime (no code bundled, HTTPS only)
+----------------------------------------------------------------------
+
+12) Bangbang93 BMCLAPI2 mirror (used as the Chinese-mainland download mirror)
+    - Endpoint: https://bmclapi2.bangbang93.com
+    - License:  No code or resource bundle is distributed inside this
+                repository. The launcher talks to BMCLAPI2 over HTTPS
+                according to the mirror's public API contract; please
+                follow the upstream mirror's terms of service.
+    - Notes:    When the user switches the in-launcher "download source"
+                to "BMCLAPI", every loader / resource / library request
+                is routed through BMCLAPI2 (Fabric / Quilt / LiteLoader
+                metadata + artifacts, Forge maven, Mojang assets and
+                libraries).
+
+13) MCBBS download mirror
+    - Endpoint: https://download.mcbbs.net
+    - License:  Same as BMCLAPI2 above — runtime HTTPS requests only,
+                no code or resource bundle distributed.
+    - Notes:    Used when the user picks "MCBBS" as the download source.
+
+
+----------------------------------------------------------------------
+Components embedded in this repository
+----------------------------------------------------------------------
+
+The following modules are vendored subtrees of upstream projects and
+inherit their respective upstream licenses. Each module is located
+inside this repository under the path shown, and the original license
+text ships with that upstream source.
+
+1) HMCLPE/
+   - Upstream: HMCL-PE (https://github.com/HMCL-dev/HMCL-PE)
+   - License:  GNU General Public License v3.0
+   - Notes:    Main application module (UI, launcher, downloads,
+               accounts, Java runtime, controls, settings).
+
+2) PojavLauncher/
+   - Upstream: PojavLauncher (https://github.com/PojavLauncherTeam/PojavLauncher)
+   - License:  MIT License
+   - Notes:    Game-launch kernel used by HMCL-PE: JVM bring-up, OpenGL
+               rendering bridge, input bridge, resource loading.
+
+3) Boat/
+   - Upstream: Boat (https://github.com/AngelAuraMC/Boat) (formerly
+               part of the PojavLauncher ecosystem)
+   - License:  MIT License
+   - Notes:    Alternative renderer / launch kernel module that HMCL-PE
+               can use instead of PojavLauncher.
+
+4) FilePicker/
+   - Upstream: Android FilePicker, maintained inside the PojavLauncher
+               / HMCL-PE ecosystem (typically a fork of
+               https://github.com/DroidNinja/Android-FilePicker,
+               Apache-2.0).
+   - License:  Apache License 2.0
+   - Notes:    File picker UI used by HMCL-PE and StarDockLauncher.
+
+5) ZipTools/
+   - Upstream: ZipTools (inside HMCL-PE ecosystem; based on Apache
+               Commons / zip4j / aapt-derived sources, Apache-2.0).
+   - License:  Apache License 2.0
+   - Notes:    ZIP archive packing / unpacking helpers.
+
+
+----------------------------------------------------------------------
+Upstream runtime / library components used by HMCL-PE
+----------------------------------------------------------------------
+
+These are referenced in HMCL-PE's README "Third Party Components"
+section. Their licenses apply to the corresponding embedded /
+linked artifacts inside StarDockLauncher's APK; StarDockLauncher does
+not redistribute their full source here, but the upstream sources
+are linked below so end users can obtain them.
+
+6) HMCL (desktop, upstream inspiration for several design choices)
+   - https://github.com/huanghongxun/HMCL
+   - License:  GPL-3.0
+
+7) Hin2n — Android NDK N2N VPN client (LAN tunneling)
+   - https://github.com/simsun/hin2n
+   - License:  GPL-3.0
+   - Notes:    Used by the "联机 / LAN tunneling" feature inside the
+               in-game floating menu and the launcher multiplayer
+               helper screens.
+
+8) authlib-injector — Minecraft third-party Yggdrasil auth helper
+   - https://github.com/yushijinhun/authlib-injector
+   - License:  MIT License
+   - Notes:    Embedded as a runtime JAR; invoked by HMCL-PE for
+               authlib-injector external server logins.
+
+9) nide8auth — NIDE8 external auth helper
+   - https://github.com/yushijinhun/nide8auth
+   - License:  MIT License
+
+10) forge-install-bootstrapper — Forge installer bootstrap helper
+    - https://github.com/bs-community/forge-install-bootstrapper
+    - License:  MIT License
+
+11) TouchInjector — Android touch event injection helper (in-game)
+    - https://github.com/AngelAuraMC/TouchInjector
+    - License:  GPL-3.0
+
+
+----------------------------------------------------------------------
+Other third-party libraries used inside the build
+----------------------------------------------------------------------
+
+This list is non-exhaustive and is intended to satisfy the GPL-3.0
+requirement to "give any other recipients of the Program a copy of
+this License along with the Program" (§§4, 5, 6). License texts of
+the following Gradle-resolved libraries are not redistributed inside
+this source tree; they ship with their respective upstream artifacts
+and are available from the upstream projects:
+
+  - AndroidX, Material Components for Android        — Apache-2.0
+  - Glide image loading library                      — BSD / Apache-2.0
+  - OkHttp / Okio (Square)                           — Apache-2.0
+  - Gson (Google)                                    — Apache-2.0
+  - Apache Commons libraries                         — Apache-2.0
+  - OpenGL ES / EGL platform headers                 — vendor-specific
+  - OpenJDK / Termux:bootstrap runtime binaries      — GPL-2.0 with
+                                                       Classpath
+                                                       Exception
+
+A complete bill-of-materials is available at the source repository
+listed below; users rebuilding from source can inspect the Gradle
+dependency graph via:
+
+  ./gradlew :HMCLPE:dependencies
+
+
+----------------------------------------------------------------------
+Corresponding Source (GPL-3.0 §6)
+----------------------------------------------------------------------
+
+For each release of StarDockLauncher published on GitHub, the
+complete corresponding source code (this repository at the matching
+tag) is provided in three ways, in accordance with GPL-3.0 §6(b)/(d):
+
+  (a) Source repository: https://github.com/1953187487/StarDockLauncher
+      Every release tag links the exact commit that produced the APK.
+
+  (b) In-app access: StarDockLauncher's "关于 (About)" screen
+      contains a "开源许可证 / Open Source Licenses" entry that
+      shows this NOTICE and the full GPL-3.0 license text, plus
+      the source repository URL and release tag.
+
+  (c) Release artifact: the v1.0.2 (and later) GitHub Release
+      includes a source archive named
+        StarDockLauncher-v<version>-sources.zip
+      attached alongside the APK.
+
+The GPL-3.0 written offer to provide Corresponding Source on a
+durable physical medium is hereby extended for the maximum period
+allowed (three years from the date of release) and continues for as
+long as the project offers spare parts or customer support for the
+released version.
+
+
+----------------------------------------------------------------------
+Trademark notice
+----------------------------------------------------------------------
+
+"StarDockLauncher" is an independent community project. It is not
+affiliated with, endorsed by, or sponsored by Mojang AB, Microsoft
+Corporation, HMCL-dev, the PojavLauncher team, or any of the
+upstream contributors listed above. "Minecraft" is a trademark of
+Mojang AB. All other trademarks referenced in this NOTICE are the
+property of their respective owners.

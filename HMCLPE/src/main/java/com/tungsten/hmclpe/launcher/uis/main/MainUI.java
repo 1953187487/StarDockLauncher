@@ -240,7 +240,9 @@ public class MainUI extends BaseUI implements View.OnClickListener, AdapterView.
             activity.uiManager.switchMainUI(activity.uiManager.downloadUI);
         }
         if (v == startMultiPlayerUI){
-
+            android.content.Intent intent = new android.content.Intent(activity,
+                    com.tungsten.hmclpe.launcher.uis.multiplayer.MultiplayerActivity.class);
+            activity.startActivity(intent);
         }
         if (v == startSettingUI){
             activity.uiManager.switchMainUI(activity.uiManager.settingUI);

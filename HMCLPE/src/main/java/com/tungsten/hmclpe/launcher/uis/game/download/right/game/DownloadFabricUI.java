@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -56,9 +57,11 @@ public class DownloadFabricUI extends BaseUI implements View.OnClickListener {
     public void onCreate() {
         super.onCreate();
         downloadFabricUI = activity.findViewById(R.id.ui_install_fabric_list);
-
-        hintLayout = activity.findViewById(R.id.download_fabric_hint_layout);
-        hintLayout.setOnClickListener(this);
+        View hintView = activity.findViewById(R.id.download_fabric_hint_layout);
+        if (hintView instanceof android.widget.LinearLayout) {
+            hintLayout = (android.widget.LinearLayout) hintView;
+            hintLayout.setOnClickListener(this);
+        }
 
         fabricListView = activity.findViewById(R.id.fabric_version_list);
         progressBar = activity.findViewById(R.id.loading_fabric_list_progress);
@@ -96,6 +99,7 @@ public class DownloadFabricUI extends BaseUI implements View.OnClickListener {
             }
             ArrayList<FabricGameVersion> gameVersions = new ArrayList<>();
             ArrayList<FabricLoaderVersion> loaderVersions = new ArrayList<>();
+            final boolean[] success = {false};
             try {
                 String gameResponse = NetworkUtils.doGet(NetworkUtils.toURL(gameUrl));
                 Gson gson = new Gson();
@@ -115,9 +119,17 @@ public class DownloadFabricUI extends BaseUI implements View.OnClickListener {
                     DownloadFabricListAdapter downloadFabricListAdapter = new DownloadFabricListAdapter(context,activity,version,loaderVersions,install);
                     activity.runOnUiThread(() -> fabricListView.setAdapter(downloadFabricListAdapter));
                     loadingHandler.sendEmptyMessage(1);
+                    success[0] = true;
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                activity.runOnUiThread(() -> Toast.makeText(context,
+                        "Fabric 版本列表加载失败：" + e.getMessage()
+                                + "\n请检查网络或切换下载源（设置 → 启动器 → 下载设置）",
+                        Toast.LENGTH_LONG).show());
+            }
+            if (!success[0]) {
+                loadingHandler.sendEmptyMessage(2);
             }
         }).start();
     }

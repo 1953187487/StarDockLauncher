@@ -2,9 +2,22 @@
 
 > 我的世界 Java 版 · 移动端启动器
 
-StarDockLauncher 是一款面向 Android 的《Minecraft：Java Edition》启动器（APK，兼容 Android 8.0 – Android 15）。自 v1.0.0 正式版起，项目以开源启动器 [HMCL-PE](https://github.com/HMCL-dev/HMCL-PE)（GPL-3.0 协议）源码为基座进行二次开发与品牌化改造，在保留其成熟启动内核与丰富功能的基础上，重写了品牌信息、关于 / 反馈 / 捐赠等页面，并持续迭代界面与扩展能力。
+StarDockLauncher 是一款面向 Android 的《Minecraft：Java Edition》启动器（APK，兼容 Android 8.0 – Android 15）。自 v1.0.0 正式版起，本项目以开源启动器 [HMCL-PE](https://github.com/HMCL-dev/HMCL-PE)（**GNU General Public License v3.0**）源码为基座进行二次开发与品牌化改造，在保留其成熟启动内核与丰富功能的基础上，重写了品牌信息、关于 / 反馈 / 捐赠等页面，并持续迭代界面与扩展能力。
 
 > **版本沿革**：早期预测试版（v0.0.1 – v0.0.9）基于 [PojavLauncher](https://github.com/PojavLauncherTeam/PojavLauncher)（MIT 协议）源码二次开发；自 v1.0.0 正式版起切换至 HMCL-PE 基座，并启用 StarDockLauncher 全新品牌。
+
+## 开源协议与法律声明
+
+StarDockLauncher 是 **HMCL-PE**（GPL-3.0）的衍生作品，因此本项目**整体以 GPL-3.0 协议发布**（详见根目录 [`LICENSE`](./LICENSE)）。
+
+按 GPL-3.0 第 5、6 条的义务，本仓库同时提供：
+
+- 根目录 `LICENSE` —— GPL-3.0 协议全文
+- 根目录 [`THIRD-PARTY-LICENSES`](./THIRD-PARTY-LICENSES) —— 上游署名、第三方组件、对应源代码获取方式
+- App 内「关于」页面 → 「开源许可证」入口 —— 应用内查看 GPL-3.0 全文、第三方声明、本项目仓库与对应 Release tag
+- 每个 GitHub Release 附带的 `StarDockLauncher-v<version>-sources.zip` —— 完整对应源代码
+
+如对本项目代码或协议有任何疑问，可在 App 内通过「反馈」入口与我们联系。
 
 ## 基于 HMCL-PE 引入了什么
 

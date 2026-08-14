@@ -62,6 +62,48 @@
                 android:layout_marginTop="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@string/about_license_title"
+                android:textSize="@dimen/text_size_middle"
+                android:textStyle="bold"
+                android:textColor="@color/colorPureBlack"/>
+
+            <LinearLayout
+                android:layout_marginTop="8dp"
+                android:padding="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/launcher_view_light_gray">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_license_body"
+                    android:textSize="14sp"
+                    android:textColor="@color/colorPureBlack"/>
+
+                <Button
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/about_license_view_btn"
+                    android:text="@string/about_license_view_btn"
+                    android:textSize="14sp"/>
+
+                <Button
+                    android:layout_marginTop="6dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/about_license_source_btn"
+                    android:text="@string/about_license_source_btn"
+                    android:textSize="14sp"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_marginTop="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/about_basis_title"
                 android:textSize="@dimen/text_size_middle"
                 android:textStyle="bold"

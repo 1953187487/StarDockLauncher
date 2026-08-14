@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.X509TrustManager;
 
-import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -52,7 +51,6 @@ public class ForgeDownloadTask extends AsyncTask<ForgeVersion,Integer,Exception>
         String mirror = null;
         try {
             String baseUrl = "https://bmclapi2.bangbang93.com/forge/download/" + forgeVersion.getBuild();
-            Request request = new Request.Builder().url(baseUrl).build();
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
             builder.sslSocketFactory(SSLSocketClient.getSSLSocketFactory(),(X509TrustManager) SSLSocketClient.getTrustManager()[0]);
             builder.hostnameVerifier(SSLSocketClient.getHostnameVerifier());
@@ -62,23 +60,31 @@ public class ForgeDownloadTask extends AsyncTask<ForgeVersion,Integer,Exception>
             builder.followRedirects(false);
             builder.followSslRedirects(true);
             OkHttpClient okHttpClient = builder.build();
-            Call call = okHttpClient.newCall(request);
-            Response response = call.execute();
-            String redirectUrl = response.headers().get("Location").replace("/maven","");
+            String redirectUrl = followForgeRedirect(okHttpClient, baseUrl, 0);
+            if (redirectUrl == null) {
+                throw new IOException("Failed to resolve Forge installer redirect");
+            }
             String base;
-            if (DownloadUrlSource.getSource(activity.launcherSetting.downloadUrlSource) == 0) {
+            int downloadSource = DownloadUrlSource.getSource(activity.launcherSetting.downloadUrlSource);
+            if (downloadSource == 0) {
                 base = "https://maven.minecraftforge.net";
             }
-            else if (DownloadUrlSource.getSource(activity.launcherSetting.downloadUrlSource) == 1) {
+            else if (downloadSource == 1) {
                 base = "https://bmclapi2.bangbang93.com/maven";
             }
             else {
                 base = "https://download.mcbbs.net/maven";
             }
             mirror = base + redirectUrl;
+            if (mirror == null) {
+                throw new IOException("Forge installer URL could not be resolved from " + baseUrl);
+            }
         } catch (IOException e) {
             e.printStackTrace();
             if (!isCancelled()) return e;
+        }
+        if (mirror == null) {
+            return new Exception("Failed to resolve Forge installer URL");
         }
         String path = AppManifest.INSTALL_DIR + "/forge/forge-installer.jar";
         FileUtils.deleteDirectory(AppManifest.INSTALL_DIR);
@@ -147,5 +153,35 @@ public class ForgeDownloadTask extends AsyncTask<ForgeVersion,Integer,Exception>
     public interface DownloadForgeCallback{
         void onStart();
         void onFinish(Exception e);
+    }
+
+    private static String followForgeRedirect(OkHttpClient client, String url, int depth) throws IOException {
+        if (depth > 10) {
+            throw new IOException("Too many Forge redirect hops");
+        }
+        Request request = new Request.Builder().url(url).build();
+        Response response = client.newCall(request).execute();
+        try {
+            int code = response.code();
+            if (code == 200) {
+                return url.startsWith("https://maven.minecraftforge.net/")
+                        ? url.substring("https://maven.minecraftforge.net".length())
+                        : url;
+            }
+            if (code >= 300 && code <= 307 && code != 304 && code != 306) {
+                String location = response.header("Location");
+                if (location == null || location.isEmpty()) {
+                    throw new IOException("Forge installer redirect has no Location header (HTTP " + code + ")");
+                }
+                if (!location.startsWith("http://") && !location.startsWith("https://")) {
+                    String base = url.substring(0, url.indexOf("/", "https://".length() + 1));
+                    location = base + location;
+                }
+                return followForgeRedirect(client, location, depth + 1);
+            }
+            throw new IOException("Unexpected Forge installer response: HTTP " + code);
+        } finally {
+            response.close();
+        }
     }
 }
