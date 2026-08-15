@@ -86,6 +86,14 @@
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.HelloMinecraftLauncherPocketEdition"/>
         <activity
+            android:name=".launcher.HomeActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/Theme.StarDock.Main"/>
+        <activity
+            android:name=".launcher.multiplayer.MultiplayerActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/Theme.StarDock.Main"/>
+        <activity
             android:name=".auth.microsoft.MicrosoftLoginActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.HelloMinecraftLauncherPocketEdition"/>

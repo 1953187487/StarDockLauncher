@@ -233,7 +233,7 @@ public class InstallLauncherFile {
         activity.loadingText.setText(activity.getString(R.string.loading_hint_ready));
         activity.loadingProgress.setProgress(100);
         activity.loadingProgressText.setText("100 %");
-        Intent intent = new Intent(activity,MainActivity.class);
+        Intent intent = new Intent(activity, com.tungsten.hmclpe.launcher.HomeActivity.class);
         Bundle bundle = new Bundle();
         bundle.putBoolean("fullscreen",activity.launcherSetting.fullscreen);
         intent.putExtras(bundle);

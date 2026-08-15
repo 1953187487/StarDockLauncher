@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/sd_surface_dim">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/sd_surface_bright"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/sd_outline_variant"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="快速启动"
+                    android:textColor="@color/sd_on_surface"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/home_current_version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="未选择版本"
+                    android:textColor="@color/sd_on_surface_variant"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/home_btn_play"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="16dp"
+                    android:text="启动游戏"
+                    android:textColor="@color/sd_on_primary"
+                    android:textStyle="bold"
+                    app:icon="@drawable/ic_baseline_play_arrow_white"
+                    app:iconTint="@color/sd_on_primary"
+                    app:backgroundTint="@color/sd_primary"
+                    app:cornerRadius="28dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                app:cardBackgroundColor="@color/sd_primary_container"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:id="@+id/home_btn_ai_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:src="@drawable/ic_ai_assistant"
+                        app:tint="@color/sd_on_primary_container" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="AI 助手"
+                        android:textColor="@color/sd_on_primary_container"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="消息小溪"
+                        android:textColor="@color/sd_on_primary_container"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                app:cardBackgroundColor="@color/sd_secondary_container"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:src="@android:drawable/ic_menu_share"
+                        app:tint="@color/sd_on_secondary_container" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="联机"
+                        android:textColor="@color/sd_on_secondary_container"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="局域网 + 邀请码"
+                        android:textColor="@color/sd_on_secondary_container"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardBackgroundColor="@color/sd_surface_bright"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/sd_outline_variant"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="公告"
+                    android:textColor="@color/sd_on_surface"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:lineSpacingExtra="3dp"
+                    android:text="StarDockLauncher v1.0.5\n\n· 全新 Material3 深色主题\n· 全面重构主界面与导航\n· 启动游戏失败改为弹错误对话框，不再闪退\n· AI 重写：WebSocket 流式 + 抽屉\n· 下载源全面走 BMCLAPI 镜像\n· 删除已停服公告"
+                    android:textColor="@color/sd_on_surface_variant"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

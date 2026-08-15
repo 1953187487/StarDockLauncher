@@ -38,4 +38,32 @@
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
+
+    <style name="Theme.StarDock.Main" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/sd_primary</item>
+        <item name="colorOnPrimary">@color/sd_on_primary</item>
+        <item name="colorPrimaryContainer">@color/sd_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/sd_on_primary_container</item>
+        <item name="colorSecondary">@color/sd_secondary</item>
+        <item name="colorOnSecondary">@color/sd_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/sd_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/sd_on_secondary_container</item>
+        <item name="colorTertiary">@color/sd_tertiary</item>
+        <item name="colorOnTertiary">@color/sd_on_tertiary</item>
+        <item name="colorTertiaryContainer">@color/sd_tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/sd_on_tertiary_container</item>
+        <item name="colorError">@color/sd_error</item>
+        <item name="colorOnError">@color/sd_on_error</item>
+        <item name="android:colorBackground">@color/sd_surface_dim</item>
+        <item name="colorSurface">@color/sd_surface</item>
+        <item name="colorOnSurface">@color/sd_on_surface</item>
+        <item name="colorSurfaceVariant">@color/sd_surface_container</item>
+        <item name="colorOnSurfaceVariant">@color/sd_on_surface_variant</item>
+        <item name="colorOutline">@color/sd_outline</item>
+        <item name="colorOutlineVariant">@color/sd_outline_variant</item>
+        <item name="android:windowBackground">@color/sd_surface_dim</item>
+        <item name="android:statusBarColor">@color/sd_surface_dim</item>
+        <item name="android:navigationBarColor">@color/sd_surface_dim</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
 </resources>

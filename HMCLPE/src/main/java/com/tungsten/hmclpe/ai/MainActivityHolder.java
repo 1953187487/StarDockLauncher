@@ -1,16 +1,16 @@
 package com.tungsten.hmclpe.ai;
 
-import com.tungsten.hmclpe.launcher.MainActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivityHolder {
 
-    private static MainActivity instance;
+    private static AppCompatActivity instance;
 
-    public static void set(MainActivity activity) {
+    public static void set(AppCompatActivity activity) {
         instance = activity;
     }
 
-    public static MainActivity get() {
+    public static AppCompatActivity get() {
         return instance;
     }
 

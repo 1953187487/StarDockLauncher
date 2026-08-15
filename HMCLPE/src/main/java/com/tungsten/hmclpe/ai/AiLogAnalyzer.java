@@ -24,7 +24,12 @@ public class AiLogAnalyzer {
     private static final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public static String findLatestLog(Context context) {
-        MainActivity activity = MainActivityHolder.get();
+        MainActivity activity = null;
+        try {
+            androidx.appcompat.app.AppCompatActivity a = MainActivityHolder.get();
+            if (a instanceof MainActivity) activity = (MainActivity) a;
+        } catch (Throwable ignored) {
+        }
         String gameDir = null;
         if (activity != null && activity.launcherSetting != null) {
             gameDir = activity.launcherSetting.gameFileDirectory;
