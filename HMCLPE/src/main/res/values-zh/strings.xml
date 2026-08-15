@@ -766,7 +766,7 @@
     <string name="download_setting_ui_auto_official">尽量使用官方源（最新，但可能加载慢）</string>
     <string name="download_setting_ui_auto_mirror">尽量使用镜像源（加载快，但可能不是最新）</string>
     <string name="download_setting_ui_source_official">官方（Optifine 自动安装使用 BMCLAPI 下载源）</string>
-    <string name="download_setting_ui_source_mcbbs">我的世界中文论坛（MCBBS，https://www.mcbbs.net/）</string>
+    <string name="download_setting_ui_source_mcbbs">MCBBS（已停用，回退 BMCLAPI）</string>
     <string name="download_setting_ui_download">下载</string>
     <string name="download_setting_ui_auto_download">自动选择并发数</string>
     <string name="download_setting_ui_download_num">并发数</string>

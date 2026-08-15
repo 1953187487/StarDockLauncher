@@ -1,16 +1,16 @@
 {
   "latestRelease": {
-    "versionCode": 2,
-    "versionName": "1.0.1",
-    "date": "2026.08.13",
-    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.1/StarDockLauncher-v1.0.1.apk"],
-    "updateLog": "StarDockLauncher 1.0.1：公告重写、关于重写（作者+技术栈+项目介绍）、反馈改邮箱一键复制、捐赠换微信/支付宝图、启动器版本检测移到关于、通用中删掉原 update 块。"
+    "versionCode": 3,
+    "versionName": "1.0.2",
+    "date": "2026.08.15",
+    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.2/StarDockLauncher-v1.0.2.apk"],
+    "updateLog": "StarDockLauncher 1.0.2：\n1. 新增 AI 智能助手「消息小溪」（关心玩家的猫娘），可作为悬浮球常驻，支持聊天、操作启动器、搜模组/光影/资源包、粘贴视频链接识别模组、一键搜教学视频、实时日志扫描与 AI 总结。\n2. 修复加载器/资源下载源（Forge 重定向解析 NPE、Fabric/Quilt 镜像切换、LiteLoader 死链替换、Forge maven 源切换、MCBBS 镜像回退 BMCLAPI）。\n3. 实时崩溃分析与网络异常自动切换镜像。\n4. 完善 GPL-3.0 合规（LICENSE、THIRD-PARTY-LICENSES、关于页开源协议声明 + 源代码获取入口）。"
   },
   "latestPrerelease": {
-    "versionCode": 2,
-    "versionName": "1.0.1",
-    "date": "2026.08.13",
-    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.1/StarDockLauncher-v1.0.1.apk"],
-    "updateLog": "StarDockLauncher 1.0.1：公告重写、关于重写（作者+技术栈+项目介绍）、反馈改邮箱一键复制、捐赠换微信/支付宝图、启动器版本检测移到关于、通用中删掉原 update 块。"
+    "versionCode": 3,
+    "versionName": "1.0.2",
+    "date": "2026.08.15",
+    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.2/StarDockLauncher-v1.0.2.apk"],
+    "updateLog": "StarDockLauncher 1.0.2：新增 AI 智能助手「消息小溪」悬浮球 + 视频链接搜模组 + 实时日志扫描；修复下载源与崩溃分析；GPL-3.0 合规。"
   }
 }

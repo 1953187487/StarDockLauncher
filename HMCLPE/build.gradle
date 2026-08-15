@@ -31,8 +31,8 @@ android {
         applicationId "com.tungsten.hmclpe"
         minSdk 26
         targetSdk 34
-        versionCode 2
-        versionName "1.0.1"
+        versionCode 3
+        versionName "1.0.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -68,6 +68,13 @@ android {
         exclude("META-INF/*.kotlin_module")
     }
 
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            def flavor = variant.buildType.name.replaceFirst("^(\\p{Lu})") { it.toLowerCase() }
+            outputFileName = "StarDockLauncher-v${defaultConfig.versionName}-${flavor}.apk"
+        }
+    }
+
 }
 
 dependencies {
@@ -86,6 +93,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.moandjiezana.toml:toml4j:0.7.2'
     implementation 'org.apache.commons:commons-compress:1.21'
+    implementation 'commons-io:commons-io:2.11.0'
     implementation 'com.github.steveice10:opennbt:1.5'
     implementation 'com.jaredrummler:colorpicker:1.1.0'
     implementation 'com.jaredrummler:android-device-names:2.1.0'

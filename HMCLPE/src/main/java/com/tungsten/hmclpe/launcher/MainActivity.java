@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -148,6 +149,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         uiManager.downloadUI.downloadUIManager.downloadMinecraftUI.onLoaded();
         uiManager.settingUI.settingUIManager.universalGameSettingUI.onLoaded();
         uiManager.mainUI.customTheme();
+
+        com.tungsten.hmclpe.ai.MainActivityHolder.set(this);
+        startAiOverlayService();
+    }
+
+    private void startAiOverlayService() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (!Settings.canDrawOverlays(this)) {
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                            android.net.Uri.parse("package:" + getPackageName()));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    return;
+                }
+            }
+            Intent intent = new Intent(this, com.tungsten.hmclpe.ai.AiOverlayService.class);
+            intent.setAction(com.tungsten.hmclpe.ai.AiOverlayService.ACTION_START);
+            startService(intent);
+        } catch (Exception ignored) {
+        }
     }
 
     public void showBarTitle(String title,boolean home,boolean close) {
@@ -370,6 +392,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        com.tungsten.hmclpe.ai.MainActivityHolder.clear();
     }
 
     public void startVerify() {

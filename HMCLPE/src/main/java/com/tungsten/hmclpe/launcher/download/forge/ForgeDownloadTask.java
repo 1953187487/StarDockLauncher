@@ -73,7 +73,7 @@ public class ForgeDownloadTask extends AsyncTask<ForgeVersion,Integer,Exception>
                 base = "https://bmclapi2.bangbang93.com/maven";
             }
             else {
-                base = "https://download.mcbbs.net/maven";
+                base = "https://bmclapi2.bangbang93.com/maven";
             }
             mirror = base + redirectUrl;
         } catch (IOException e) {

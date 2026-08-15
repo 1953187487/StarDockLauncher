@@ -49,6 +49,7 @@ public class MainUI extends BaseUI implements View.OnClickListener, AdapterView.
     private LinearLayout startDownloadUI;
     private LinearLayout startMultiPlayerUI;
     private LinearLayout startSettingUI;
+    private LinearLayout startAIUI;
 
     private LinearLayout startGame;
     private TextView launchVersionText;
@@ -84,6 +85,7 @@ public class MainUI extends BaseUI implements View.OnClickListener, AdapterView.
         startDownloadUI = activity.findViewById(R.id.start_ui_download);
         startMultiPlayerUI = activity.findViewById(R.id.start_ui_multi_player);
         startSettingUI = activity.findViewById(R.id.start_ui_setting);
+        startAIUI = activity.findViewById(R.id.start_ui_ai);
 
         startGame = activity.findViewById(R.id.launcher_play_button);
         launchVersionText = activity.findViewById(R.id.launch_version_text);
@@ -109,6 +111,7 @@ public class MainUI extends BaseUI implements View.OnClickListener, AdapterView.
         startDownloadUI.setOnClickListener(this);
         startMultiPlayerUI.setOnClickListener(this);
         startSettingUI.setOnClickListener(this);
+        startAIUI.setOnClickListener(this);
 
         startGame.setOnClickListener(this);
     }
@@ -244,6 +247,11 @@ public class MainUI extends BaseUI implements View.OnClickListener, AdapterView.
         }
         if (v == startSettingUI){
             activity.uiManager.switchMainUI(activity.uiManager.settingUI);
+        }
+        if (v == startAIUI){
+            android.content.Intent intent = new android.content.Intent(activity,
+                    com.tungsten.hmclpe.ai.AiChatActivity.class);
+            activity.startActivity(intent);
         }
         if (v == startGame){
             String settingPath = activity.publicGameSetting.currentVersion + "/hmclpe.cfg";

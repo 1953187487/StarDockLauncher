@@ -757,7 +757,7 @@
     <string name="download_setting_ui_auto_official">From Official Sources</string>
     <string name="download_setting_ui_auto_mirror">From Mirror</string>
     <string name="download_setting_ui_source_official">Mojang (OptiFine is provided by BMCLAPI)</string>
-    <string name="download_setting_ui_source_mcbbs">MCBBS (https://www.mcbbs.net/)</string>
+    <string name="download_setting_ui_source_mcbbs">MCBBS (已停用，回退 BMCLAPI)</string>
     <string name="download_setting_ui_download">Download</string>
     <string name="download_setting_ui_auto_download">Automatically Determine</string>
     <string name="download_setting_ui_download_num">Threads</string>

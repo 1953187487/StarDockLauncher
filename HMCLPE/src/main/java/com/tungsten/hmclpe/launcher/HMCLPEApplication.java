@@ -14,6 +14,7 @@ public class HMCLPEApplication extends Application {
         super.onCreate();
         DeviceIdentifier.register(this);
         context = this.getApplicationContext();
+        com.tungsten.hmclpe.utils.crash.CrashHandler.init(this);
     }
 
     public static Context getContext(){

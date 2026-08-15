@@ -35,6 +35,9 @@
         android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission
         android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:name=".launcher.HMCLPEApplication"
@@ -91,6 +94,11 @@
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.HelloMinecraftLauncherPocketEdition"/>
         <activity
+            android:name=".ai.AiChatActivity"
+            android:screenOrientation="sensorLandscape"
+            android:exported="false"
+            android:theme="@style/Theme.HelloMinecraftLauncherPocketEdition"/>
+        <activity
             android:name=".launcher.uis.multiplayer.MultiplayerActivity"
             android:theme="@style/Theme.HelloMinecraftLauncherPocketEdition"/>
         <activity
@@ -131,6 +139,9 @@
                 <action android:name="android.net.VpnService" />
             </intent-filter>
         </service>
+        <service
+            android:name=".ai.AiOverlayService"
+            android:exported="false" />
     </application>
 
 </manifest>

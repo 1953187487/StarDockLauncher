@@ -19,6 +19,8 @@ import androidx.annotation.Nullable;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.tungsten.hmclpe.R;
+import com.tungsten.hmclpe.ai.AiLogWatcher;
+import com.tungsten.hmclpe.ai.AiProviderManager;
 import com.tungsten.hmclpe.control.InputBridge;
 import com.tungsten.hmclpe.control.MenuHelper;
 import com.tungsten.hmclpe.control.view.LayoutPanel;
@@ -37,6 +39,8 @@ import cosine.boat.keyboard.BoatKeycodes;
 public class BoatMinecraftActivity extends BoatActivity {
 
     private GameLaunchSetting gameLaunchSetting;
+
+    private AiLogWatcher.ErrorListener logListener;
 
     private DrawerLayout drawerLayout;
     private LayoutPanel baseLayout;
@@ -76,6 +80,17 @@ public class BoatMinecraftActivity extends BoatActivity {
         handleCallback();
 
         init();
+
+        if (AiProviderManager.getInstance(this).isRealtimeScan()) {
+            AiLogWatcher watcher = AiLogWatcher.getInstance();
+            logListener = line -> {
+                android.widget.Toast.makeText(BoatMinecraftActivity.this,
+                        "日志异常已记录，可点开 AI 助手查看实时分析", android.widget.Toast.LENGTH_SHORT).show();
+            };
+            watcher.removeListener(logListener);
+            watcher.addListener(logListener);
+            watcher.start(gameLaunchSetting.game_directory + "/logs/latest.log");
+        }
 
         menuHelper = new MenuHelper(this, this, gameLaunchSetting.fullscreen, gameLaunchSetting.game_directory, drawerLayout, baseLayout, false, gameLaunchSetting.controlLayout, 1, scaleFactor);
     }
@@ -243,6 +258,11 @@ public class BoatMinecraftActivity extends BoatActivity {
     protected void onDestroy() {
         Intent virGLService = new Intent(this, VirGLService.class);
         stopService(virGLService);
+        AiLogWatcher watcher = AiLogWatcher.getInstance();
+        if (logListener != null) {
+            watcher.removeListener(logListener);
+        }
+        watcher.stopWatcher();
         super.onDestroy();
     }
 }

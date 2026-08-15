@@ -64,7 +64,7 @@ public class LiteLoaderInstallTask extends AsyncTask<LiteLoaderVersion,Integer, 
                     head = "https://bmclapi2.bangbang93.com/maven/";
                 }
                 else {
-                    head = "https://download.mcbbs.net/maven/";
+                    head = "https://bmclapi2.bangbang93.com/maven/";
                 }
                 url = head + lib.getPath();
             }
