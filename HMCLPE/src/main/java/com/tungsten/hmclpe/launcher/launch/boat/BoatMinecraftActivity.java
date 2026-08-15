@@ -108,15 +108,29 @@ public class BoatMinecraftActivity extends BoatActivity {
                 MCOptionUtils.save(gameLaunchSetting.game_directory);
 
                 new Thread(() -> {
-                    Vector<String> args = BoatLauncher.getMcArgs(gameLaunchSetting, BoatMinecraftActivity.this, (int) (width * scaleFactor), (int) (height * scaleFactor), gameLaunchSetting.server);
+                    final BoatLauncher.LaunchCheckResult check = BoatLauncher.buildLaunchArgs(gameLaunchSetting, BoatMinecraftActivity.this, (int) (width * scaleFactor), (int) (height * scaleFactor), gameLaunchSetting.server);
                     runOnUiThread(() -> {
+                        if (!check.ready) {
+                            String err = check.errorMessage == null ? "未知错误" : check.errorMessage;
+                            android.app.AlertDialog.Builder b = new android.app.AlertDialog.Builder(BoatMinecraftActivity.this);
+                            b.setTitle("无法启动游戏");
+                            b.setMessage(err);
+                            b.setPositiveButton("退出", (d, w) -> {
+                                Intent virGL = new Intent(BoatMinecraftActivity.this, VirGLService.class);
+                                stopService(virGL);
+                                finish();
+                            });
+                            b.setCancelable(false);
+                            b.show();
+                            return;
+                        }
                         BoatActivity.setBoatNativeWindow(new Surface(surface));
                         BoatInput.setEventPipe();
 
                         startGame(gameLaunchSetting.javaPath,
                                 gameLaunchSetting.home,
                                 GameLaunchSetting.isHighVersion(gameLaunchSetting),
-                                args,
+                                check.args,
                                 gameLaunchSetting.boatRenderer,
                                 gameLaunchSetting.game_directory);
                     });

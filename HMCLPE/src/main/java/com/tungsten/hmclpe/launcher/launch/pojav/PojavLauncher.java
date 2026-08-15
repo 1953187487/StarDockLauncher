@@ -28,15 +28,49 @@ import java.util.Vector;
 
 public class PojavLauncher {
 
-    public static Vector<String> getMcArgs(GameLaunchSetting gameLaunchSetting, Context context,int width,int height,String server){
+    private static final String TAG = "PojavLauncher";
+
+    public static class LaunchCheckResult {
+        public boolean ready;
+        public String errorMessage;
+        public Vector<String> args;
+
+        public LaunchCheckResult(boolean ready, String error, Vector<String> args) {
+            this.ready = ready;
+            this.errorMessage = error;
+            this.args = args;
+        }
+    }
+
+    public static LaunchCheckResult buildLaunchArgs(GameLaunchSetting gameLaunchSetting, Context context, int width, int height, String server) {
         try {
-            JREUtils.jreReleaseList = JREUtils.readJREReleaseProperties(gameLaunchSetting.javaPath);
-            LaunchVersion version = LaunchVersion.fromDirectory(new File(gameLaunchSetting.currentVersion));
+            File versionDir = new File(gameLaunchSetting.currentVersion);
+            if (!versionDir.exists()) {
+                return new LaunchCheckResult(false, "游戏版本目录不存在：" + gameLaunchSetting.currentVersion + "\n请先在版本管理中创建或下载游戏。", null);
+            }
             String javaPath = gameLaunchSetting.javaPath;
-            JREUtils.relocateLibPath(context,javaPath);
-            String libraryPath = javaPath + "/lib/aarch64/jli:" + javaPath + "/lib/aarch64:" + AppManifest.POJAV_LIB_DIR + "/lwjgl3:" + JREUtils.LD_LIBRARY_PATH + ":" + AppManifest.POJAV_LIB_DIR + "/lwjgl3";;
+            if (javaPath == null || javaPath.isEmpty()) {
+                return new LaunchCheckResult(false, "Java 运行时路径为空。请先在通用设置中选择 Java 运行时。", null);
+            }
+            File javaBin = new File(javaPath + "/bin/java");
+            if (!javaBin.exists()) {
+                return new LaunchCheckResult(false, "Java 运行时未就绪：\n" + javaBin.getAbsolutePath() + "\n请重新进入启动器，等待初始化完成后再启动游戏。", null);
+            }
+            File pojavLib = new File(AppManifest.POJAV_LIB_DIR);
+            if (!pojavLib.exists() || pojavLib.listFiles() == null || pojavLib.listFiles().length == 0) {
+                return new LaunchCheckResult(false, "PojavLauncher 库未解压：\n" + pojavLib.getAbsolutePath() + "\n请重新进入启动器，等待运行时资产初始化完成。", null);
+            }
+
+            JREUtils.jreReleaseList = JREUtils.readJREReleaseProperties(javaPath);
+            LaunchVersion version = LaunchVersion.fromDirectory(versionDir);
+            if (version.mainClass == null || version.mainClass.isEmpty()) {
+                return new LaunchCheckResult(false, "无法识别游戏主类，请检查版本 json 是否正确。", null);
+            }
+
+            JREUtils.relocateLibPath(context, javaPath);
+            String libraryPath = javaPath + "/lib/aarch64/jli:" + javaPath + "/lib/aarch64:" + AppManifest.POJAV_LIB_DIR + "/lwjgl3:" + JREUtils.LD_LIBRARY_PATH + ":" + AppManifest.POJAV_LIB_DIR + "/lwjgl3";
             boolean isJava17 = javaPath.endsWith("JRE17");
-            String classPath = getLWJGL3ClassPath() + ":" + version.getClassPath(gameLaunchSetting.gameFileDirectory,isHighVersion(gameLaunchSetting),isJava17);
+            String classPath = getLWJGL3ClassPath() + ":" + version.getClassPath(gameLaunchSetting.gameFileDirectory, isHighVersion(gameLaunchSetting), isJava17);
             Vector<String> args = new Vector<String>();
             Tools.getCacioJavaArgs(context, args, !isJava17, width, height);
             args.add("-Djava.home=" + javaPath);
@@ -50,11 +84,11 @@ public class PojavLauncher {
             args.add("-Dnet.minecraft.clientmodname=" + AppInfo.APP_NAME);
             args.add("-Dfml.earlyprogresswindow=false");
             String[] accountArgs;
-            accountArgs = AccountPatch.getAccountArgs(context,gameLaunchSetting.account);
-            Collections.addAll(args,accountArgs);
+            accountArgs = AccountPatch.getAccountArgs(context, gameLaunchSetting.account);
+            Collections.addAll(args, accountArgs);
             String[] JVMArgs;
             JVMArgs = version.getJVMArguments(gameLaunchSetting);
-            for (int i = 0;i < JVMArgs.length;i++) {
+            for (int i = 0; i < JVMArgs.length; i++) {
                 if (JVMArgs[i].startsWith("-DignoreList") && !JVMArgs[i].endsWith("," + new File(gameLaunchSetting.currentVersion).getName() + ".jar")) {
                     JVMArgs[i] = JVMArgs[i] + "," + new File(gameLaunchSetting.currentVersion).getName() + ".jar";
                 }
@@ -88,26 +122,35 @@ public class PojavLauncher {
             }
             String[] extraMinecraftArgs = gameLaunchSetting.extraMinecraftFlags.split(" ");
             Collections.addAll(args, extraMinecraftArgs);
-            return TouchInjector.rebaseArguments(gameLaunchSetting, args);
+            Vector<String> finalArgs = TouchInjector.rebaseArguments(gameLaunchSetting, args);
+            return new LaunchCheckResult(true, null, finalArgs);
+        } catch (Exception e) {
+            Log.e(TAG, "启动参数构建失败", e);
+            return new LaunchCheckResult(false, "启动参数构建失败：" + e.getClass().getSimpleName() + "\n" + e.getMessage() + "\n\n" + Log.getStackTraceString(e), null);
         }
-        catch (Exception e){
-            e.printStackTrace();
-            return null;
-        }
+    }
+
+    public static Vector<String> getMcArgs(GameLaunchSetting gameLaunchSetting, Context context, int width, int height, String server) {
+        LaunchCheckResult r = buildLaunchArgs(gameLaunchSetting, context, width, height, server);
+        return r.args;
     }
 
     private static String getLWJGL3ClassPath() {
         StringBuilder libStr = new StringBuilder();
         File lwjgl3Folder = new File(AppManifest.POJAV_LIB_DIR, "lwjgl3");
-        if (/* info.arguments != null && */ lwjgl3Folder.exists()) {
-            for (File file: lwjgl3Folder.listFiles()) {
-                if (file.getName().endsWith(".jar")) {
-                    libStr.append(file.getAbsolutePath() + ":");
+        if (lwjgl3Folder.exists()) {
+            File[] files = lwjgl3Folder.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.getName().endsWith(".jar")) {
+                        libStr.append(file.getAbsolutePath()).append(":");
+                    }
                 }
             }
         }
-        // Remove the ':' at the end
-        libStr.setLength(libStr.length() - 1);
+        if (libStr.length() > 0) {
+            libStr.setLength(libStr.length() - 1);
+        }
         return libStr.toString();
     }
 
@@ -122,7 +165,7 @@ public class PojavLauncher {
         }
         try {
             return Objects.requireNonNull(new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(creationDate.substring(0, creationDate.indexOf("T")))).before(new Date(2011-1900, 6, 7)) ? "1" : "2";
-        }catch (ParseException exception){
+        } catch (ParseException exception) {
             Log.e("OPENGL SELECTION", exception.toString());
             return "2";
         }

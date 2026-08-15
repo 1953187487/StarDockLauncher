@@ -25,7 +25,6 @@ import android.widget.TextView;
 import com.afollestad.appthemeengine.ATE;
 import com.afollestad.appthemeengine.Config;
 import com.tungsten.hmclpe.R;
-import com.tungsten.hmclpe.launcher.dialogs.OutdatedWarningDialog;
 import com.tungsten.hmclpe.launcher.dialogs.VerifyDialog;
 import com.tungsten.hmclpe.launcher.dialogs.account.SkinPreviewDialog;
 import com.tungsten.hmclpe.manifest.AppManifest;
@@ -39,6 +38,8 @@ import com.tungsten.hmclpe.launcher.uis.universal.setting.right.launcher.Exterio
 import com.tungsten.hmclpe.update.UpdateChecker;
 import com.tungsten.hmclpe.utils.LocaleUtils;
 import com.tungsten.hmclpe.utils.animation.CustomAnimationUtils;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -135,8 +136,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     exteriorConfig.apply(MainActivity.this);
                     appBar.setBackgroundColor(launcherSetting.transBar ? getResources().getColor(R.color.launcher_ui_background) : Color.parseColor(ExteriorSettingUI.getThemeColor(MainActivity.this,launcherSetting.launcherTheme)));
 
-                    OutdatedWarningDialog.init(MainActivity.this);
-
                     isLoaded = true;
                     onLoad();
                 }
@@ -151,7 +150,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         uiManager.mainUI.customTheme();
 
         com.tungsten.hmclpe.ai.MainActivityHolder.set(this);
+
+        if (getIntent().getBooleanExtra("auto_show_crash", false)
+                || com.tungsten.hmclpe.utils.crash.CrashHandler.hasPendingCrash(this)) {
+            showCrashLogIfNeeded();
+        }
+
         startAiOverlayService();
+    }
+
+    private void showCrashLogIfNeeded() {
+        try {
+            File latest = com.tungsten.hmclpe.utils.crash.CrashHandler.getLatestCrashLog(this);
+            if (latest != null) {
+                Intent crashIntent = new Intent(this, com.tungsten.hmclpe.utils.crash.CrashLogViewerActivity.class);
+                crashIntent.putExtra("log_path", latest.getAbsolutePath());
+                crashIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(crashIntent);
+            }
+        } catch (Exception ignored) {
+        }
     }
 
     private void startAiOverlayService() {

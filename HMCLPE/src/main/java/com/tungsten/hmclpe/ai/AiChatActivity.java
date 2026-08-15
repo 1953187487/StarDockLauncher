@@ -1,666 +1,573 @@
 package com.tungsten.hmclpe.ai;
 
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.tungsten.hmclpe.launcher.MainActivity;
 import com.tungsten.hmclpe.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class AiChatActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final Pattern ACTION_PATTERN = Pattern.compile("\\[ACTION:(\\w+)(?:\\s+([^\\]]+))?\\]");
-    private static final Pattern URL_PATTERN = Pattern.compile("https?://[\\w\\-./?=&%#:+~]+", Pattern.CASE_INSENSITIVE);
+    private static final int MAX_HISTORY = 50;
 
-    private ListView messageList;
+    private View rootView;
+    private View drawerHandle;
+    private TextView drawerTitle;
+    private TextView connectionStatus;
+    private TextView providerBadge;
+    private LinearLayout providerBar;
+    private MaterialButton providerBtn;
+    private MaterialButton historyBtn;
+    private MaterialButton settingsBtn;
+    private ScrollView messageScroll;
+    private LinearLayout messageContainer;
     private EditText input;
-    private TextView typingIndicator;
-    private ImageButton scanButton;
+    private MaterialButton sendButton;
+    private MaterialButton attachButton;
+    private MaterialButton stopButton;
+    private HorizontalScrollView quickActionScroll;
+    private LinearLayout quickActionBar;
+    private FrameLayout typingIndicator;
+    private TextView typingText;
 
-    private final List<ChatMessage> messages = new ArrayList<>();
-    private MessageAdapter adapter;
+    private final List<AiMessage> history = new ArrayList<>();
+    private final List<Conversation> conversations = new ArrayList<>();
+    private int currentConvIdx = -1;
 
     private AiProviderManager providerManager;
+    private AiChatClient chatClient;
+    private StringBuilder currentStreamBuffer;
+    private TextView currentStreamView;
     private boolean sending = false;
-    private boolean scanEnabled = false;
+    private boolean drawerExpanded = true;
 
-    private final AiActionExecutor actionExecutor = new AiActionExecutor();
+    private final Handler ui = new Handler(Looper.getMainLooper());
 
-    public static class ChatMessage {
-        public boolean isUser;
-        public String content;
-
-        public ChatMessage(boolean isUser, String content) {
-            this.isUser = isUser;
-            this.content = content;
-        }
+    public static class Conversation {
+        public String title;
+        public List<AiMessage> messages = new ArrayList<>();
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ai_chat);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            getWindow().getAttributes().layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
-        }
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
+
+        rootView = findViewById(R.id.ai_root);
+        drawerHandle = findViewById(R.id.ai_drawer_handle);
+        drawerTitle = findViewById(R.id.ai_drawer_title);
+        connectionStatus = findViewById(R.id.ai_connection_status);
+        providerBadge = findViewById(R.id.ai_provider_badge);
+        providerBar = findViewById(R.id.ai_provider_bar);
+        providerBtn = findViewById(R.id.ai_btn_provider);
+        historyBtn = findViewById(R.id.ai_btn_history);
+        settingsBtn = findViewById(R.id.ai_btn_settings);
+        messageScroll = findViewById(R.id.ai_message_scroll);
+        messageContainer = findViewById(R.id.ai_message_container);
+        input = findViewById(R.id.ai_input);
+        sendButton = findViewById(R.id.ai_send);
+        attachButton = findViewById(R.id.ai_attach);
+        stopButton = findViewById(R.id.ai_stop);
+        quickActionScroll = findViewById(R.id.ai_quick_scroll);
+        quickActionBar = findViewById(R.id.ai_quick_actions);
+        typingIndicator = findViewById(R.id.ai_typing);
+        typingText = findViewById(R.id.ai_typing_text);
+
+        if (MainActivityHolder.get() != null) {
+            WindowManager.LayoutParams lp = getWindow().getAttributes();
+            lp.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.42f);
+            lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            lp.gravity = Gravity.END | Gravity.CENTER_VERTICAL;
+            lp.dimAmount = 0.0f;
+            lp.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
+            getWindow().setAttributes(lp);
+            getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#CC0F1419")));
         }
 
         providerManager = AiProviderManager.getInstance(this);
+        chatClient = new AiChatClient();
 
-        messageList = findViewById(R.id.ai_message_list);
-        input = findViewById(R.id.ai_input);
-        typingIndicator = findViewById(R.id.ai_typing_indicator);
-        scanButton = findViewById(R.id.ai_scan_button);
-        ImageButton backButton = findViewById(R.id.ai_back_button);
-        ImageButton providerButton = findViewById(R.id.ai_provider_button);
-        ImageButton sendButton = findViewById(R.id.ai_send_button);
-        TextView quickSearchMod = findViewById(R.id.ai_quick_search_mod);
-        TextView quickSearchShader = findViewById(R.id.ai_quick_search_shader);
-        TextView quickAnalyzeLog = findViewById(R.id.ai_quick_analyze_log);
-        TextView quickVideo = findViewById(R.id.ai_quick_video);
-
-        backButton.setOnClickListener(this);
-        providerButton.setOnClickListener(this);
         sendButton.setOnClickListener(this);
-        scanButton.setOnClickListener(this);
-        quickSearchMod.setOnClickListener(this);
-        quickSearchShader.setOnClickListener(this);
-        quickAnalyzeLog.setOnClickListener(this);
-        quickVideo.setOnClickListener(this);
+        attachButton.setOnClickListener(this);
+        stopButton.setOnClickListener(this);
+        providerBtn.setOnClickListener(this);
+        historyBtn.setOnClickListener(this);
+        settingsBtn.setOnClickListener(this);
+        drawerHandle.setOnClickListener(this);
 
-        adapter = new MessageAdapter(this, messages);
-        messageList.setAdapter(adapter);
+        input.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                int len = s == null ? 0 : s.length();
+                sendButton.setEnabled(!sending && len > 0);
+            }
+            @Override public void afterTextChanged(Editable s) {}
+        });
 
-        scanEnabled = providerManager.isRealtimeScan();
-        updateScanButtonState();
-        if (scanEnabled) {
-            startRealtimeScan();
-        }
+        sendButton.setEnabled(false);
+        updateProviderBadge();
+        setConnectionStatus("已连接", "#4CAF50");
 
-        if (messages.isEmpty()) {
-            messages.add(new ChatMessage(false,
-                    "你好，我是「消息小溪」喵~ 我可以帮你：\n" +
-                            "• 回答启动器 / 游戏相关的问题\n" +
-                            "• 帮你操作启动器（打开设置、下载、版本列表等）\n" +
-                            "• 搜索模组、光影、资源包\n" +
-                            "• 粘贴视频链接，自动识别视频里的模组并帮你搜索\n" +
-                            "• 分析游戏日志，找出闪退原因\n" +
-                            "• 一键搜索教学视频（比如怎么做挖土机）\n" +
-                            "直接输入问题，或粘贴一个 B 站 / 视频链接试试吧喵~"));
-        }
-        adapter.notifyDataSetChanged();
+        startNewConversation();
+
+        buildQuickActions();
+        scrollToBottom();
     }
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.ai_back_button) {
-            finish();
-        } else if (v.getId() == R.id.ai_send_button) {
-            sendMessage(input.getText().toString());
-        } else if (v.getId() == R.id.ai_provider_button) {
-            showProviderDialog();
-        } else if (v.getId() == R.id.ai_scan_button) {
-            toggleScan();
-        } else if (v.getId() == R.id.ai_quick_search_mod) {
-            input.setText("");
-            input.setHint("输入要搜索的模组名称，回车发送");
-            input.requestFocus();
-        } else if (v.getId() == R.id.ai_quick_search_shader) {
-            input.setText("");
-            input.setHint("输入要搜索的光影名称，回车发送");
-            input.requestFocus();
-        } else if (v.getId() == R.id.ai_quick_analyze_log) {
-            handleAnalyzeLog();
-        } else if (v.getId() == R.id.ai_quick_video) {
-            input.setText("");
-            input.setHint("粘贴视频链接（B站/抖音/YouTube等）后发送");
-            input.requestFocus();
+        if (v == sendButton) doSend();
+        else if (v == attachButton) showAttachMenu();
+        else if (v == stopButton) stopSending();
+        else if (v == providerBtn) showProviderPicker();
+        else if (v == historyBtn) showHistoryPicker();
+        else if (v == settingsBtn) showSettings();
+        else if (v == drawerHandle) toggleDrawer();
+    }
+
+    private void toggleDrawer() {
+        drawerExpanded = !drawerExpanded;
+        ViewGroup.LayoutParams lp = rootView.getLayoutParams();
+        if (lp instanceof FrameLayout.LayoutParams) {
+            FrameLayout.LayoutParams flp = (FrameLayout.LayoutParams) lp;
+            ValueAnimator anim = ValueAnimator.ofInt(flp.width, drawerExpanded ? (int) (getResources().getDisplayMetrics().widthPixels * 0.42f) : (int) (getResources().getDisplayMetrics().widthPixels * 0.08f));
+            anim.addUpdateListener(a -> {
+                flp.width = (int) a.getAnimatedValue();
+                rootView.setLayoutParams(flp);
+            });
+            anim.setDuration(220);
+            anim.start();
         }
     }
 
-    private void toggleScan() {
-        scanEnabled = !scanEnabled;
-        providerManager.setRealtimeScan(scanEnabled);
-        updateScanButtonState();
-        if (scanEnabled) {
-            startRealtimeScan();
-            appendAssistantMessage("已开启实时日志扫描喵~ 游戏运行中如果出现报错，我会第一时间帮你分析。");
-        } else {
-            AiLogWatcher.getInstance().removeListener(scanListener);
-            AiLogWatcher.getInstance().stopWatcher();
-            appendAssistantMessage("已关闭实时日志扫描。");
+    private void buildQuickActions() {
+        quickActionBar.removeAllViews();
+        String[][] actions = {
+                {"找模组", "[ACTION:SEARCH_MOD shader]"},
+                {"找光影", "[ACTION:SEARCH_MOD shader]"},
+                {"找整合包", "[ACTION:SEARCH_MOD modpack]"},
+                {"复制MC", "复制我的世界最新版本号给我，并告诉我适配的启动器版本"},
+                {"崩溃?", "[ACTION:ANALYZE_CRASH]"},
+                {"日志", "[ACTION:SUMMARIZE_LOG]"},
+                {"搜教程", "[ACTION:VIDEO_HELP]"}
+        };
+        for (String[] a : actions) {
+            MaterialButton btn = new MaterialButton(this);
+            btn.setText(a[0]);
+            btn.setTextSize(11);
+            btn.setPadding(0, 0, 0, 0);
+            btn.setMinWidth(0);
+            btn.setMinHeight(0);
+            btn.setMinimumWidth(0);
+            btn.setMinimumHeight(0);
+            btn.setAllCaps(false);
+            btn.setCornerRadius(28);
+            btn.setOnClickListener(v -> {
+                input.setText(a[1]);
+                input.setSelection(a[1].length());
+                input.requestFocus();
+            });
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, (int) (36 * getResources().getDisplayMetrics().density));
+            lp.setMargins(6, 0, 6, 0);
+            quickActionBar.addView(btn, lp);
         }
     }
 
-    private void updateScanButtonState() {
-        scanButton.setColorFilter(scanEnabled ? Color.parseColor("#FFD54F") : Color.WHITE);
-    }
-
-    private final AiLogWatcher.ErrorListener scanListener = line -> {
-        String logPath = AiLogAnalyzer.findLatestLog(AiChatActivity.this);
-        appendAssistantMessage("【实时扫描】检测到日志异常：\n" + line.trim() + "\n\n正在为你分析原因…");
-        AiLogAnalyzer.analyzeAsync(AiChatActivity.this, logPath, true, summary -> {
-            appendAssistantMessage("【分析结果】\n" + summary);
+    private void showAttachMenu() {
+        PopupMenu pm = new PopupMenu(this, attachButton);
+        pm.getMenu().add(0, 1, 0, "粘贴视频链接识别模组");
+        pm.getMenu().add(0, 2, 1, "粘贴崩溃日志让 AI 总结");
+        pm.getMenu().add(0, 3, 2, "粘贴日志文件路径");
+        pm.getMenu().add(0, 4, 3, "搜索教学视频");
+        pm.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case 1: pasteAndProcess("video"); return true;
+                case 2: pasteAndProcess("log"); return true;
+                case 3: pasteAndProcess("logpath"); return true;
+                case 4: input.setText("[ACTION:VIDEO_HELP]"); return true;
+            }
+            return false;
         });
-    };
-
-    private void startRealtimeScan() {
-        String logPath = AiLogAnalyzer.findLatestLog(this);
-        AiLogWatcher watcher = AiLogWatcher.getInstance();
-        watcher.removeListener(scanListener);
-        watcher.addListener(scanListener);
-        watcher.start(logPath);
+        pm.show();
     }
 
-    private void sendMessage(String text) {
-        if (sending) {
+    private void pasteAndProcess(String kind) {
+        android.content.ClipboardManager cm = (android.content.ClipboardManager) getSystemService(android.content.Context.CLIPBOARD_SERVICE);
+        if (cm == null || !cm.hasPrimaryClip()) {
+            Toast.makeText(this, "剪贴板为空", Toast.LENGTH_SHORT).show();
             return;
         }
-        text = text.trim();
-        if (text.isEmpty()) {
+        CharSequence text = cm.getPrimaryClip().getItemAt(0).getText();
+        if (text == null) {
+            Toast.makeText(this, "剪贴板无文本", Toast.LENGTH_SHORT).show();
             return;
         }
+        String content = text.toString();
+        if ("video".equals(kind)) {
+            input.setText("[ACTION:VIDEO_LINK] " + content);
+        } else if ("log".equals(kind)) {
+            input.setText("[ACTION:SUMMARIZE_LOG]\n\n" + content);
+        } else if ("logpath".equals(kind)) {
+            input.setText("[ACTION:ANALYZE_LOG_PATH] " + content);
+        }
+        input.setSelection(input.getText().length());
+    }
+
+    private void doSend() {
+        if (sending) return;
+        String text = input.getText().toString().trim();
+        if (text.isEmpty()) return;
         input.setText("");
-        hideKeyboard();
         appendUserMessage(text);
-
-        if (isVideoLink(text)) {
-            handleVideoLink(text);
-            return;
+        history.add(new AiMessage("user", text));
+        if (currentConvIdx >= 0 && currentConvIdx < conversations.size()) {
+            conversations.get(currentConvIdx).messages.add(new AiMessage("user", text));
         }
-        if (isSearchRequest(text)) {
-            handleSearchRequest(text);
-            return;
-        }
-        sendToAi(text);
+        doStreamCall(history);
     }
 
-    private boolean isVideoLink(String text) {
-        Matcher m = URL_PATTERN.matcher(text);
-        while (m.find()) {
-            String url = m.group();
-            String low = url.toLowerCase(Locale.ROOT);
-            if (low.contains("bilibili") || low.contains("b23.tv") || low.contains("youtube")
-                    || low.contains("douyin") || low.contains("ixigua") || low.contains("weibo")
-                    || low.contains("youku")) {
-                return true;
-            }
-        }
-        return false;
+    private void appendUserMessage(String text) {
+        TextView tv = new TextView(this);
+        tv.setText(text);
+        tv.setTextColor(Color.parseColor("#FFFFFF"));
+        tv.setTextSize(14);
+        tv.setBackgroundResource(R.drawable.bg_ai_chat_user_bubble);
+        tv.setPadding(24, 16, 24, 16);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.gravity = Gravity.END;
+        lp.setMargins(48, 8, 12, 8);
+        messageContainer.addView(tv, lp);
+        scrollToBottom();
     }
 
-    private boolean isSearchRequest(String text) {
-        return text.startsWith("搜") || text.startsWith("搜索")
-                || text.contains("帮我找") || text.contains("帮我搜")
-                || text.contains("有没有");
+    private void appendAssistantPlaceholder() {
+        TextView tv = new TextView(this);
+        tv.setText("「消息小溪」正在思考喵...");
+        tv.setTextColor(Color.parseColor("#A0FFFFFF"));
+        tv.setTextSize(13);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.gravity = Gravity.START;
+        lp.setMargins(12, 8, 48, 8);
+        messageContainer.addView(tv, lp);
+        currentStreamView = tv;
+        currentStreamBuffer = new StringBuilder();
+        typingIndicator.setVisibility(View.VISIBLE);
+        typingText.setText("正在连接 AI...");
+        scrollToBottom();
     }
 
-    private void handleVideoLink(String text) {
-        final String url = extractUrl(text);
-        appendAssistantMessage("收到视频链接，正在解析视频标题和简介，识别其中的模组/光影…");
-        setTyping(true);
-        new AiVideoLinkAnalyzer().analyze(this, url, new AiVideoLinkAnalyzer.AnalyzeCallback() {
-            @Override
-            public void onResult(String title, String description, String extractedNames) {
-                setTyping(false);
-                appendAssistantMessage("视频标题：" + title + "\n\n识别到的项目名称：" + extractedNames);
-                if (extractedNames != null && !extractedNames.isEmpty() && !extractedNames.contains("未识别到")) {
-                    String[] names = extractedNames.split("[,，、;；]");
-                    for (String name : names) {
-                        String n = name.trim();
-                        if (!n.isEmpty()) {
-                            searchMod(n, "mod");
-                        }
-                    }
-                } else {
-                    appendAssistantMessage("没能从视频里识别出明确的模组名称，你可以手动输入模组名让我搜索喵~");
-                }
-            }
-
-            @Override
-            public void onFailed(String error) {
-                setTyping(false);
-                appendAssistantMessage("视频解析失败：" + error + "\n你可以把视频里出现的模组名称直接告诉我，我来帮你搜索。");
-            }
-        });
-    }
-
-    private String extractUrl(String text) {
-        Matcher m = URL_PATTERN.matcher(text);
-        if (m.find()) {
-            return m.group();
-        }
-        return text;
-    }
-
-    private void handleSearchRequest(String text) {
-        String projectType = "mod";
-        String query = text;
-        if (text.contains("光影") || text.contains("着色器") || text.toLowerCase(Locale.ROOT).contains("shader")) {
-            projectType = "shader";
-        } else if (text.contains("资源包") || text.contains("材质")) {
-            projectType = "resourcepack";
-        } else if (text.contains("数据包")) {
-            projectType = "datapack";
-        } else if (text.contains("整合包")) {
-            projectType = "modpack";
-        }
-        query = query.replace("搜索", "").replace("帮我", "").replace("找", "")
-                .replace("光影", "").replace("资源包", "").replace("材质包", "")
-                .replace("数据包", "").replace("整合包", "").replace("模组", "")
-                .replace("有没有", "").trim();
-        if (query.isEmpty() || query.length() < 2) {
-            appendAssistantMessage("请输入要搜索的项目名称，例如：搜模组 sodium 喵~");
-            return;
-        }
-        searchMod(query, projectType);
-    }
-
-    private void searchMod(String query, String projectType) {
-        setTyping(true);
-        appendAssistantMessage("正在搜索「" + query + "」…");
-        new AiModSearcher().search(query, projectType, new AiModSearcher.SearchCallback() {
-            @Override
-            public void onSuccess(List<AiModSearcher.SearchResult> results) {
-                setTyping(false);
-                if (results.isEmpty()) {
-                    appendAssistantMessage("没有找到与「" + query + "」相关的" + typeName(projectType) + "，换个关键词试试喵~");
-                    return;
-                }
-                StringBuilder sb = new StringBuilder();
-                sb.append("为你找到了").append(results.size()).append(" 个结果（已按热度排序）：\n\n");
-                int index = 1;
-                for (AiModSearcher.SearchResult r : results) {
-                    sb.append(index++).append(". ").append(r.title).append("\n")
-                            .append("   作者：").append(r.author)
-                            .append("  下载：" + formatDownloads(r.downloads) + "\n")
-                            .append("   简介：").append(truncate(r.description, 60)).append("\n")
-                            .append("   下载链接：").append(r.projectUrl).append("\n\n");
-                }
-                sb.append("点击上面的下载链接即可打开对应页面喵~");
-                appendAssistantMessage(sb.toString());
-            }
-
-            @Override
-            public void onFailed(String error) {
-                setTyping(false);
-                appendAssistantMessage("搜索失败：" + error);
-            }
-        });
-    }
-
-    private String typeName(String type) {
-        switch (type) {
-            case "shader":
-                return "光影";
-            case "resourcepack":
-                return "资源包";
-            case "datapack":
-                return "数据包";
-            case "modpack":
-                return "整合包";
-            default:
-                return "模组";
-        }
-    }
-
-    private String formatDownloads(String d) {
-        try {
-            long v = Long.parseLong(d);
-            if (v >= 10000) {
-                return (v / 10000) + "万+";
-            }
-            return String.valueOf(v);
-        } catch (Exception e) {
-            return d;
-        }
-    }
-
-    private String truncate(String s, int max) {
-        if (s == null) return "";
-        if (s.length() <= max) return s;
-        return s.substring(0, max) + "…";
-    }
-
-    private void sendToAi(String text) {
-        setTyping(true);
+    private void doStreamCall(List<AiMessage> messages) {
         sending = true;
-        List<AiMessage> payload = new ArrayList<>();
-        payload.add(new AiMessage(AiMessage.ROLE_SYSTEM, AiLogAnalyzer.buildSystemPrompt(providerManager, "对话")));
-        for (ChatMessage msg : messages) {
-            if (msg.content == null || msg.content.isEmpty()) continue;
-            payload.add(new AiMessage(msg.isUser ? AiMessage.ROLE_USER : AiMessage.ROLE_ASSISTANT, msg.content));
-        }
-        payload.add(new AiMessage(AiMessage.ROLE_USER, text));
+        sendButton.setEnabled(false);
+        stopButton.setVisibility(View.VISIBLE);
+        appendAssistantPlaceholder();
+        final AiProvider provider = providerManager.getActiveProvider();
+        final long t0 = System.currentTimeMillis();
 
-        new AiChatClient().sendChat(providerManager.getActiveProvider(), payload, 0.7, new AiChatClient.ChatCallback() {
+        chatClient.send(provider, messages, new AiChatClient.StreamCallback() {
             @Override
-            public void onSuccess(String reply) {
-                sending = false;
-                setTyping(false);
-                if (reply == null || reply.isEmpty()) {
-                    appendAssistantMessage("抱歉，我没有获取到有效回复，请重试喵~");
-                    return;
-                }
-                executeActions(reply);
-                appendAssistantMessage(reply);
+            public void onChunk(String chunk, String fullText) {
+                ui.post(() -> {
+                    if (currentStreamBuffer != null) currentStreamBuffer.append(chunk);
+                    String display = currentStreamBuffer == null ? "" : currentStreamBuffer.toString();
+                    if (currentStreamView != null) {
+                        currentStreamView.setText("「消息小溪」：" + display + " ▍");
+                    }
+                    typingText.setText("正在生成... " + display.length() + " 字");
+                    scrollToBottom();
+                });
             }
 
             @Override
-            public void onFailed(String error) {
-                sending = false;
-                setTyping(false);
-                appendAssistantMessage("出错了：" + error + "\n\n你可以在右上角「服务商设置」里检查配置，或切换其他自定义服务商。");
+            public void onComplete(String fullText) {
+                ui.post(() -> finalizeStream(fullText, false, null, System.currentTimeMillis() - t0));
+            }
+
+            @Override
+            public void onError(String error) {
+                ui.post(() -> finalizeStream(currentStreamBuffer == null ? "" : currentStreamBuffer.toString(), true, error, System.currentTimeMillis() - t0));
             }
         });
     }
 
-    private void executeActions(String reply) {
-        Matcher m = ACTION_PATTERN.matcher(reply);
-        while (m.find()) {
-            String action = m.group(1);
-            String arg = m.group(2);
-            actionExecutor.execute(MainActivityHolder.get(), action, arg, result -> appendAssistantMessage("「消息小溪」已执行：" + result));
+    private void finalizeStream(String fullText, boolean errored, String error, long elapsed) {
+        sending = false;
+        sendButton.setEnabled(input.getText().length() > 0);
+        stopButton.setVisibility(View.GONE);
+        typingIndicator.setVisibility(View.GONE);
+        if (currentStreamView != null) {
+            String prefix = "「消息小溪」：";
+            String body = fullText == null ? "" : fullText;
+            if (errored) {
+                currentStreamView.setText(prefix + body + (body.isEmpty() ? "" : "\n\n") + "（生成失败：" + error + "）");
+                setConnectionStatus("连接失败", "#F44336");
+            } else {
+                currentStreamView.setText(prefix + body + "\n\n— 用时 " + elapsed + " ms");
+                setConnectionStatus("已连接", "#4CAF50");
+            }
         }
-    }
-
-    private void handleAnalyzeLog() {
-        final String logPath = AiLogAnalyzer.findLatestLog(this);
-        appendAssistantMessage("开始分析启动器日志…");
-        setTyping(true);
-        AiLogAnalyzer.analyzeAsync(this, logPath, true, summary -> {
-            setTyping(false);
-            appendAssistantMessage("【日志分析结果】\n" + summary);
-        });
-    }
-
-    private void appendUserMessage(String content) {
-        messages.add(new ChatMessage(true, content));
-        adapter.notifyDataSetChanged();
+        if (!errored && !TextUtils.isEmpty(fullText)) {
+            history.add(new AiMessage("assistant", fullText));
+            if (currentConvIdx >= 0 && currentConvIdx < conversations.size()) {
+                conversations.get(currentConvIdx).messages.add(new AiMessage("assistant", fullText));
+            }
+            while (history.size() > MAX_HISTORY * 2) history.remove(0);
+        }
+        currentStreamView = null;
+        currentStreamBuffer = null;
         scrollToBottom();
     }
 
-    private void appendAssistantMessage(String content) {
-        messages.add(new ChatMessage(false, content));
-        adapter.notifyDataSetChanged();
-        scrollToBottom();
-    }
-
-    private void setTyping(boolean typing) {
-        typingIndicator.setVisibility(typing ? View.VISIBLE : View.GONE);
+    private void stopSending() {
+        chatClient.cancel();
+        if (sending) {
+            finalizeStream(currentStreamBuffer == null ? "" : currentStreamBuffer.toString(), true, "已停止", 0);
+        }
     }
 
     private void scrollToBottom() {
-        messageList.post(() -> messageList.setSelection(messageList.getAdapter().getCount() - 1));
+        messageScroll.post(() -> messageScroll.fullScroll(View.FOCUS_DOWN));
     }
 
-    private void hideKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+    private void setConnectionStatus(String text, String colorHex) {
+        connectionStatus.setText(text);
+        connectionStatus.setTextColor(Color.parseColor(colorHex));
+    }
+
+    private void updateProviderBadge() {
+        AiProvider p = providerManager.getActiveProvider();
+        providerBadge.setText("服务商：" + p.name + " · 模型 " + p.model);
+    }
+
+    private void showProviderPicker() {
+        List<AiProvider> list = providerManager.listProviders();
+        String[] names = new String[list.size()];
+        for (int i = 0; i < list.size(); i++) names[i] = list.get(i).name + (list.get(i).isLocked ? " 🔒" : "");
+        new AlertDialog.Builder(this)
+                .setTitle("选择 AI 服务商")
+                .setItems(names, (d, idx) -> {
+                    AiProvider selected = list.get(idx);
+                    providerManager.setActiveProvider(selected.id);
+                    updateProviderBadge();
+                    Toast.makeText(this, "已切换到：" + selected.name, Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("管理自定义服务商", (d, w) -> manageCustomProviders())
+                .show();
+    }
+
+    private void manageCustomProviders() {
+        List<AiProvider> customs = new ArrayList<>();
+        for (AiProvider p : providerManager.listProviders()) if (!p.isLocked) customs.add(p);
+        if (customs.isEmpty()) {
+            showAddProviderDialog();
+            return;
         }
+        String[] names = new String[customs.size() + 1];
+        for (int i = 0; i < customs.size(); i++) names[i] = customs.get(i).name;
+        names[customs.size()] = "＋ 添加新服务商";
+        new AlertDialog.Builder(this)
+                .setTitle("自定义服务商")
+                .setItems(names, (d, idx) -> {
+                    if (idx == customs.size()) showAddProviderDialog();
+                    else showProviderActions(customs.get(idx));
+                })
+                .show();
     }
 
-    private void showProviderDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("服务商设置");
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(24, 16, 24, 8);
-
-        TextView roleLabel = new TextView(this);
-        roleLabel.setText("当前 AI 角色：消息小溪（猫娘）");
-        roleLabel.setTextColor(Color.parseColor("#555555"));
-        layout.addView(roleLabel);
-
-        final ListView providerList = new ListView(this);
-        providerList.setDivider(new ColorDrawable(Color.TRANSPARENT));
-        final List<AiProvider> providers = providerManager.getProviders();
-        final ProviderListAdapter providerAdapter = new ProviderListAdapter(this, providers);
-        providerList.setAdapter(providerAdapter);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                (int) (providers.size() * 140 * getResources().getDisplayMetrics().density));
-        providerList.setLayoutParams(lp);
-        layout.addView(providerList);
-
-        TextView addButton = new TextView(this);
-        addButton.setText("＋ 添加自定义服务商");
-        addButton.setTextColor(Color.parseColor("#5C6BC0"));
-        addButton.setGravity(Gravity.CENTER);
-        addButton.setPadding(0, 16, 0, 16);
-        addButton.setOnClickListener(v -> showAddProviderDialog());
-        layout.addView(addButton);
-
-        TextView roleButton = new TextView(this);
-        roleButton.setText("✎ 自定义 AI 角色（默认：关心玩家的猫娘 消息小溪）");
-        roleButton.setTextColor(Color.parseColor("#5C6BC0"));
-        roleButton.setGravity(Gravity.CENTER);
-        roleButton.setPadding(0, 8, 0, 8);
-        roleButton.setOnClickListener(v -> showRoleDialog());
-        layout.addView(roleButton);
-
-        builder.setView(layout);
-        builder.setPositiveButton("完成", null);
-        builder.show();
+    private void showProviderActions(AiProvider p) {
+        String[] actions = {"设为默认", "删除"};
+        new AlertDialog.Builder(this)
+                .setTitle(p.name)
+                .setItems(actions, (d, idx) -> {
+                    if (idx == 0) {
+                        providerManager.setActiveProvider(p.id);
+                        updateProviderBadge();
+                    } else if (idx == 1) {
+                        providerManager.removeProvider(p.id);
+                        Toast.makeText(this, "已删除：" + p.name, Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .show();
     }
 
     private void showAddProviderDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("添加自定义服务商");
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(48, 16, 48, 16);
+        final EditText nameEt = new EditText(this);
+        nameEt.setHint("名称（例：我的 OpenAI）");
+        final EditText urlEt = new EditText(this);
+        urlEt.setHint("Base URL（例：https://api.openai.com/v1）");
+        final EditText keyEt = new EditText(this);
+        keyEt.setHint("API Key");
+        final EditText modelEt = new EditText(this);
+        modelEt.setHint("模型名（例：gpt-4o-mini）");
+        LinearLayout container = new LinearLayout(this);
+        container.setOrientation(LinearLayout.VERTICAL);
+        container.setPadding(48, 24, 48, 8);
+        container.addView(nameEt);
+        container.addView(urlEt);
+        container.addView(keyEt);
+        container.addView(modelEt);
 
-        EditText name = new EditText(this);
-        name.setHint("名称（例如：我的 OpenAI）");
-        layout.addView(name);
-
-        EditText url = new EditText(this);
-        url.setHint("Base URL（例如 https://api.openai.com/v1）");
-        layout.addView(url);
-
-        EditText key = new EditText(this);
-        key.setHint("API Key（令牌）");
-        key.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        layout.addView(key);
-
-        EditText model = new EditText(this);
-        model.setHint("模型（例如 gpt-4o-mini / auto）");
-        model.setText("auto");
-        layout.addView(model);
-
-        builder.setView(layout);
-        builder.setPositiveButton("保存", (d, w) -> {
-            String n = name.getText().toString().trim();
-            String u = url.getText().toString().trim();
-            String k = key.getText().toString().trim();
-            String mo = model.getText().toString().trim();
-            if (n.isEmpty() || u.isEmpty() || k.isEmpty()) {
-                Toast.makeText(this, "名称、地址和密钥不能为空", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            AiProvider p = new AiProvider(String.valueOf(System.currentTimeMillis()), n, u, k, mo.isEmpty() ? "auto" : mo, false);
-            providerManager.addProvider(p);
-            Toast.makeText(this, "已添加自定义服务商，可在列表中切换使用", Toast.LENGTH_SHORT).show();
-        });
-        builder.setNegativeButton("取消", null);
-        builder.show();
+        new AlertDialog.Builder(this)
+                .setTitle("添加自定义服务商")
+                .setView(container)
+                .setPositiveButton("添加", (d, w) -> {
+                    String name = nameEt.getText().toString().trim();
+                    String url = urlEt.getText().toString().trim();
+                    String key = keyEt.getText().toString().trim();
+                    String model = modelEt.getText().toString().trim();
+                    if (name.isEmpty() || url.isEmpty() || key.isEmpty()) {
+                        Toast.makeText(this, "名称、URL、Key 必填", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (model.isEmpty()) model = "auto";
+                    AiProvider p = new AiProvider(
+                            "custom_" + System.currentTimeMillis(),
+                            name, url, key, model,
+                            AiProviderManager.DEFAULT_ROLE,
+                            false
+                    );
+                    providerManager.addProvider(p);
+                    Toast.makeText(this, "已添加：" + name, Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("取消", null)
+                .show();
     }
 
-    private void showRoleDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("自定义 AI 角色");
-        EditText roleInput = new EditText(this);
-        roleInput.setHint("描述你想让 AI 扮演的角色…");
-        roleInput.setMinLines(3);
-        roleInput.setText(providerManager.getRole());
-        int pad = (int) (16 * getResources().getDisplayMetrics().density);
-        roleInput.setPadding(pad, pad, pad, pad);
-        builder.setView(roleInput);
-        builder.setPositiveButton("保存", (d, w) -> {
-            String text = roleInput.getText().toString().trim();
-            providerManager.setRole(TextUtils.isEmpty(text) ? AiProviderManager.DEFAULT_ROLE : text);
-            Toast.makeText(this, "角色已更新喵~", Toast.LENGTH_SHORT).show();
-        });
-        builder.setNegativeButton("恢复默认", (d, w) -> {
-            providerManager.setRole(AiProviderManager.DEFAULT_ROLE);
-            Toast.makeText(this, "已恢复默认角色（消息小溪）", Toast.LENGTH_SHORT).show();
-        });
-        builder.setNeutralButton("取消", null);
-        builder.show();
+    private void showHistoryPicker() {
+        if (conversations.isEmpty()) {
+            Toast.makeText(this, "暂无历史对话", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String[] titles = new String[conversations.size() + 1];
+        titles[0] = "＋ 新建对话";
+        for (int i = 0; i < conversations.size(); i++) {
+            titles[i + 1] = conversations.get(i).title == null ? "未命名" : conversations.get(i).title;
+        }
+        new AlertDialog.Builder(this)
+                .setTitle("对话历史")
+                .setItems(titles, (d, idx) -> {
+                    if (idx == 0) {
+                        startNewConversation();
+                    } else {
+                        loadConversation(idx - 1);
+                    }
+                })
+                .show();
     }
 
-    private class ProviderListAdapter extends BaseAdapter {
-        private final Context context;
-        private final List<AiProvider> providers;
+    private void startNewConversation() {
+        Conversation c = new Conversation();
+        c.title = "对话 " + (conversations.size() + 1);
+        conversations.add(c);
+        currentConvIdx = conversations.size() - 1;
+        history.clear();
+        messageContainer.removeAllViews();
+        appendAssistantMessage("喵~ 你好呀玩家，欢迎来找「消息小溪」聊天。我熟悉 Minecraft、HMCL 系启动器、模组/光影/资源包。你可以问我任何问题，或者直接发视频链接给我帮你找模组喵~");
+    }
 
-        ProviderListAdapter(Context context, List<AiProvider> providers) {
-            this.context = context;
-            this.providers = providers;
-        }
-
-        @Override
-        public int getCount() {
-            return providers.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return providers.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder;
-            if (convertView == null) {
-                convertView = LayoutInflater.from(context).inflate(R.layout.item_ai_provider, parent, false);
-                holder = new ViewHolder();
-                holder.name = convertView.findViewById(R.id.ai_provider_name);
-                holder.detail = convertView.findViewById(R.id.ai_provider_detail);
-                holder.state = convertView.findViewById(R.id.ai_provider_state);
-                holder.action = convertView.findViewById(R.id.ai_provider_action);
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-            final AiProvider provider = providers.get(position);
-            holder.name.setText(provider.name + (provider.locked ? "（默认·锁定）" : ""));
-            holder.detail.setText(provider.baseUrl + "\n模型：" + provider.model);
-            boolean active = providerManager.getActiveProvider().id.equals(provider.id);
-            holder.state.setText(active ? "✓ 使用中" : "点击切换");
-            holder.state.setTextColor(active ? Color.parseColor("#43A047") : Color.parseColor("#5C6BC0"));
-            holder.action.setText(provider.locked ? "🔒 不可修改" : "删除");
-            holder.action.setEnabled(!provider.locked);
-            holder.action.setOnClickListener(v -> {
-                if (provider.locked) {
-                    Toast.makeText(context, "默认服务商不可修改、不可删除", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                providerManager.removeProvider(provider.id);
-                notifyDataSetChanged();
-            });
-            holder.state.setOnClickListener(v -> {
-                providerManager.setActiveProvider(provider.id);
-                Toast.makeText(context, "已切换至：" + provider.name, Toast.LENGTH_SHORT).show();
-                notifyDataSetChanged();
-            });
-            return convertView;
+    private void loadConversation(int idx) {
+        if (idx < 0 || idx >= conversations.size()) return;
+        currentConvIdx = idx;
+        Conversation c = conversations.get(idx);
+        history.clear();
+        history.addAll(c.messages);
+        messageContainer.removeAllViews();
+        for (AiMessage m : c.messages) {
+            if ("user".equals(m.role)) appendUserMessage(m.content);
+            else appendAssistantMessage(m.content);
         }
     }
 
-    private static class ViewHolder {
-        TextView name;
-        TextView detail;
-        TextView state;
-        TextView action;
+    private void appendAssistantMessage(String text) {
+        TextView tv = new TextView(this);
+        tv.setText("「消息小溪」：" + text);
+        tv.setTextColor(Color.parseColor("#E0FFFFFF"));
+        tv.setTextSize(13);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.gravity = Gravity.START;
+        lp.setMargins(12, 8, 48, 8);
+        messageContainer.addView(tv, lp);
+        scrollToBottom();
     }
 
-    private class MessageAdapter extends BaseAdapter {
-        private final Context context;
-        private final List<ChatMessage> messages;
+    private void showSettings() {
+        final boolean realtime = providerManager.isRealtimeScan();
+        final boolean overlay = providerManager.isOverlayEnabled();
+        final float temp = providerManager.getTemperature();
+        final int maxTokens = providerManager.getMaxTokens();
+        CheckBox realtimeCb = new CheckBox(this);
+        realtimeCb.setText("游戏运行时实时日志扫描");
+        realtimeCb.setChecked(realtime);
+        CheckBox overlayCb = new CheckBox(this);
+        overlayCb.setText("启动 AI 浮动球");
+        overlayCb.setChecked(overlay);
+        EditText tempEt = new EditText(this);
+        tempEt.setHint("Temperature (0.0 - 2.0)");
+        tempEt.setText(String.valueOf(temp));
+        EditText maxEt = new EditText(this);
+        maxEt.setHint("Max Tokens");
+        maxEt.setText(String.valueOf(maxTokens));
+        LinearLayout container = new LinearLayout(this);
+        container.setOrientation(LinearLayout.VERTICAL);
+        container.setPadding(48, 24, 48, 8);
+        container.addView(realtimeCb);
+        container.addView(overlayCb);
+        container.addView(tempEt);
+        container.addView(maxEt);
 
-        MessageAdapter(Context context, List<ChatMessage> messages) {
-            this.context = context;
-            this.messages = messages;
-        }
-
-        @Override
-        public int getCount() {
-            return messages.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return messages.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return messages.get(position).isUser ? 0 : 1;
-        }
-
-        @Override
-        public int getViewTypeCount() {
-            return 2;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ChatMessage msg = messages.get(position);
-            if (convertView == null) {
-                convertView = LayoutInflater.from(context).inflate(
-                        msg.isUser ? R.layout.item_ai_chat_user : R.layout.item_ai_chat_assistant, parent, false);
-            }
-            TextView content = convertView.findViewById(R.id.ai_msg_content);
-            content.setText(msg.content);
-            return convertView;
-        }
+        new AlertDialog.Builder(this)
+                .setTitle("AI 设置")
+                .setView(container)
+                .setPositiveButton("保存", (d, w) -> {
+                    providerManager.setRealtimeScan(realtimeCb.isChecked());
+                    providerManager.setOverlayEnabled(overlayCb.isChecked());
+                    try { providerManager.setTemperature(Float.parseFloat(tempEt.getText().toString())); } catch (Exception ignored) {}
+                    try { providerManager.setMaxTokens(Integer.parseInt(maxEt.getText().toString())); } catch (Exception ignored) {}
+                    Toast.makeText(this, "设置已保存", Toast.LENGTH_SHORT).show();
+                })
+                .setNeutralButton("重启浮动球服务", (d, w) -> {
+                    Intent s = new Intent(this, AiOverlayService.class);
+                    s.setAction(AiOverlayService.ACTION_START);
+                    startService(s);
+                })
+                .setNegativeButton("取消", null)
+                .show();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        chatClient.cancel();
     }
 }

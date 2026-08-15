@@ -31,8 +31,8 @@ android {
         applicationId "com.tungsten.hmclpe"
         minSdk 26
         targetSdk 34
-        versionCode 3
-        versionName "1.0.2"
+        versionCode 4
+        versionName "1.0.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -87,6 +87,7 @@ dependencies {
     implementation 'com.github.naman14:app-theme-engine:0.5.2@aar'
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+    implementation 'com.squareup.okhttp3:okhttp-sse:4.9.3'
     implementation 'org.nanohttpd:nanohttpd:2.3.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'cat.ereza:customactivityoncrash:2.3.0'

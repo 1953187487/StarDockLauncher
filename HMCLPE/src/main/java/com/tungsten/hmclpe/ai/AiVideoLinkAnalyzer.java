@@ -81,14 +81,15 @@ public class AiVideoLinkAnalyzer {
         messages.add(new AiMessage(AiMessage.ROLE_USER,
                 "视频标题：" + title + "\n\n视频简介：" + description + "\n\n" +
                         "请只输出识别到的项目名称（模组/光影/资源包），用顿号或逗号分隔；如果识别不出就回复“未识别到项目名称”。"));
-        new AiChatClient().sendChat(manager.getActiveProvider(), messages, 0.2, new AiChatClient.ChatCallback() {
+        new AiChatClient().send(manager.getActiveProvider(), messages, new AiChatClient.StreamCallback() {
             @Override
-            public void onSuccess(String reply) {
-                callback.onExtracted(reply);
+            public void onChunk(String chunk, String fullText) {}
+            @Override
+            public void onComplete(String fullText) {
+                callback.onExtracted(fullText == null ? "" : fullText);
             }
-
             @Override
-            public void onFailed(String error) {
+            public void onError(String error) {
                 callback.onFailed(error);
             }
         });

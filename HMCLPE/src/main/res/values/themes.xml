@@ -1,22 +1,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Theme.HelloMinecraftLauncherPocketEdition" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Primary brand color. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryVariant">@color/colorPrimary</item>
         <item name="colorOnPrimary">@color/colorPrimary</item>
-        <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/colorPrimary</item>
         <item name="colorSecondaryVariant">@color/colorPrimary</item>
         <item name="colorOnSecondary">@color/colorPrimary</item>
-        <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
-        <!-- Customize your theme here. -->
     </style>
 
     <style name="MenuStyle" parent="Widget.AppCompat.PopupMenu">
@@ -28,5 +23,19 @@
     <style name="MenuTextStyle">
         <item name="android:textColor">@color/colorPureBlack</item>
         <item name="android:textSize">11sp</item>
+    </style>
+
+    <style name="Theme.StarDockAI" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorSurface">#0F1419</item>
+        <item name="colorOnSurface">#FFFFFF</item>
+        <item name="colorSurfaceVariant">#1F2933</item>
+        <item name="colorOnSurfaceVariant">#A0FFFFFF</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 </resources>

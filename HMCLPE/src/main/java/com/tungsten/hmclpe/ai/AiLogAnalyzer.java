@@ -91,14 +91,16 @@ public class AiLogAnalyzer {
         messages.add(new AiMessage(AiMessage.ROLE_USER,
                 "请分析下面这份 Minecraft 游戏日志，找出错误和闪退原因，并用简体中文给出：\n" +
                         "1. 崩溃/错误原因（简洁）\n2. 建议的解决办法\n3. 一句话总结\n\n日志内容：\n" + content));
-        new AiChatClient().sendChat(provider, messages, 0.3, new AiChatClient.ChatCallback() {
+        new AiChatClient().send(provider, messages, new AiChatClient.StreamCallback() {
             @Override
-            public void onSuccess(String reply) {
-                mainHandler.post(() -> callback.onResult(reply));
+            public void onChunk(String chunk, String fullText) {}
+            @Override
+            public void onComplete(String fullText) {
+                final String result = fullText == null || fullText.isEmpty() ? localSummary : fullText;
+                mainHandler.post(() -> callback.onResult(result));
             }
-
             @Override
-            public void onFailed(String error) {
+            public void onError(String error) {
                 mainHandler.post(() -> callback.onResult(localSummary + "\n\n（AI 在线分析失败：" + error + "）"));
             }
         });
@@ -145,7 +147,7 @@ public class AiLogAnalyzer {
     }
 
     public static String buildSystemPrompt(AiProviderManager manager, String task) {
-        String role = manager.getRole();
+        String role = manager.getActiveProvider().systemPrompt;
         StringBuilder sb = new StringBuilder();
         sb.append("你是《StarDock 启动器》内置的 AI 智能助手，名字叫「消息小溪」。");
         if (task != null && !task.isEmpty()) {

@@ -111,13 +111,23 @@ public class PojavMinecraftActivity extends BaseMainActivity {
                 MCOptionUtils.save(gameLaunchSetting.game_directory);
 
                 new Thread(() -> {
-                    Vector<String> args = PojavLauncher.getMcArgs(gameLaunchSetting, PojavMinecraftActivity.this,(int) (width * scaleFactor),(int) (height * scaleFactor),gameLaunchSetting.server);
+                    final PojavLauncher.LaunchCheckResult check = PojavLauncher.buildLaunchArgs(gameLaunchSetting, PojavMinecraftActivity.this, (int) (width * scaleFactor), (int) (height * scaleFactor), gameLaunchSetting.server);
                     runOnUiThread(() -> {
+                        if (!check.ready) {
+                            String err = check.errorMessage == null ? "未知错误" : check.errorMessage;
+                            android.app.AlertDialog.Builder b = new android.app.AlertDialog.Builder(PojavMinecraftActivity.this);
+                            b.setTitle("无法启动游戏");
+                            b.setMessage(err);
+                            b.setPositiveButton("退出", (d, w) -> finish());
+                            b.setCancelable(false);
+                            b.show();
+                            return;
+                        }
                         JREUtils.setupBridgeWindow(new Surface(surface));
                         startGame(gameLaunchSetting.javaPath,
                                 gameLaunchSetting.home,
                                 GameLaunchSetting.isHighVersion(gameLaunchSetting),
-                                args,
+                                check.args,
                                 gameLaunchSetting.pojavRenderer,
                                 gameLaunchSetting.game_directory,
                                 PojavLauncher.getGlVersion(gameLaunchSetting.currentVersion));
