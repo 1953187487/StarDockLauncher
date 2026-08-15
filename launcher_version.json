@@ -1,16 +1,16 @@
 {
   "latestRelease": {
-    "versionCode": 5,
-    "versionName": "1.0.4",
+    "versionCode": 6,
+    "versionName": "1.0.5",
     "date": "2026.08.15",
-    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.4/StarDockLauncher-v1.0.4-release.apk"],
-    "updateLog": "StarDockLauncher 1.0.4 补丁版（修复 v1.0.3 全屏闪屏与启动崩溃）：\n\n关键修复：\n1. 修复全屏闪屏崩溃：v1.0.3 在 Application.onCreate() 调用 verifyRuntimeAssets() 时 AppManifest 静态字段还是 null 导致 NPE → 反复重启 MainActivity 引发闪屏循环。v1.0.4 改为先初始化路径再做校验并对 null 路径做防御。\n2. 修复启动游戏闪退：BoatMinecraftActivity/PojavMinecraftActivity 的 getIntent().getExtras() 在无 extras 时为 null 会 NPE，改为空 Bundle 兜底。\n3. 修复崩溃日志重启循环：CrashHandler 不再调用 startActivity 重启 MainActivity，只写日志+pending flag。\n4. 修复崩溃日志重复弹窗：MainActivity.showCrashLogIfNeeded 显示后立刻 clearPendingFlag。\n5. 修复 SYSTEM_ALERT_WINDOW 权限弹窗骚扰：启动器不再自动请求悬浮窗权限，默认关闭。\n6. 修复 AI 抽屉 42% 宽被强应用：只有从 MainActivityHolder 启动且 extra drawer_mode=true 时才缩小到 42%。\n7. 修复 File 构造器类型错误：HMCLPEApplication.verifyRuntimeAssets 用 new File(String + \"/default/bin/java\") 形式。\n8. 修复启动游戏失败时 stopService 未启动服务 NPE：BoatMinecraftActivity 异常退出时包 try/catch。\n\n继续保留 v1.0.3 能力：启动前校验 runtime 资产、AI WebSocket 流式、Material3 嵌入式抽屉、启动模式升级、Modrinth 全类型搜索、下载源全部走 BMCLAPI、删除'已停服'公告。"
+    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.5/StarDockLauncher-v1.0.5-release.apk"],
+    "updateLog": "StarDockLauncher 1.0.5 全面重写版（UI/架构重写 + 局域网联机功能）：\n\n全面 UI/架构重写：\n1. 主入口切换到 HomeActivity：Material3 CoordinatorLayout + Toolbar + BottomNavigationView + Fragment 容器。\n2. 5 个 Fragment：Home / Version / Download / Mod / Setting。\n3. 新主题 Theme.StarDock.Main（Material3 DayNight 深色）+ 完整色板 colors_sd.xml。\n4. MainActivityHolder 类型兼容（AppCompatActivity），新 HomeActivity 与旧 MainActivity 双兼容。\n5. 主界面 64dp 顶栏 + 渐变 Logo + 联机/AI/最小化/关闭按钮。\n\n局域网联机功能：\n1. 启用开关（默认关闭，开启后在游戏悬浮窗显示联机按钮）。\n2. 创建房间：扫描 latest.log 识别「对局域网开放」端口，自动生成 8 位邀请码（XXXX-XXXX）。\n3. 加入房间：粘贴邀请码 → 自动解析端口，提示在多人游戏中添加服务器。\n4. 邀请码格式：BASE32 无歧义字符 SHA-256 取前 8 位。\n5. 联机邀请链接：stardock://join?code=XXXX-XXXX&port=NNNNN。\n\nBug 修复：\n1. VerifyInterface 引用修正（VerifyDialog.VerifyInterface → com.tungsten.hmclpe.launcher.VerifyInterface）。\n2. MainActivityHolder 返回类型 AppCompatActivity，向下兼容 MainActivity 实例。\n3. AiLogAnalyzer.findLatestLog 兼容非 MainActivity 实例（类型转换前 instanceof 检查）。\n4. Splash → HomeActivity 启动链路修复（InstallLauncherFile.enterLauncher）。\n\n构建：versionCode 6, versionName 1.0.5, APK 179.5MB（release 签名）。"
   },
   "latestPrerelease": {
-    "versionCode": 5,
-    "versionName": "1.0.4",
+    "versionCode": 6,
+    "versionName": "1.0.5",
     "date": "2026.08.15",
-    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.4/StarDockLauncher-v1.0.4-release.apk"],
-    "updateLog": "StarDockLauncher 1.0.4：修复 v1.0.3 全屏闪屏 + 启动游戏崩溃 + 权限弹窗骚扰 + 多个 NPE bug。"
+    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.5/StarDockLauncher-v1.0.5-release.apk"],
+    "updateLog": "StarDockLauncher 1.0.5：全面 UI/架构重写（Material3 NavigationBar + 5 Fragment）+ 新增局域网联机功能（端口扫描 + 邀请码生成）。"
   }
 }
