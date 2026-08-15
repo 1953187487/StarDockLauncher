@@ -51,9 +51,11 @@ public class PojavMinecraftActivity extends BaseMainActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        gameLaunchSetting = GameLaunchSetting.getGameLaunchSetting(getIntent().getExtras().getString("setting_path"),getIntent().getExtras().getString("version"));
+        Bundle extras = getIntent().getExtras();
+        if (extras == null) extras = new Bundle();
+        gameLaunchSetting = GameLaunchSetting.getGameLaunchSetting(extras.getString("setting_path"),extras.getString("version"));
 
-        if (getIntent().getExtras().getBoolean("test") || gameLaunchSetting.log) {
+        if (extras.getBoolean("test") || gameLaunchSetting.log) {
 
         }
 

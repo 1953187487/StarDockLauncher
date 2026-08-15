@@ -64,7 +64,7 @@ public class AiProviderManager {
                     .putBoolean("provider_initialized", true)
                     .putString(KEY_PROVIDER_ID, DEFAULT_PROVIDER_ID)
                     .putBoolean(KEY_REALTIME, true)
-                    .putBoolean(KEY_OVERLAY_ENABLED, true)
+                    .putBoolean(KEY_OVERLAY_ENABLED, false)
                     .putFloat(KEY_TEMPERATURE, 0.7f)
                     .putInt(KEY_MAX_TOKENS, 4096)
                     .apply();

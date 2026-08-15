@@ -104,15 +104,17 @@ public class AiChatActivity extends AppCompatActivity implements View.OnClickLis
         typingIndicator = findViewById(R.id.ai_typing);
         typingText = findViewById(R.id.ai_typing_text);
 
-        if (MainActivityHolder.get() != null) {
-            WindowManager.LayoutParams lp = getWindow().getAttributes();
-            lp.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.42f);
-            lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            lp.gravity = Gravity.END | Gravity.CENTER_VERTICAL;
-            lp.dimAmount = 0.0f;
-            lp.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
-            getWindow().setAttributes(lp);
-            getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#CC0F1419")));
+        if (MainActivityHolder.get() != null && getIntent().getBooleanExtra("drawer_mode", true)) {
+            try {
+                WindowManager.LayoutParams lp = getWindow().getAttributes();
+                lp.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.42f);
+                lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                lp.gravity = Gravity.END | Gravity.CENTER_VERTICAL;
+                lp.dimAmount = 0.0f;
+                getWindow().setAttributes(lp);
+                getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#CC0F1419")));
+            } catch (Throwable ignored) {
+            }
         }
 
         providerManager = AiProviderManager.getInstance(this);

@@ -34,26 +34,36 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
     }
 
     public static boolean hasPendingCrash(Context context) {
-        File flag = new File(AppManifest.DEFAULT_CACHE_DIR, PENDING_FLAG);
-        boolean exists = flag.exists();
-        return exists;
+        try {
+            File flag = new File(AppManifest.DEFAULT_CACHE_DIR, PENDING_FLAG);
+            return flag.exists();
+        } catch (Throwable t) {
+            return false;
+        }
     }
 
     public static void clearPendingFlag(Context context) {
-        File flag = new File(AppManifest.DEFAULT_CACHE_DIR, PENDING_FLAG);
-        if (flag.exists()) flag.delete();
+        try {
+            File flag = new File(AppManifest.DEFAULT_CACHE_DIR, PENDING_FLAG);
+            if (flag.exists()) flag.delete();
+        } catch (Throwable t) {
+        }
     }
 
     public static File getLatestCrashLog(Context context) {
-        File dir = new File(AppManifest.DEFAULT_CACHE_DIR, CRASH_DIR);
-        if (!dir.exists()) return null;
-        File[] files = dir.listFiles((d, name) -> name.endsWith(".log"));
-        if (files == null || files.length == 0) return null;
-        File latest = files[0];
-        for (File f : files) {
-            if (f.lastModified() > latest.lastModified()) latest = f;
+        try {
+            File dir = new File(AppManifest.DEFAULT_CACHE_DIR, CRASH_DIR);
+            if (!dir.exists()) return null;
+            File[] files = dir.listFiles((d, name) -> name.endsWith(".log"));
+            if (files == null || files.length == 0) return null;
+            File latest = files[0];
+            for (File f : files) {
+                if (f.lastModified() > latest.lastModified()) latest = f;
+            }
+            return latest;
+        } catch (Throwable t) {
+            return null;
         }
-        return latest;
     }
 
     @Override
@@ -67,39 +77,38 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 
             Log.e(TAG, "捕获到未捕获异常：" + e.getMessage(), e);
 
-            File crashDir = new File(AppManifest.DEFAULT_CACHE_DIR, CRASH_DIR);
-            if (!crashDir.exists()) crashDir.mkdirs();
+            if (AppManifest.DEFAULT_CACHE_DIR != null) {
+                File crashDir = new File(AppManifest.DEFAULT_CACHE_DIR, CRASH_DIR);
+                if (!crashDir.exists()) crashDir.mkdirs();
 
-            String ts = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
-            File crashFile = new File(crashDir, "crash_" + ts + ".log");
-            FileOutputStream fos = new FileOutputStream(crashFile);
-            fos.write(("Time: " + new Date().toString() + "\n").getBytes());
-            fos.write(("Thread: " + t.getName() + "\n").getBytes());
-            fos.write(("AppContext: " + appContext.getPackageName() + "\n").getBytes());
-            fos.write(("AppRuntimeExists: " + new File(AppManifest.DEFAULT_RUNTIME_DIR + "/version").exists() + "\n").getBytes());
-            fos.write(("Java8Exists: " + new File(AppManifest.JAVA_DIR + "/default/bin/java").exists() + "\n").getBytes());
-            fos.write(("Java17Exists: " + new File(AppManifest.JAVA_DIR + "/JRE17/bin/java").exists() + "\n").getBytes());
-            fos.write(("BoatLibExists: " + new File(AppManifest.BOAT_LIB_DIR).exists() + "\n").getBytes());
-            fos.write("\n".getBytes());
-            fos.write(stack.getBytes());
-            fos.flush();
-            fos.close();
+                String ts = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+                File crashFile = new File(crashDir, "crash_" + ts + ".log");
+                try (FileOutputStream fos = new FileOutputStream(crashFile)) {
+                    fos.write(("Time: " + new Date().toString() + "\n").getBytes());
+                    fos.write(("Thread: " + t.getName() + "\n").getBytes());
+                    fos.write(("AppContext: " + appContext.getPackageName() + "\n").getBytes());
+                    try {
+                        String rd = AppManifest.DEFAULT_RUNTIME_DIR;
+                        fos.write(("AppRuntimeExists: " + (rd != null && new File(rd + "/version").exists()) + "\n").getBytes());
+                        String jd = AppManifest.JAVA_DIR;
+                        fos.write(("Java8Exists: " + (jd != null && new File(jd, "default/bin/java").exists()) + "\n").getBytes());
+                        fos.write(("Java17Exists: " + (jd != null && new File(jd, "JRE17/bin/java").exists()) + "\n").getBytes());
+                        String bd = AppManifest.BOAT_LIB_DIR;
+                        fos.write(("BoatLibExists: " + (bd != null && new File(bd).exists()) + "\n").getBytes());
+                    } catch (Throwable ignored) {}
+                    fos.write("\n".getBytes());
+                    fos.write(stack.getBytes());
+                    fos.flush();
+                }
 
-            File flag = new File(AppManifest.DEFAULT_CACHE_DIR, PENDING_FLAG);
-            FileOutputStream flagFos = new FileOutputStream(flag);
-            flagFos.write(crashFile.getAbsolutePath().getBytes());
-            flagFos.close();
+                File flag = new File(AppManifest.DEFAULT_CACHE_DIR, PENDING_FLAG);
+                try (FileOutputStream flagFos = new FileOutputStream(flag)) {
+                    flagFos.write(crashFile.getAbsolutePath().getBytes());
+                    flagFos.close();
+                }
+            }
         } catch (Exception ex) {
             Log.e(TAG, "写入崩溃日志失败", ex);
-        }
-
-        try {
-            Intent intent = new Intent(appContext, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra("auto_show_crash", true);
-            appContext.startActivity(intent);
-        } catch (Exception ex) {
-            Log.e(TAG, "重启主界面失败", ex);
         }
 
         new android.os.Handler(Looper.getMainLooper()).postDelayed(() -> {

@@ -81,7 +81,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void init(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            if (getIntent().getExtras().getBoolean("fullscreen")) {
+            Bundle extras = getIntent().getExtras();
+            boolean fs = extras != null && extras.getBoolean("fullscreen");
+            if (fs) {
                 getWindow().getAttributes().layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
             } else {
                 getWindow().getAttributes().layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER;
@@ -163,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         try {
             File latest = com.tungsten.hmclpe.utils.crash.CrashHandler.getLatestCrashLog(this);
             if (latest != null) {
+                com.tungsten.hmclpe.utils.crash.CrashHandler.clearPendingFlag(this);
                 Intent crashIntent = new Intent(this, com.tungsten.hmclpe.utils.crash.CrashLogViewerActivity.class);
                 crashIntent.putExtra("log_path", latest.getAbsolutePath());
                 crashIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -174,12 +177,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void startAiOverlayService() {
         try {
+            if (!providerManagerOverlayEnabled()) return;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (!Settings.canDrawOverlays(this)) {
-                    Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                            android.net.Uri.parse("package:" + getPackageName()));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
                     return;
                 }
             }
@@ -187,6 +187,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             intent.setAction(com.tungsten.hmclpe.ai.AiOverlayService.ACTION_START);
             startService(intent);
         } catch (Exception ignored) {
+        }
+    }
+
+    private boolean providerManagerOverlayEnabled() {
+        try {
+            return com.tungsten.hmclpe.ai.AiProviderManager.getInstance(this).isOverlayEnabled();
+        } catch (Throwable t) {
+            return false;
         }
     }
 

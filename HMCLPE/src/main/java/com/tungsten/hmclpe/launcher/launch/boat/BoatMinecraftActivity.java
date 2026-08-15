@@ -51,9 +51,11 @@ public class BoatMinecraftActivity extends BoatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        gameLaunchSetting = GameLaunchSetting.getGameLaunchSetting(getIntent().getExtras().getString("setting_path"), getIntent().getExtras().getString("version"));
+        Bundle extras = getIntent().getExtras();
+        if (extras == null) extras = new Bundle();
+        gameLaunchSetting = GameLaunchSetting.getGameLaunchSetting(extras.getString("setting_path"), extras.getString("version"));
 
-        if (getIntent().getExtras().getBoolean("test") || gameLaunchSetting.log) {
+        if (extras.getBoolean("test") || gameLaunchSetting.log) {
 
         }
 
@@ -116,8 +118,10 @@ public class BoatMinecraftActivity extends BoatActivity {
                             b.setTitle("无法启动游戏");
                             b.setMessage(err);
                             b.setPositiveButton("退出", (d, w) -> {
-                                Intent virGL = new Intent(BoatMinecraftActivity.this, VirGLService.class);
-                                stopService(virGL);
+                                try {
+                                    Intent virGL = new Intent(BoatMinecraftActivity.this, VirGLService.class);
+                                    stopService(virGL);
+                                } catch (Throwable ignored) {}
                                 finish();
                             });
                             b.setCancelable(false);
