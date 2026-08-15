@@ -3,14 +3,14 @@
     "versionCode": 4,
     "versionName": "1.0.3",
     "date": "2026.08.15",
-    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.3/StarDockLauncher-v1.0.3-debug.apk"],
-    "updateLog": "StarDockLauncher 1.0.3：\n1. 修复启动游戏闪退：游戏版本目录/Java 运行时/Boat 库/Pojav 库/主类缺失时改为弹错误对话框，给出具体缺失项，不再静默崩溃。\n2. 重启软件自动弹日志：CrashHandler 捕获未捕获异常后写入 crash_logs/crash_*.log 并标记下次启动自动弹出 CrashLogViewer。\n3. 启动前自动校验 runtime 资产完整性（app_runtime/version/default/bin/java、JRE17/bin/java、BOAT_LIB_DIR），缺失时直接弹错。\n4. AI 重写：WebSocket 流式输出（SSE/HTTP 三层自动降级）、分段发送（1800 字/段）、默认服务商锁定不可修改、可新增自定义服务商并启用 SYSTEM_ALERT_WINDOW 悬浮球。\n5. 全 UI 重写：主界面 + AI 抽屉升级到 Material3 嵌入式抽屉（drawer handle/连接状态/provider badge/发送键/历史/服务商管理），子页面（下载/版本/设置/游戏管理）保留 v1.0.1 风格但样式统一为 Material3 主题。\n6. 启动模式升级：游戏启动前先校验所有前置依赖（运行时、Java 版本、版本目录、加载器库、主类），失败明确提示，不再黑屏闪退。\n7. Modrinth 模组搜索增强：全类型（mod/shader/resourcepack/datapack/modpack）、断点续传、SHA1 校验、自动镜像切换。\n8. 修复所有下载源（除游戏本体外）：Forge 重定向解析 NPE、Fabric/Quilt 镜像切换、LiteLoader 死链替换、Forge maven 源切换、MCBBS 镜像回退 BMCLAPI。"
+    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.3/StarDockLauncher-v1.0.3-release.apk"],
+    "updateLog": "StarDockLauncher 1.0.3（正式版）：\n1. 修复启动游戏闪退：游戏版本目录/Java 运行时/Boat 库/Pojav 库/主类缺失时改为弹错误对话框，给出具体缺失项，不再静默崩溃。\n2. 重启软件自动弹日志：CrashHandler 捕获未捕获异常后写入 crash_logs/crash_*.log 并标记下次启动自动弹出 CrashLogViewer。\n3. 启动前自动校验 runtime 资产完整性（app_runtime/version/default/bin/java、JRE17/bin/java、BOAT_LIB_DIR），缺失时直接弹错。\n4. AI 重写：WebSocket 流式输出（SSE/HTTP 三层自动降级）、分段发送（1800 字/段）、默认服务商锁定不可修改、可新增自定义服务商并启用 SYSTEM_ALERT_WINDOW 悬浮球。\n5. 全 UI 重写：主界面 + AI 抽屉升级到 Material3 嵌入式抽屉（drawer handle/连接状态/provider badge/发送键/历史/服务商管理），子页面（下载/版本/设置/游戏管理）保留 v1.0.1 风格但样式统一为 Material3 主题。\n6. 启动模式升级：游戏启动前先校验所有前置依赖（运行时、Java 版本、版本目录、加载器库、主类），失败明确提示，不再黑屏闪退。\n7. Modrinth 模组搜索增强：全类型（mod/shader/resourcepack/datapack/modpack）、断点续传、SHA1 校验、自动镜像切换。\n8. 修复所有下载源（除游戏本体外）：Forge 重定向解析 NPE、Fabric/Quilt 镜像切换、LiteLoader 死链替换、Forge maven 源切换、MCBBS 镜像回退 BMCLAPI。\n9. 删除下载进入后的\"已停服\"公告。"
   },
   "latestPrerelease": {
     "versionCode": 4,
     "versionName": "1.0.3",
     "date": "2026.08.15",
-    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.3/StarDockLauncher-v1.0.3-debug.apk"],
-    "updateLog": "StarDockLauncher 1.0.3：修复启动游戏闪退 + 重启自动弹崩溃日志 + AI WebSocket 流式重写 + Material3 主界面 + AI 抽屉重写 + 启动模式升级。"
+    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.3/StarDockLauncher-v1.0.3-release.apk"],
+    "updateLog": "StarDockLauncher 1.0.3（正式版）：修复启动游戏闪退 + 重启自动弹崩溃日志 + AI WebSocket 流式重写 + Material3 主界面 + AI 抽屉重写 + 启动模式升级。"
   }
 }
