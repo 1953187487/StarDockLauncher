@@ -1,16 +1,16 @@
 {
   "latestRelease": {
-    "versionCode": 4,
-    "versionName": "1.0.3",
+    "versionCode": 5,
+    "versionName": "1.0.4",
     "date": "2026.08.15",
-    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.3/StarDockLauncher-v1.0.3-release.apk"],
-    "updateLog": "StarDockLauncher 1.0.3（正式版）：\n1. 修复启动游戏闪退：游戏版本目录/Java 运行时/Boat 库/Pojav 库/主类缺失时改为弹错误对话框，给出具体缺失项，不再静默崩溃。\n2. 重启软件自动弹日志：CrashHandler 捕获未捕获异常后写入 crash_logs/crash_*.log 并标记下次启动自动弹出 CrashLogViewer。\n3. 启动前自动校验 runtime 资产完整性（app_runtime/version/default/bin/java、JRE17/bin/java、BOAT_LIB_DIR），缺失时直接弹错。\n4. AI 重写：WebSocket 流式输出（SSE/HTTP 三层自动降级）、分段发送（1800 字/段）、默认服务商锁定不可修改、可新增自定义服务商并启用 SYSTEM_ALERT_WINDOW 悬浮球。\n5. 全 UI 重写：主界面 + AI 抽屉升级到 Material3 嵌入式抽屉（drawer handle/连接状态/provider badge/发送键/历史/服务商管理），子页面（下载/版本/设置/游戏管理）保留 v1.0.1 风格但样式统一为 Material3 主题。\n6. 启动模式升级：游戏启动前先校验所有前置依赖（运行时、Java 版本、版本目录、加载器库、主类），失败明确提示，不再黑屏闪退。\n7. Modrinth 模组搜索增强：全类型（mod/shader/resourcepack/datapack/modpack）、断点续传、SHA1 校验、自动镜像切换。\n8. 修复所有下载源（除游戏本体外）：Forge 重定向解析 NPE、Fabric/Quilt 镜像切换、LiteLoader 死链替换、Forge maven 源切换、MCBBS 镜像回退 BMCLAPI。\n9. 删除下载进入后的\"已停服\"公告。"
+    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.4/StarDockLauncher-v1.0.4-release.apk"],
+    "updateLog": "StarDockLauncher 1.0.4 补丁版（修复 v1.0.3 全屏闪屏与启动崩溃）：\n\n关键修复：\n1. 修复全屏闪屏崩溃：v1.0.3 在 Application.onCreate() 调用 verifyRuntimeAssets() 时 AppManifest 静态字段还是 null 导致 NPE → 反复重启 MainActivity 引发闪屏循环。v1.0.4 改为先初始化路径再做校验并对 null 路径做防御。\n2. 修复启动游戏闪退：BoatMinecraftActivity/PojavMinecraftActivity 的 getIntent().getExtras() 在无 extras 时为 null 会 NPE，改为空 Bundle 兜底。\n3. 修复崩溃日志重启循环：CrashHandler 不再调用 startActivity 重启 MainActivity，只写日志+pending flag。\n4. 修复崩溃日志重复弹窗：MainActivity.showCrashLogIfNeeded 显示后立刻 clearPendingFlag。\n5. 修复 SYSTEM_ALERT_WINDOW 权限弹窗骚扰：启动器不再自动请求悬浮窗权限，默认关闭。\n6. 修复 AI 抽屉 42% 宽被强应用：只有从 MainActivityHolder 启动且 extra drawer_mode=true 时才缩小到 42%。\n7. 修复 File 构造器类型错误：HMCLPEApplication.verifyRuntimeAssets 用 new File(String + \"/default/bin/java\") 形式。\n8. 修复启动游戏失败时 stopService 未启动服务 NPE：BoatMinecraftActivity 异常退出时包 try/catch。\n\n继续保留 v1.0.3 能力：启动前校验 runtime 资产、AI WebSocket 流式、Material3 嵌入式抽屉、启动模式升级、Modrinth 全类型搜索、下载源全部走 BMCLAPI、删除'已停服'公告。"
   },
   "latestPrerelease": {
-    "versionCode": 4,
-    "versionName": "1.0.3",
+    "versionCode": 5,
+    "versionName": "1.0.4",
     "date": "2026.08.15",
-    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.3/StarDockLauncher-v1.0.3-release.apk"],
-    "updateLog": "StarDockLauncher 1.0.3（正式版）：修复启动游戏闪退 + 重启自动弹崩溃日志 + AI WebSocket 流式重写 + Material3 主界面 + AI 抽屉重写 + 启动模式升级。"
+    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.4/StarDockLauncher-v1.0.4-release.apk"],
+    "updateLog": "StarDockLauncher 1.0.4：修复 v1.0.3 全屏闪屏 + 启动游戏崩溃 + 权限弹窗骚扰 + 多个 NPE bug。"
   }
 }
