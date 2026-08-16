@@ -1,5 +1,6 @@
 package com.tungsten.hmclpe.launcher.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,8 @@ import androidx.fragment.app.Fragment;
 
 import com.stardock.launcher.R;
 import com.tungsten.hmclpe.ai.AiProviderManager;
+import com.tungsten.hmclpe.launcher.uis.mods.ModrinthActivity;
+import com.tungsten.hmclpe.launcher.uis.mods.ModsManagerActivity;
 
 public class ToolsFragment extends Fragment {
 
@@ -47,6 +50,16 @@ public class ToolsFragment extends Fragment {
             }
         } catch (Throwable t) {
             Log.e(TAG, "bind failed", t);
+        }
+        try {
+            view.findViewById(R.id.tools_btn_modrinth).setOnClickListener(v ->
+                    startActivity(new Intent(requireContext(), ModrinthActivity.class)));
+        } catch (Throwable ignored) {
+        }
+        try {
+            view.findViewById(R.id.tools_btn_mods).setOnClickListener(v ->
+                    startActivity(new Intent(requireContext(), ModsManagerActivity.class)));
+        } catch (Throwable ignored) {
         }
     }
 }

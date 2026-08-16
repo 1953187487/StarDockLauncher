@@ -137,4 +137,26 @@
     <string name="settings_crash">查看崩溃日志</string>
     <string name="settings_about_btn">关于本应用</string>
     <string name="settings_auto_update">自动检查更新</string>
+
+    <string name="dialog_ok">确定</string>
+    <string name="dialog_cancel">取消</string>
+    <string name="downloading">下载中…</string>
+
+    <string name="modrinth_title">Modrinth 搜索</string>
+    <string name="modrinth_search">搜索</string>
+    <string name="modrinth_download">下载</string>
+    <string name="modrinth_downloads">下载量 %1$s</string>
+    <string name="download_tab_packs">整合包</string>
+    <string name="download_tab_shaders">光影</string>
+
+    <string name="mods_manager_title">Mods 管理</string>
+    <string name="mods_scan">扫描 Mods</string>
+    <string name="mods_ai_translate">AI 汉化全部</string>
+
+    <string name="runtime_engine_hint">选择游戏启动框架（Java 运行时已随启动器安装）</string>
+    <string name="runtime_engine_boat">Boat 渲染引擎</string>
+    <string name="runtime_engine_boat_desc">基于 GL4ES / caciocavallo 的纯 native 渲染，兼容性好，推荐日常使用</string>
+    <string name="runtime_engine_pojav">PojavLauncher 引擎</string>
+    <string name="runtime_engine_pojav_desc">经典 PojavLauncher 启动链，适合需要 Pojav 兼容特性的场景</string>
+    <string name="runtime_version_title">已安装的游戏版本</string>
 </resources>

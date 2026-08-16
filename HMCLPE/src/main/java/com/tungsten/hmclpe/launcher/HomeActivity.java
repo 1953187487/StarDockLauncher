@@ -22,6 +22,7 @@ import com.tungsten.hmclpe.launcher.fragment.DownloadFragment;
 import com.tungsten.hmclpe.launcher.fragment.HomeFragment;
 import com.tungsten.hmclpe.launcher.fragment.SettingFragment;
 import com.tungsten.hmclpe.launcher.fragment.ToolsFragment;
+import com.tungsten.hmclpe.runtime.RuntimeInfo;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -154,22 +155,27 @@ public class HomeActivity extends AppCompatActivity {
 
     public void startLastGame() {
         try {
-            Class<?> cls = Class.forName("com.tungsten.hmclpe.launcher.launch.boat.BoatMinecraftActivity");
-            Intent i = new Intent();
-            i.setClassName(getPackageName(), cls.getName());
-            i.setAction(Intent.ACTION_VIEW);
-            startActivity(i);
-        } catch (Throwable t1) {
-            try {
-                Class<?> cls = Class.forName("com.tungsten.hmclpe.launcher.launch.pojav.PojavMinecraftActivity");
-                Intent i = new Intent();
-                i.setClassName(getPackageName(), cls.getName());
-                i.setAction(Intent.ACTION_VIEW);
-                startActivity(i);
-            } catch (Throwable t2) {
-                Log.e(TAG, "no native entry", t2);
-                showToast("未找到 native 启动入口，请确认 Boat/PojavLauncher 模块已编译");
+            com.tungsten.hmclpe.launcher.version.VersionManager vm = new com.tungsten.hmclpe.launcher.version.VersionManager(getApplicationContext());
+            java.util.List<com.tungsten.hmclpe.launcher.version.VersionInfo> installed = vm.installed();
+            if (installed.isEmpty()) {
+                showToast("尚未安装游戏版本，请先在「管理版本」中添加");
+                return;
             }
+            com.tungsten.hmclpe.launcher.version.VersionInfo first = installed.get(0);
+            String versionId = first.id;
+            String gameDir = com.tungsten.hmclpe.manifest.AppManifest.GAME_DIR;
+            String engine = com.tungsten.hmclpe.launcher.runtime.RuntimePrefs.getEngine(this);
+            int ram = com.tungsten.hmclpe.utils.Prefs.get(this).getInt("launcher_max_ram", 1024);
+            if (RuntimeInfo.ENGINE_BOAT.equals(engine)) {
+                Intent i = com.tungsten.hmclpe.launcher.launch.boat.BoatMinecraftActivity.createIntent(this, versionId, gameDir, "", "GL4ES", ram);
+                startActivity(i);
+            } else {
+                Intent i = com.tungsten.hmclpe.launcher.launch.pojav.PojavMinecraftActivity.createIntent(this, versionId, gameDir, "", "GL4ES", ram);
+                startActivity(i);
+            }
+        } catch (Throwable t) {
+            Log.e(TAG, "startLastGame failed", t);
+            showToast("启动失败：" + t.getMessage());
         }
     }
 

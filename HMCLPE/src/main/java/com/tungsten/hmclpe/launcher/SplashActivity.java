@@ -12,22 +12,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.stardock.launcher.R;
 import com.tungsten.hmclpe.manifest.AppManifest;
+import com.tungsten.hmclpe.launcher.runtime.RuntimeInstaller;
 
 public class SplashActivity extends AppCompatActivity {
 
     private static final String TAG = "SplashActivity";
-    private static final String[] STAGES = new String[]{
-            "正在初始化运行时...",
-            "正在加载资源...",
-            "正在准备启动框架...",
-            "正在检查更新...",
-            "正在进入启动器..."
-    };
 
     private LinearProgressIndicator progress;
     private TextView loadingText;
     private final Handler main = new Handler(Looper.getMainLooper());
-    private int stage = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,53 +33,56 @@ public class SplashActivity extends AppCompatActivity {
                 progress.setMax(100);
                 progress.setProgressCompat(0, false);
             }
-            if (loadingText != null && STAGES.length > 0) {
-                loadingText.setText(STAGES[0]);
-            }
         } catch (Throwable t) {
             Log.e(TAG, "view init failed", t);
         }
+        if (RuntimeInstaller.isInstalling()) {
+            Log.i(TAG, "runtime already installing, wait");
+        }
+        startInit();
+    }
+
+    private void startInit() {
         try {
-            new Thread(this::doInit, "sd-init").start();
+            RuntimeInstaller.ensure(this, new RuntimeInstaller.Callback() {
+                @Override
+                public void onProgress(String stage, int percent) {
+                    main.post(() -> setProgress(stage, percent));
+                }
+
+                @Override
+                public void onDone(java.io.File runtimeDir) {
+                    main.post(() -> {
+                        setProgress("运行时就绪", 100);
+                        enterLauncher();
+                    });
+                }
+
+                @Override
+                public void onError(Throwable t) {
+                    Log.e(TAG, "runtime install error", t);
+                    main.post(() -> {
+                        setProgress("运行时安装失败：" + t.getMessage(), 0);
+                        new Handler(Looper.getMainLooper()).postDelayed(SplashActivity.this::enterLauncher, 1500);
+                    });
+                }
+            });
         } catch (Throwable t) {
-            Log.e(TAG, "init thread failed", t);
+            Log.e(TAG, "runtime ensure failed", t);
             enterLauncher();
         }
     }
 
-    private void doInit() {
+    private void setProgress(String text, int pct) {
         try {
-            advance("运行时目录：" + AppManifest.RUNTIME_DIR);
-            Thread.sleep(300);
-            advance("渲染器与控件目录已就绪");
-            Thread.sleep(300);
-            advance("启动框架：Boat + Pojav");
-            Thread.sleep(300);
-            advance("检查更新中...");
-            Thread.sleep(300);
-            advance("进入启动器...");
-            Thread.sleep(200);
-        } catch (Throwable t) {
-            Log.e(TAG, "init failed", t);
-        }
-        main.post(this::enterLauncher);
-    }
-
-    private void advance(String text) {
-        stage++;
-        int pct = Math.min(100, stage * 100 / STAGES.length);
-        main.post(() -> {
-            try {
-                if (progress != null) {
-                    progress.setProgressCompat(pct, true);
-                }
-                if (loadingText != null && text != null) {
-                    loadingText.setText(text);
-                }
-            } catch (Throwable t) {
-                Log.e(TAG, "advance ui failed", t);
+            if (loadingText != null && text != null) {
+                loadingText.setText(text);
             }
-        });
+            if (progress != null) {
+                progress.setProgressCompat(Math.max(0, Math.min(100, pct)), true);
+            }
+        } catch (Throwable ignored) {
+        }
     }
 
     private void enterLauncher() {

@@ -18,6 +18,7 @@ import com.stardock.launcher.R;
 import com.tungsten.hmclpe.ai.AiChatActivity;
 import com.tungsten.hmclpe.launcher.uis.about.AboutActivity;
 import com.tungsten.hmclpe.launcher.uis.crash.CrashLogViewerActivity;
+import com.tungsten.hmclpe.launcher.uis.runtime.RuntimeActivity;
 import com.tungsten.hmclpe.launcher.uis.update.UpdateDownloadActivity;
 import com.tungsten.hmclpe.utils.Prefs;
 
@@ -74,7 +75,7 @@ public class SettingFragment extends Fragment {
         try {
             MaterialButton btnRuntime = view.findViewById(R.id.setting_btn_runtime);
             if (btnRuntime != null) {
-                btnRuntime.setOnClickListener(v -> toast("运行时：" + (prefs.getString(KEY_RUNTIME, "Boat"))));
+                btnRuntime.setOnClickListener(v -> openActivity(RuntimeActivity.class));
             }
         } catch (Throwable t) {
             Log.e(TAG, "runtime btn failed", t);

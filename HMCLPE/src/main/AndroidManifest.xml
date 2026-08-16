@@ -76,6 +76,21 @@
             android:theme="@style/Theme.StarDock.Main" />
 
         <activity
+            android:name=".launcher.uis.runtime.RuntimeActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/Theme.StarDock.Main" />
+
+        <activity
+            android:name=".launcher.uis.mods.ModrinthActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/Theme.StarDock.Main" />
+
+        <activity
+            android:name=".launcher.uis.mods.ModsManagerActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/Theme.StarDock.Main" />
+
+        <activity
             android:launchMode="standard"
             android:multiprocess="true"
             android:name="com.tungsten.hmclpe.launcher.launch.boat.BoatMinecraftActivity"

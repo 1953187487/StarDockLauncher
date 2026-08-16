@@ -1,16 +1,16 @@
 {
   "latestRelease": {
-    "versionCode": 12,
-    "versionName": "1.1.0",
+    "versionCode": 13,
+    "versionName": "1.1.1",
     "date": "2026.08.16",
-    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.1.0/StarDockLauncher-v1.1.0-release.apk"],
-    "updateLog": "StarDockLauncher 1.1.0（全链自主重做）：\n\n全链自主重做：\n1. 保留 Boat/PojavLauncher native 内核（54M+1.1G native 资产不可替代）。\n2. 删除 HMCLPE 全部 492 个 Java 文件 + 388MB assets + 全部 res。\n3. applicationId 改 com.stardock.launcher，versionCode 12，versionName 1.1.0。\n4. 从 0 重写启动器 UI / 业务层 / AI / 账户 / 版本 / 下载。\n5. 通过 Intent 透明代理调现有 BoatMinecraftActivity / PojavMinecraftActivity 启动 MC。\n\n启动器层（全链自研）：\n1. SplashActivity：5 阶段进度 + 子线程兜底。\n2. HomeActivity：4 tab 切换 + FAB 开始游戏 + 账户刷新。\n3. HomeFragment / DownloadFragment / ToolsFragment / SettingFragment。\n4. AccountActivity：离线 / Mojang / Microsoft 三方式登录。\n5. VersionsActivity：版本管理（已安装版本列表 + 刷新 + 添加示例）。\n6. UpdateDownloadActivity：检查 GitHub Release + 下载 APK。\n7. AiChatActivity：DeepSeek / OpenAI / 离线演示三模型切换。\n8. AboutActivity / CrashLogViewerActivity。\n9. CrashHandler：崩溃日志写入 cache_dir/crash_logs/。\n10. AccountManager / AuthService / VersionManager / DownloadService / UpdateService / AiProviderManager / AiChatService。\n\n主题：\n1. Material3 液态玻璃：sd_liquid_bg（深紫渐变 + 双 radial highlight）+ sd_glass_card。\n2. 主色：sd_primary #FFB454 / sd_secondary #7DD3FC / sd_tertiary #A78BFA。\n3. 应用图标：渐变深紫 + 橙色五角星 + SD 字样（48/72/96/144/192px）。\n\n构建：versionCode 12, versionName 1.1.0, APK 26.3MB（release 签名）。"
+    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.1.1/StarDockLauncher-v1.1.1-release.apk"],
+    "updateLog": "StarDockLauncher 1.1.1（修复闪退 + 完整版）：\n\n修复 v1.1.0 进入游戏闪退：\n1. 恢复 app_runtime 运行时资产（JRE8/JRE17/boat/pojav/caciocavallo，674 个文件，首次启动自动解压到应用私有目录）。\n2. 重建 MC 启动封装：BoatMinecraftActivity / PojavMinecraftActivity（继承 native BoatActivity / BaseMainActivity）。\n3. HomeActivity / RuntimeActivity 通过真实 Intent 调启动封装，不再引用已删除的 HMCLPE 类。\n\nv1.1.1 新功能：\n1. 启动框架选择（RuntimeActivity）：Boat / PojavLauncher 引擎切换 + Java 8/17 路径展示 + 版本列表。\n2. Modrinth 搜索（ModrinthActivity）：搜索 / 类型筛选（模组 / 整合包 / 资源包 / 光影）/ 一键下载。\n3. Mods 管理（ModsManagerActivity）：扫描本地 Mods + AI 汉化（写入 .zh.txt）。\n4. 启动链路：RuntimeInstaller 首次解压 388MB 运行时 → SplashActivity 5 阶段进度 → HomeActivity。\n\n构建：versionCode 13, versionName 1.1.1, APK 174.5MB（含完整运行时，release 签名）。"
   },
   "latestPrerelease": {
-    "versionCode": 12,
-    "versionName": "1.1.0",
+    "versionCode": 13,
+    "versionName": "1.1.1",
     "date": "2026.08.16",
-    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.1.0/StarDockLauncher-v1.1.0-release.apk"],
-    "updateLog": "StarDockLauncher 1.1.0 全链自主重做。保留 Boat/PojavLauncher native 内核，启动器层从 0 重写。"
+    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.1.1/StarDockLauncher-v1.1.1-release.apk"],
+    "updateLog": "StarDockLauncher 1.1.1 修复 v1.1.0 进入游戏闪退并补齐完整版：启动封装重建、运行时自动安装、启动框架选择、Modrinth 搜索、Mods 管理 + AI 汉化。"
   }
 }

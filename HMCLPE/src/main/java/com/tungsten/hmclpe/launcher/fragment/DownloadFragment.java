@@ -1,5 +1,7 @@
 package com.tungsten.hmclpe.launcher.fragment;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.stardock.launcher.R;
+import com.tungsten.hmclpe.launcher.uis.mods.ModrinthActivity;
+import com.tungsten.hmclpe.launcher.uis.mods.ModsManagerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +59,7 @@ public class DownloadFragment extends Fragment {
         out.add(new String[]{"Minecraft 正式版", "BMCLAPI · 官方源镜像"});
         out.add(new String[]{"Modrinth 整合包", "Modrinth 官方源"});
         out.add(new String[]{"资源中心", "Mods / 资源包 / 光影"});
+        out.add(new String[]{"Mods 管理", "扫描本地 Mods + AI 汉化"});
         return out;
     }
 
@@ -80,6 +85,23 @@ public class DownloadFragment extends Fragment {
             String[] row = data.get(position);
             h.title.setText(row[0]);
             h.subtitle.setText(row[1]);
+            h.itemView.setOnClickListener(v -> open(h.itemView.getContext(), row[0]));
+        }
+
+        private void open(Context ctx, String title) {
+            try {
+                Intent i;
+                if (title.startsWith("Modrinth")) {
+                    i = new Intent(ctx, ModrinthActivity.class);
+                } else if (title.startsWith("Mods")) {
+                    i = new Intent(ctx, ModsManagerActivity.class);
+                } else {
+                    return;
+                }
+                ctx.startActivity(i);
+            } catch (Throwable t) {
+                Log.e(TAG, "open failed", t);
+            }
         }
 
         @Override

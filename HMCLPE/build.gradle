@@ -29,12 +29,10 @@ android {
 
     defaultConfig {
         applicationId "com.stardock.launcher"
-        minSdk 26
-        targetSdk 34
-        versionCode 12
-        versionName "1.1.0"
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        minSdkVersion 26
+        targetSdkVersion 34
+        versionCode 13
+        versionName "1.1.1"
     }
 
     buildTypes {
