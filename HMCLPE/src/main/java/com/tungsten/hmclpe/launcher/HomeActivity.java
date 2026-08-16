@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigationrail.NavigationRailView;
 import com.google.android.material.button.MaterialButton;
 import com.tungsten.hmclpe.R;
 import com.tungsten.hmclpe.ai.AiChatActivity;
@@ -47,10 +47,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public static native void verify();
     public static native void verifyFunc();
 
-    private BottomNavigationView bottomNav;
+    private NavigationRailView navRail;
     private MaterialButton btnAi;
-    private MaterialButton btnClose;
-    private MaterialButton btnMin;
     private MaterialButton btnMultiplayer;
 
     private final FragmentManager fm = getSupportFragmentManager();
@@ -78,13 +76,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
-        bottomNav = findViewById(R.id.home_bottom_nav);
+        navRail = findViewById(R.id.home_nav_rail);
         btnAi = findViewById(R.id.home_btn_ai);
-        btnClose = findViewById(R.id.home_btn_close);
-        btnMin = findViewById(R.id.home_btn_min);
         btnMultiplayer = findViewById(R.id.home_btn_multiplayer);
 
-        bottomNav.setOnItemSelectedListener(item -> {
+        navRail.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_home) {
                 switchFragment(FRAG_HOME, "主页");
@@ -114,22 +110,16 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this, "启动 AI 失败：" + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-        btnClose.setOnClickListener(v -> {
-            try { stopService(new Intent(this, com.tungsten.hmclpe.ai.AiOverlayService.class)); } catch (Throwable ignored) {}
-            moveTaskToBack(true);
-            finish();
-        });
-        btnMin.setOnClickListener(v -> moveTaskToBack(true));
         btnMultiplayer.setOnClickListener(v -> {
             try {
-                Intent i = new Intent(this, com.tungsten.hmclpe.launcher.multiplayer.MultiplayerActivity.class);
+                Intent i = new Intent(this, com.tungsten.hmclpe.launcher.uis.multiplayer.MultiplayerActivity.class);
                 startActivity(i);
             } catch (Throwable t) {
-                Toast.makeText(this, "启动联机失败：" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "启动淘瓦联机失败：" + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
-        bottomNav.setSelectedItemId(R.id.nav_home);
+        navRail.setSelectedItemId(R.id.nav_home);
         switchFragment(FRAG_HOME, "主页");
 
         com.tungsten.hmclpe.ai.MainActivityHolder.set(this);
@@ -140,6 +130,71 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         startAiOverlayService();
+
+        runOnUiThread(this::ensureAgreementsThenAnnouncement);
+    }
+
+    private void ensureAgreementsThenAnnouncement() {
+        try {
+            boolean userAgreed = com.tungsten.hmclpe.launcher.setting.AppPrefs.getBool(this, com.tungsten.hmclpe.launcher.setting.AppPrefs.KEY_USER_AGREED, false);
+            boolean langAgreed = com.tungsten.hmclpe.launcher.setting.AppPrefs.getBool(this, com.tungsten.hmclpe.launcher.setting.AppPrefs.KEY_LANG_AGREED, false);
+            if (!langAgreed) {
+                new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                        .setTitle("选择语言")
+                        .setItems(new String[]{"简体中文", "繁體中文", "English"}, (d, which) -> {
+                            String code = which == 1 ? "zh-TW" : which == 2 ? "en-US" : "zh-CN";
+                            com.tungsten.hmclpe.launcher.setting.AppPrefs.setString(this, com.tungsten.hmclpe.launcher.setting.AppPrefs.KEY_LANGUAGE, code);
+                            com.tungsten.hmclpe.launcher.setting.AppPrefs.setBool(this, com.tungsten.hmclpe.launcher.setting.AppPrefs.KEY_LANG_AGREED, true);
+                            ensureAgreementsThenAnnouncement();
+                        })
+                        .setCancelable(false)
+                        .show();
+                return;
+            }
+            if (!userAgreed) {
+                new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                        .setTitle("用户须知协议")
+                        .setMessage("本启动器基于 HMCL-PE / PojavLauncher / Boat 等开源项目二次开发。\n\n" +
+                                "使用本启动器下载、安装和启动 Minecraft 时，请遵守 Mojang EULA 和您所在地区法律法规。\n\n" +
+                                "本启动器不收集您的个人信息；崩溃日志（仅在崩溃时）保存在本地。\n\n" +
+                                "启动器不保证所有版本都可在所有机型上正常运行。")
+                        .setPositiveButton("同意", (d, w) -> {
+                            com.tungsten.hmclpe.launcher.setting.AppPrefs.setBool(this, com.tungsten.hmclpe.launcher.setting.AppPrefs.KEY_USER_AGREED, true);
+                            ensureAgreementsThenAnnouncement();
+                        })
+                        .setNegativeButton("退出", (d, w) -> finishAffinity())
+                        .setCancelable(false)
+                        .show();
+                return;
+            }
+            boolean aiAgreed = com.tungsten.hmclpe.launcher.setting.AppPrefs.getBool(this, com.tungsten.hmclpe.launcher.setting.AppPrefs.KEY_AI_AGREED, false);
+            if (!aiAgreed) {
+                new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                        .setTitle("AI 服务协议（可选）")
+                        .setMessage("AI 功能由第三方 API 提供。\n\n" +
+                                "您发送的关键词、日志、链接会传递给 AI 服务端用于返回结果。\n\n" +
+                                "请勿发送个人敏感信息。\n\n" +
+                                "可以暂时跳过，之后在 AI 设置页同意即可启用 AI。")
+                        .setPositiveButton("同意", (d, w) -> {
+                            com.tungsten.hmclpe.launcher.setting.AppPrefs.setBool(this, com.tungsten.hmclpe.launcher.setting.AppPrefs.KEY_AI_AGREED, true);
+                            ensureAgreementsThenAnnouncement();
+                        })
+                        .setNegativeButton("暂不同意", (d, w) -> {
+                            com.tungsten.hmclpe.launcher.setting.AppPrefs.setBool(this, com.tungsten.hmclpe.launcher.setting.AppPrefs.KEY_AI_AGREED, false);
+                            ensureAgreementsThenAnnouncement();
+                        })
+                        .setCancelable(false)
+                        .show();
+                return;
+            }
+            new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                    .setTitle("欢迎使用 StarDockLauncher " + com.tungsten.hmclpe.BuildConfig.VERSION_NAME)
+                    .setMessage(com.tungsten.hmclpe.launcher.setting.AnnouncementManager.current())
+                    .setPositiveButton("知道了", (d, w) -> com.tungsten.hmclpe.launcher.setting.AppPrefs.setBool(this, com.tungsten.hmclpe.launcher.setting.AppPrefs.KEY_ANNOUNCEMENT_SEEN, true))
+                    .show();
+        } catch (Throwable t) {
+            android.util.Log.e("HomeActivity", "ensureAgreementsThenAnnouncement failed", t);
+        }
     }
 
     private void switchFragment(int which, String title) {
@@ -198,7 +253,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void switchToFragment(int which, String title) {
-        bottomNav.setSelectedItemId(which == FRAG_HOME ? R.id.nav_home
+        navRail.setSelectedItemId(which == FRAG_HOME ? R.id.nav_home
                 : which == FRAG_VERSION ? R.id.nav_version
                 : which == FRAG_DOWNLOAD ? R.id.nav_download
                 : which == FRAG_MOD ? R.id.nav_mod
@@ -213,7 +268,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         if (currentFrag != FRAG_HOME) {
-            bottomNav.setSelectedItemId(R.id.nav_home);
+            navRail.setSelectedItemId(R.id.nav_home);
             return;
         }
         moveTaskToBack(true);

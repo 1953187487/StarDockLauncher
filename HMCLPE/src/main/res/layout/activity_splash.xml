@@ -93,19 +93,40 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/loading_progress_bar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:max="100"
+        android:progress="0"
+        app:indicatorColor="@color/sd_primary"
+        app:trackColor="@color/sd_outline_variant"
+        app:trackThickness="6dp"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.9"
-        app:layout_constraintWidth_percent="0.75"
+        app:layout_constraintVertical_bias="0.92"
+        app:layout_constraintWidth_percent="0.55"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/loading_spinner"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:indeterminate="true"
+        app:indicatorColor="@color/sd_primary"
+        app:trackColor="@color/sd_outline_variant"
+        app:indicatorSize="40dp"
+        app:trackThickness="4dp"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintVertical_bias="0.83"
+        app:layout_constraintWidth_percent="0.08"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/loading_progress_text"

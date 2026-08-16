@@ -104,6 +104,53 @@ public class AiModSearcher {
         }
     }
 
+    public void fetchBySlug(String slug, String projectType, SearchCallback callback) {
+        try {
+            String url = "https://api.modrinth.com/v2/project/" + slug;
+            Request request = new Request.Builder()
+                    .url(url)
+                    .header("User-Agent", "StarDockLauncher/1.0.2")
+                    .get()
+                    .build();
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    mainHandler.post(() -> callback.onFailed("查询失败：" + e.getMessage()));
+                }
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    String body = response.body() != null ? response.body().string() : "";
+                    if (!response.isSuccessful()) {
+                        final String msg = "查询请求失败（HTTP " + response.code() + "）";
+                        mainHandler.post(() -> callback.onFailed(msg));
+                        return;
+                    }
+                    List<SearchResult> results = new ArrayList<>();
+                    try {
+                        JSONObject hit = new JSONObject(body);
+                        SearchResult r = new SearchResult();
+                        r.title = hit.optString("title", slug);
+                        r.slug = slug;
+                        r.description = hit.optString("description", "");
+                        r.projectType = hit.optString("project_type", projectType);
+                        r.iconUrl = hit.optString("icon_url", "");
+                        r.author = "";
+                        r.projectUrl = "https://modrinth.com/" + r.projectType + "/" + slug;
+                        JSONArray versions = hit.optJSONArray("game_versions");
+                        if (versions != null && versions.length() > 0) {
+                            r.version = versions.optString(versions.length() - 1);
+                        }
+                        results.add(r);
+                    } catch (Exception ignored) {}
+                    final List<SearchResult> finalResults = results;
+                    mainHandler.post(() -> callback.onSuccess(finalResults));
+                }
+            });
+        } catch (Exception e) {
+            mainHandler.post(() -> callback.onFailed("查询失败：" + e.getMessage()));
+        }
+    }
+
     private List<SearchResult> parse(String body) {
         List<SearchResult> results = new ArrayList<>();
         try {

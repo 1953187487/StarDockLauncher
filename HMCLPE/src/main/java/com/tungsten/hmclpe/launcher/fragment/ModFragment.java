@@ -4,12 +4,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.tungsten.hmclpe.R;
+import com.tungsten.hmclpe.launcher.setting.SettingNavigation;
 
 public class ModFragment extends Fragment {
 
@@ -23,12 +26,14 @@ public class ModFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         try {
-            android.widget.TextView tv = view.findViewById(R.id.placeholder_title);
-            if (tv != null) tv.setText("模组 / 光影 / 资源包");
-            android.widget.TextView body = view.findViewById(R.id.placeholder_body);
-            if (body != null) body.setText("Modrinth 全类型搜索：mod / shader / resourcepack / datapack / modpack。\n\n断点续传 + SHA1 校验。\n\n后续版本将把模组 UI 完整迁移到本 Fragment。");
+            TextView tv = view.findViewById(R.id.placeholder_title);
+            if (tv != null) tv.setText("模组");
+            TextView body = view.findViewById(R.id.placeholder_body);
+            if (body != null) body.setText("模组 / 整合包下载入口已迁移到「下载中心」。\n\n点此跳转 →");
+            body.setOnClickListener(v -> SettingNavigation.openDownloadTab(requireActivity()));
+            view.setOnClickListener(v -> SettingNavigation.openDownloadTab(requireActivity()));
         } catch (Throwable t) {
-            android.util.Log.e("ModFragment", "onViewCreated failed", t);
+            android.util.Log.e("ModFragment", "init failed", t);
         }
     }
 }

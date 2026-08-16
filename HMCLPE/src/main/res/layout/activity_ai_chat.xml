@@ -1,197 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/ai_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F20F1419"
+    android:background="@color/sd_surface_dim"
     android:orientation="vertical">
 
-    <LinearLayout
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/ai_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="12dp">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/sd_surface"
+        app:titleTextColor="@color/sd_on_surface"
+        app:navigationIcon="@android:drawable/ic_menu_revert"
+        app:title="AI 搜索框" />
 
-        <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:hint="输入模组名 / 链接 / 关键词"
+        app:boxBackgroundMode="filled"
+        app:boxBackgroundColor="@color/sd_surface_bright"
+        app:boxStrokeColor="@color/sd_primary"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ai_search_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingBottom="8dp">
+            android:imeOptions="actionSearch"
+            android:singleLine="true"
+            android:textColor="@color/sd_on_surface" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-            <View
-                android:id="@+id/ai_drawer_handle"
-                android:layout_width="6dp"
-                android:layout_height="36dp"
-                android:background="#4DFFFFFF"
-                android:layout_marginEnd="10dp" />
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/ai_chips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="6dp"
+        app:singleSelection="true"
+        app:selectionRequired="true">
 
-            <TextView
-                android:id="@+id/ai_drawer_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="AI 智能助手"
-                android:textColor="#FFFFFFFF"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/ai_connection_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="已连接"
-                android:textSize="11sp"
-                android:layout_marginEnd="8dp" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/ai_provider_badge"
-            android:layout_width="match_parent"
+        <com.google.android.material.chip.Chip
+            android:id="@+id/ai_chip_mod"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="服务商：StarDock 默认 · auto"
-            android:textColor="#99FFFFFF"
-            android:textSize="11sp"
-            android:paddingBottom="8dp" />
-
-        <LinearLayout
-            android:id="@+id/ai_provider_bar"
-            android:layout_width="match_parent"
+            android:checkable="true"
+            android:checked="true"
+            android:text="模组" />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/ai_chip_shader"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="8dp">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/ai_btn_provider"
-                style="@style/Widget.Material3.Button.TonalButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="6dp"
-                android:text="服务商"
-                android:textSize="12sp"
-                android:minHeight="40dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/ai_btn_history"
-                style="@style/Widget.Material3.Button.TonalButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="6dp"
-                android:text="历史"
-                android:textSize="12sp"
-                android:minHeight="40dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/ai_btn_settings"
-                style="@style/Widget.Material3.Button.TonalButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="设置"
-                android:textSize="12sp"
-                android:minHeight="40dp" />
-        </LinearLayout>
-
-        <HorizontalScrollView
-            android:id="@+id/ai_quick_scroll"
-            android:layout_width="match_parent"
+            android:checkable="true"
+            android:text="光影" />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/ai_chip_resourcepack"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:scrollbars="none"
-            android:paddingBottom="8dp">
-
-            <LinearLayout
-                android:id="@+id/ai_quick_actions"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" />
-        </HorizontalScrollView>
-
-        <ScrollView
-            android:id="@+id/ai_message_scroll"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="#1AFFFFFF"
-            android:fadeScrollbars="false">
-
-            <LinearLayout
-                android:id="@+id/ai_message_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="8dp" />
-        </ScrollView>
-
-        <FrameLayout
-            android:id="@+id/ai_typing"
-            android:layout_width="match_parent"
+            android:checkable="true"
+            android:text="资源包" />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/ai_chip_modpack"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:padding="6dp">
+            android:checkable="true"
+            android:text="整合包" />
+    </com.google.android.material.chip.ChipGroup>
 
-            <TextView
-                android:id="@+id/ai_typing_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#A0FFFFFF"
-                android:textSize="11sp"
-                android:text="正在连接 AI..." />
-        </FrameLayout>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/ai_btn_search"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="6dp"
+        android:text="搜索"
+        app:cornerRadius="24dp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingTop="8dp">
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="12dp"
+        app:dividerColor="@color/sd_outline_variant" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/ai_attach"
-                style="@style/Widget.Material3.Button.IconButton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                app:icon="@android:drawable/ic_input_add"
-                android:contentDescription="附加" />
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/ai_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone" />
 
-            <EditText
-                android:id="@+id/ai_input"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                android:layout_marginHorizontal="6dp"
-                android:hint="和「消息小溪」聊天..."
-                android:textColorHint="#80FFFFFF"
-                android:textColor="#FFFFFF"
-                android:background="#2AFFFFFF"
-                android:padding="10dp"
-                android:textSize="13sp"
-                android:imeOptions="actionSend"
-                android:inputType="textMultiLine"
-                android:maxLines="3" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/ai_send"
-                style="@style/Widget.Material3.Button"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:minWidth="64dp"
-                android:text="发送"
-                android:textSize="12sp"
-                android:enabled="false" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/ai_stop"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_marginStart="4dp"
-                android:minWidth="48dp"
-                android:text="停"
-                android:textSize="12sp"
-                android:visibility="gone" />
-        </LinearLayout>
-    </LinearLayout>
-</FrameLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ai_results"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:clipToPadding="false" />
+</LinearLayout>

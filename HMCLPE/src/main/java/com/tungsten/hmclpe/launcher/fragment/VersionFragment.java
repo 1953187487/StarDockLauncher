@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.tungsten.hmclpe.R;
+import com.tungsten.hmclpe.launcher.setting.SettingNavigation;
 
 public class VersionFragment extends Fragment {
 
@@ -23,12 +25,14 @@ public class VersionFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         try {
-            android.widget.TextView tv = view.findViewById(R.id.placeholder_title);
-            if (tv != null) tv.setText("版本管理");
-            android.widget.TextView body = view.findViewById(R.id.placeholder_body);
-            if (body != null) body.setText("在此查看已安装的游戏版本。\n\nv1.0.5 已重写启动参数构建逻辑，启动游戏失败会给出具体错误。\n\n后续版本将把版本管理 UI 完整迁移到本 Fragment。");
+            TextView tv = view.findViewById(R.id.placeholder_title);
+            if (tv != null) tv.setText("版本");
+            TextView body = view.findViewById(R.id.placeholder_body);
+            if (body != null) body.setText("游戏版本下载入口已迁移到「下载中心 → 游戏版本」。\n\n点此跳转 →");
+            body.setOnClickListener(v -> SettingNavigation.openDownloadTab(requireActivity()));
+            view.setOnClickListener(v -> SettingNavigation.openDownloadTab(requireActivity()));
         } catch (Throwable t) {
-            android.util.Log.e("VersionFragment", "onViewCreated failed", t);
+            android.util.Log.e("VersionFragment", "init failed", t);
         }
     }
 }
