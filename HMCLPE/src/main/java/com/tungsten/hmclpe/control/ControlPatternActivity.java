@@ -33,22 +33,32 @@ public class ControlPatternActivity extends AppCompatActivity implements View.On
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            if (getIntent().getExtras().getBoolean("fullscreen")) {
-                getWindow().getAttributes().layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
-            } else {
-                getWindow().getAttributes().layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER;
+        try {
+            Bundle b = getIntent() == null ? null : getIntent().getExtras();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                boolean fullscreen = b != null && b.getBoolean("fullscreen");
+                if (fullscreen) {
+                    getWindow().getAttributes().layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+                } else {
+                    getWindow().getAttributes().layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER;
+                }
             }
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+
+            setContentView(R.layout.activity_control_pattern);
+
+            drawerLayout = findViewById(R.id.drawer_layout);
+            baseLayout = findViewById(R.id.base_layout);
+
+            boolean fullscreen = b != null && b.getBoolean("fullscreen");
+            String pattern = b != null ? b.getString("pattern") : null;
+            if (pattern == null) pattern = "default";
+            menuHelper = new MenuHelper(this, this, fullscreen, null, drawerLayout, baseLayout, true, pattern, 0, 1);
+            menuHelper.initialPattern = b != null ? b.getString("initial") : null;
+        } catch (Throwable t) {
+            android.widget.Toast.makeText(this, "键位编辑器加载失败：" + t.getMessage(), android.widget.Toast.LENGTH_LONG).show();
+            finish();
         }
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
-
-        setContentView(R.layout.activity_control_pattern);
-
-        drawerLayout = findViewById(R.id.drawer_layout);
-        baseLayout = findViewById(R.id.base_layout);
-
-        menuHelper = new MenuHelper(this,this,getIntent().getExtras().getBoolean("fullscreen"),null,drawerLayout,baseLayout,true,getIntent().getExtras().getString("pattern"),0,1);
-        menuHelper.initialPattern = getIntent().getExtras().getString("initial");
     }
 
     @Override

@@ -29,6 +29,12 @@ public class AppPrefs {
     public static final String KEY_LAUNCH_RUNTIME = "launch_runtime";
     public static final String KEY_LAUNCH_RENDERER = "launch_renderer";
     public static final String KEY_LAUNCH_DRIVER = "launch_driver";
+    public static final String KEY_USER_SKIN_PATH = "user_skin_path";
+    public static final String KEY_LAST_PROFILE = "last_profile";
+    public static final String KEY_THIRD_PARTY_SERVERS = "third_party_servers";
+    public static final String KEY_FEEDBACK = "feedback";
+    public static final String KEY_TAOWA_ENABLED = "taowa_enabled";
+    public static final String KEY_VERSION_FILTER = "version_filter";
 
     private static SharedPreferences sp(Context c) {
         return c.getSharedPreferences(NAME, Context.MODE_PRIVATE);

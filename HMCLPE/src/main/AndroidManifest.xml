@@ -112,6 +112,16 @@
             android:name=".launcher.uis.multiplayer.MultiplayerActivity"
             android:theme="@style/Theme.HelloMinecraftLauncherPocketEdition"/>
         <activity
+            android:name=".launcher.uis.login.AccountActivity"
+            android:screenOrientation="sensorLandscape"
+            android:exported="false"
+            android:theme="@style/Theme.StarDock.Main"/>
+        <activity
+            android:name=".launcher.uis.versions.VersionsActivity"
+            android:screenOrientation="sensorLandscape"
+            android:exported="false"
+            android:theme="@style/Theme.StarDock.Main"/>
+        <activity
             android:name=".launcher.launch.ExitActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.HelloMinecraftLauncherPocketEdition"/>

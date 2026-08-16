@@ -17,7 +17,8 @@ import android.os.Environment;
 import android.provider.Settings;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ProgressBar;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,9 +44,10 @@ import java.io.File;
 @SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
 
-    public ProgressBar loadingProgress;
+    public LinearProgressIndicator loadingProgress;
     public TextView loadingText;
     public TextView loadingProgressText;
+    public CircularProgressIndicator loadingSpinner;
 
     public TextView titleTextFirst;
     public TextView titleTextSecond;
@@ -62,6 +64,7 @@ public class SplashActivity extends AppCompatActivity {
         loadingProgress = findViewById(R.id.loading_progress_bar);
         loadingText = findViewById(R.id.loading_text);
         loadingProgressText = findViewById(R.id.loading_progress_text);
+        loadingSpinner = findViewById(R.id.loading_spinner);
 
         titleTextFirst = findViewById(R.id.title_text_first);
         titleTextSecond = findViewById(R.id.title_text_second);
@@ -147,22 +150,47 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void init() {
+        loadingProgress.setProgressCompat(0, true);
+        final int[] stages = {15, 35, 60, 85, 100};
+        final String[] labels = {"加载配置", "校验运行环境", "加载 Java 运行时", "加载版本列表", "就绪"};
         new Thread(() -> {
-            AppManifest.initializeManifest(SplashActivity.this);
-            launcherSetting = InitializeSetting.initializeLauncherSetting();
-
+            try {
+                AppManifest.initializeManifest(SplashActivity.this);
+                runOnUiThread(() -> {
+                    loadingProgress.setProgressCompat(stages[0], true);
+                    if (loadingText != null) loadingText.setText(labels[0]);
+                });
+                launcherSetting = InitializeSetting.initializeLauncherSetting();
+                Thread.sleep(120);
+                runOnUiThread(() -> {
+                    loadingProgress.setProgressCompat(stages[1], true);
+                    if (loadingText != null) loadingText.setText(labels[1]);
+                });
+                Thread.sleep(120);
+                runOnUiThread(() -> {
+                    loadingProgress.setProgressCompat(stages[2], true);
+                    if (loadingText != null) loadingText.setText(labels[2]);
+                });
+                Thread.sleep(120);
+                InstallLauncherFile.checkLauncherFiles(SplashActivity.this);
+                runOnUiThread(() -> {
+                    loadingProgress.setProgressCompat(stages[3], true);
+                    if (loadingText != null) loadingText.setText(labels[3]);
+                });
+                Thread.sleep(150);
+            } catch (Throwable t) {
+                android.util.Log.e("SplashActivity", "init failed", t);
+            }
             runOnUiThread(() -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    if (launcherSetting.fullscreen) {
-                        getWindow().getAttributes().layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
-                    } else {
-                        getWindow().getAttributes().layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER;
-                    }
-                }
-                getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+                loadingProgress.setProgressCompat(stages[4], true);
+                if (loadingText != null) loadingText.setText(labels[4]);
+                new android.os.Handler().postDelayed(() -> {
+                    Intent intent = new Intent(this, HomeActivity.class);
+                    startActivity(intent);
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    finish();
+                }, 220);
             });
-
-            InstallLauncherFile.checkLauncherFiles(SplashActivity.this);
         }).start();
     }
 

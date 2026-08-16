@@ -1,16 +1,16 @@
 {
   "latestRelease": {
-    "versionCode": 8,
-    "versionName": "1.0.7",
+    "versionCode": 9,
+    "versionName": "1.0.8",
     "date": "2026.08.16",
-    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.7/StarDockLauncher-v1.0.7-release.apk"],
-    "updateLog": "StarDockLauncher 1.0.7（界面重新规划 + 淘瓦联机开关 + AI 集成下载 + 启动框架设置）：\n\n界面重新规划：\n1. 侧栏菜单重构：主页 / 下载 / 工具 / 设置（删除版本 / 模组两个独立项）。\n2. 删除顶栏右侧联机与 AI 按钮（联机入口移至工具，AI 入口移至右下 FAB）。\n3. 顶栏左侧加圆形账号头像（未登录显示默认占位图）。\n\n淘瓦联机彻底重构：\n1. 工具页淘瓦联机 MaterialSwitch 一键开关。\n2. 开关关闭时不显示淘瓦入口，开启才显示。\n3. 进入淘瓦联机入口（复用旧 MultiplayerActivity）。\n4. 删除主页上的虚假联机开关（v1.0.5 局域网思路彻底删除）。\n\n工具页：\n1. 淘瓦联机开关 + 进入按钮。\n2. 还原 MC 移动版默认键位（直接还原网易 MC Mobile 键位）。\n3. 打开键位编辑器。\n4. AI 生成键位描述。\n\n下载中心大改：\n1. 4 个独立 Tab（游戏版本 / 模组 / 整合包 / 光影）。\n2. 搜索源选择：BMCLAPI / Modrinth / Curseforge。\n3. 模组/整合包/光影默认推荐列表（进入 Tab 即显示热门 5+ 项）。\n4. 关键词搜索实时建议（输入≥2 字符触发 live 搜索）。\n5. AI 搜索框集成：Modrinth/Curseforge 全链路。\n6. 修复 MinecraftVersionService 路径（mc/game/<ver>/client.jar）。\n\n设置新增启动框架：\n1. Java 运行时（默认/Java 8/11/17/21/25）。\n2. 渲染器（默认/GL4ES/Zink/LTW/ANGLE）。\n3. 图形驱动（默认/OpenGL ES/Vulkan）。\n\n修复检查更新：\n1. GitHubService.fetchLatest 直接调 GitHub Releases API。\n2. 检测到新版本弹窗「一键下载 APK」（直接用 DownloadService 下载到本地）。\n\n构建：versionCode 8, versionName 1.0.7, APK 179.5MB（release 签名）。"
+    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.8/StarDockLauncher-v1.0.8-release.apk"],
+    "updateLog": "StarDockLauncher 1.0.8（启动器核心功能 + 登录体系 + 管理版本 + 自定义主题）：\n\n主界面重做：\n1. 顶部大账号卡片（72dp 圆形头像 + 名称 + 模式 + 登录按钮）。\n2. 已安装版本列表 RecyclerView（点选即可设为当前）。\n3. 右下角圆形 FAB「开始游戏」按钮，点击启动最后选择的版本。\n4. 主页加「管理版本」入口。\n\n淘瓦联机：\n1. 工具页只保留淘瓦开关，删除进入按钮。\n2. 联机入口迁移到游戏悬浮窗菜单中（开启后才可见）。\n3. 提示用户联机需启动游戏后从悬浮窗进入。\n\n版本下载：\n1. 默认推荐列表（进入 Tab 即可见热门 5+ 项）。\n2. 实时搜索建议 + 搜索源可切（BMCLAPI / Modrinth / Curseforge）。\n3. 修复无法正常安装 + 无法正常换下载源。\n\n启动框架（设置）：\n1. Java 运行时（默认 / 8 / 11 / 17 / 21 / 25）。\n2. 渲染器（默认 / GL4ES / Zink / LTW / ANGLE）。\n3. 图形驱动（默认 / OpenGL ES / Vulkan）。\n\n管理版本页（VersionsActivity）：\n1. 列出已安装的所有版本（位置 / 启动 / 删除 / 设置）。\n2. 启动：直接用 Boat / Pojav 引擎启动。\n3. 删除：递归删除版本目录（带二次确认）。\n\n登录体系（AccountActivity）：\n1. 离线登录：输入昵称（默认皮肤 Steve / Alex 按昵称尾字符判断）。\n2. 正版 Microsoft 登录：直连 MicrosoftLoginActivity OAuth 流程。\n3. 第三方服务器登录：先填 URL → 自动 GET 验证 → 通过后输入账号密码。\n\n换皮肤：\n1. 离线：本地导入 PNG，存到 getExternalFilesDir()/skins/。\n2. 正版：自动从 Mojang / Crafatar API 获取。\n3. 头像自动同步到主界面顶部 + 侧栏 header。\n\n键位：\n1. ControlPatternActivity 修复「打开直接闪退」（缺 extras NPE 保护）。\n2. 启动时传入 fullscreen / pattern / initial / mode 默认值。\n3. MC 移动版默认键位 JSON 持久化到 SETTING_DIR/control_pattern/mc_mobile.json。\n\n启动动画（SplashActivity）：\n1. sd_launcher Logo ImageView + 旋转 CircularProgressIndicator + LinearProgressIndicator。\n2. 5 阶段进度（加载配置 / 校验运行环境 / 加载 Java 运行时 / 加载版本列表 / 就绪）。\n3. fade_in / fade_out 转场到 HomeActivity。\n\n自动检查更新：\n1. 每次进入主界面调 GitHubService.fetchLatest。\n2. 发现新版本弹窗「一键下载 APK」（DownloadService 直连）。\n\n主题：\n1. Material3 深色主题（sd_primary #FFB454 / sd_secondary #7DD3FC / sd_tertiary #A78BFA）。\n2. ShapeAppearance.StarDock.Circle 圆形头像样式。\n\n构建：versionCode 9, versionName 1.0.8, APK 179.5MB（release 签名）。"
   },
   "latestPrerelease": {
-    "versionCode": 8,
-    "versionName": "1.0.7",
+    "versionCode": 9,
+    "versionName": "1.0.8",
     "date": "2026.08.16",
-    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.7/StarDockLauncher-v1.0.7-release.apk"],
-    "updateLog": "StarDockLauncher 1.0.7：界面重新规划 + 淘瓦联机开关 + AI 集成下载 + 启动框架设置 + 检查更新修复 + Tab 重叠修复。"
+    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.8/StarDockLauncher-v1.0.8-release.apk"],
+    "updateLog": "StarDockLauncher 1.0.8：登录体系 + 管理版本 + 自定义主题 + 主界面重做 + 启动动画 + 自动检查更新 + 修复键位闪退。"
   }
 }

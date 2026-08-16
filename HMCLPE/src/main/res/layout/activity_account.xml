@@ -3,14 +3,26 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/account_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:title="账号与皮肤"
+            app:navigationIcon="@drawable/ic_arrow_back_white" />
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:clipToPadding="false"
-        android:paddingBottom="96dp">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -19,13 +31,9 @@
             android:padding="16dp">
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/home_account_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:cardCornerRadius="20dp"
+                app:cardCornerRadius="16dp"
                 app:cardElevation="2dp">
 
                 <LinearLayout
@@ -36,9 +44,9 @@
                     android:padding="20dp">
 
                     <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/home_account_avatar"
-                        android:layout_width="72dp"
-                        android:layout_height="72dp"
+                        android:id="@+id/account_avatar"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_account_placeholder"
                         app:shapeAppearanceOverlay="@style/ShapeAppearance.StarDock.Circle"
@@ -53,7 +61,7 @@
                         android:orientation="vertical">
 
                         <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/home_account_name"
+                            android:id="@+id/account_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="未登录"
@@ -61,106 +69,91 @@
                             android:textStyle="bold" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/home_account_mode"
+                            android:id="@+id/account_mode"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="点此登录账号"
+                            android:text="未登录"
                             android:textAppearance="?attr/textAppearanceBodyMedium" />
                     </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="添加账号"
+                        android:textAppearance="?attr/textAppearanceTitleLarge" />
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/home_account_login_btn"
+                        android:id="@+id/add_offline_account"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="离线登录（Steve/Alex 默认皮肤）" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/add_microsoft_account"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="正版 Microsoft 登录" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/add_login_server"
                         style="@style/Widget.Material3.Button.TonalButton"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="登录" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.textview.MaterialTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="已安装版本"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:textStyle="bold" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/home_version_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/home_manage_versions_card"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:cardBackgroundColor="@color/sd_surface"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/sd_outline_variant"
-                app:strokeWidth="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="18dp">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="管理版本（启动 / 删除 / 安装目录）"
-                        android:textAppearance="?attr/textAppearanceBodyLarge"
-                        android:textStyle="bold" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="›"
-                        android:textAppearance="?attr/textAppearanceHeadlineSmall" />
+                        android:layout_marginTop="12dp"
+                        android:text="第三方服务器登录" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/home_btn_download_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:cardBackgroundColor="@color/sd_surface"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/sd_outline_variant"
-                app:strokeWidth="1dp">
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="18dp">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="下载中心（游戏版本 / 模组 / 整合包 / 光影）"
-                        android:textAppearance="?attr/textAppearanceBodyLarge"
-                        android:textStyle="bold" />
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="›"
-                        android:textAppearance="?attr/textAppearanceHeadlineSmall" />
+                        android:text="皮肤"
+                        android:textAppearance="?attr/textAppearanceTitleLarge" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_change_skin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="离线导入皮肤 PNG" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="正版账号皮肤自动从 Mojang / Crafatar API 获取；离线账号可导入 PNG 自定义皮肤。"
+                        android:textAppearance="?attr/textAppearanceBodySmall" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>

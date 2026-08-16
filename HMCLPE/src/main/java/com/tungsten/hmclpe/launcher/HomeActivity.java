@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigationrail.NavigationRailView;
 import com.tungsten.hmclpe.R;
 import com.tungsten.hmclpe.ai.AiChatActivity;
@@ -25,6 +26,8 @@ import com.tungsten.hmclpe.launcher.fragment.DownloadFragment;
 import com.tungsten.hmclpe.launcher.fragment.HomeFragment;
 import com.tungsten.hmclpe.launcher.fragment.SettingFragment;
 import com.tungsten.hmclpe.launcher.fragment.ToolsFragment;
+import com.tungsten.hmclpe.launcher.setting.AppPrefs;
+import com.tungsten.hmclpe.launcher.setting.AuthManager;
 import com.tungsten.hmclpe.utils.LocaleUtils;
 import com.tungsten.hmclpe.utils.crash.CrashHandler;
 import com.tungsten.hmclpe.utils.crash.CrashLogViewerActivity;
@@ -42,8 +45,10 @@ public class HomeActivity extends AppCompatActivity {
     public static native void verifyFunc();
 
     private NavigationRailView navRail;
-    private FloatingActionButton fabAi;
-    private ImageView avatar;
+    private FloatingActionButton fabStart;
+    private ShapeableImageView railAvatar;
+    private android.widget.TextView railAvatarName;
+    private android.widget.TextView railAvatarMode;
 
     private final FragmentManager fm = getSupportFragmentManager();
 
@@ -70,8 +75,18 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         navRail = findViewById(R.id.home_nav_rail);
-        fabAi = findViewById(R.id.home_fab_ai);
-        avatar = findViewById(R.id.home_avatar);
+        fabStart = findViewById(R.id.home_fab_start);
+        View header = navRail.getHeaderView();
+        if (header != null) {
+            railAvatar = header.findViewById(R.id.rail_avatar);
+            railAvatarName = header.findViewById(R.id.rail_avatar_name);
+            railAvatarMode = header.findViewById(R.id.rail_avatar_mode);
+            if (railAvatar != null) railAvatar.setOnClickListener(v -> openLogin());
+        }
+        try {
+            navRail.addHeaderView(android.view.LayoutInflater.from(this).inflate(R.layout.nav_rail_header, navRail, false));
+        } catch (Throwable ignored) {
+        }
 
         navRail.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -91,20 +106,7 @@ public class HomeActivity extends AppCompatActivity {
             return false;
         });
 
-        fabAi.setOnClickListener(v -> {
-            try {
-                Intent i = new Intent(this, AiChatActivity.class);
-                i.putExtra("drawer_mode", false);
-                startActivity(i);
-            } catch (Throwable t) {
-                Toast.makeText(this, "启动 AI 失败：" + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        avatar.setOnClickListener(v -> {
-            switchFragment(FRAG_SETTING, "设置");
-            navRail.setSelectedItemId(R.id.nav_setting);
-        });
+        fabStart.setOnClickListener(v -> startLastGame());
 
         navRail.setSelectedItemId(R.id.nav_home);
         switchFragment(FRAG_HOME, "主页");
@@ -126,20 +128,115 @@ public class HomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         refreshAvatar();
+        autoCheckUpdate();
     }
 
     private void refreshAvatar() {
         try {
-            int mode = com.tungsten.hmclpe.launcher.setting.AuthManager.currentMode();
-            String name = com.tungsten.hmclpe.launcher.setting.AuthManager.currentNickname();
-            avatar.setImageResource(R.drawable.ic_account_placeholder);
-            if (name != null && !name.isEmpty()) {
-                avatar.setContentDescription("已登录：" + name);
-            } else {
-                avatar.setContentDescription("未登录");
+            int mode = AuthManager.currentMode();
+            String name = AuthManager.currentNickname();
+            String label = (name == null || name.isEmpty()) ? "未登录" : name;
+            String modeLabel = AuthManager.name(mode);
+            if (railAvatarName != null) railAvatarName.setText(label);
+            if (railAvatarMode != null) railAvatarMode.setText(modeLabel);
+            if (railAvatar != null) railAvatar.setImageResource(R.drawable.ic_account_placeholder);
+            String skinPath = AppPrefs.getString(this, AppPrefs.KEY_USER_SKIN_PATH, "");
+            if (skinPath != null && !skinPath.isEmpty()) {
+                try {
+                    railAvatar.setImageURI(android.net.Uri.fromFile(new java.io.File(skinPath)));
+                } catch (Throwable ignored) {}
             }
         } catch (Throwable ignored) {
         }
+    }
+
+    private void openLogin() {
+        try {
+            android.content.Intent i = new android.content.Intent(this, com.tungsten.hmclpe.launcher.uis.login.AccountActivity.class);
+            startActivity(i);
+        } catch (Throwable t) {
+            Toast.makeText(this, "登录面板未就绪，请使用设置中的登录", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void startLastGame() {
+        try {
+            String lastVer = AppPrefs.getString(this, AppPrefs.KEY_LAST_GAME_VERSION, "");
+            if (lastVer == null || lastVer.isEmpty()) {
+                Toast.makeText(this, "请先在「下载」安装版本", Toast.LENGTH_SHORT).show();
+                navRail.setSelectedItemId(R.id.nav_download);
+                return;
+            }
+            java.io.File gameDir = new java.io.File(com.tungsten.hmclpe.launcher.setting.VersionManager.gamesDir(), lastVer);
+            if (!gameDir.exists()) {
+                Toast.makeText(this, "版本目录不存在：" + lastVer + "，请重新下载", Toast.LENGTH_SHORT).show();
+                navRail.setSelectedItemId(R.id.nav_download);
+                return;
+            }
+            String lastProfile = AppPrefs.getString(this, AppPrefs.KEY_LAST_PROFILE, lastVer);
+            Intent intent = new Intent();
+            intent.setClassName("com.tungsten.hmclpe", "com.tungsten.hmclpe.launcher.launch.boat.BoatMinecraftActivity");
+            intent.putExtra("version_name", lastVer);
+            intent.putExtra("version_id", lastVer);
+            startActivity(intent);
+        } catch (Throwable t) {
+            try {
+                Intent intent = new Intent();
+                intent.setClassName("com.tungsten.hmclpe", "com.tungsten.hmclpe.launcher.launch.pojav.PojavMinecraftActivity");
+                intent.putExtra("version_name", AppPrefs.getString(this, AppPrefs.KEY_LAST_GAME_VERSION, ""));
+                startActivity(intent);
+            } catch (Throwable tt) {
+                Toast.makeText(this, "启动游戏失败：" + tt.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private void autoCheckUpdate() {
+        new Thread(() -> {
+            try {
+                final com.tungsten.hmclpe.launcher.setting.GitHubService.Release r = com.tungsten.hmclpe.launcher.setting.GitHubService.fetchLatest();
+                if (r == null || r.tagName == null) return;
+                String cur = "v" + com.tungsten.hmclpe.BuildConfig.VERSION_NAME;
+                if (cur.equals(r.tagName)) return;
+                runOnUiThread(() -> {
+                    try {
+                        final String apk = r.apkUrl;
+                        final String tag = r.tagName;
+                        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                                .setTitle("发现新版本 " + tag)
+                                .setMessage("启动器有可用更新，是否立即下载？\n\n" + (apk == null ? "" : apk))
+                                .setPositiveButton("一键下载", (d, w) -> {
+                                    if (apk == null) return;
+                                    java.io.File root = com.tungsten.hmclpe.launcher.setting.VersionManager.root();
+                                    if (!root.exists()) root.mkdirs();
+                                    java.io.File target = new java.io.File(root, "StarDockLauncher-" + tag + ".apk");
+                                    com.tungsten.hmclpe.launcher.download.DownloadService.Task t = new com.tungsten.hmclpe.launcher.download.DownloadService.Task();
+                                    t.id = "apk-" + tag;
+                                    t.name = "StarDockLauncher-" + tag + ".apk";
+                                    t.url = apk;
+                                    t.destination = target;
+                                    t.targetVersion = "update";
+                                    com.tungsten.hmclpe.launcher.download.DownloadService.enqueue(t);
+                                    Toast.makeText(this, "已开始下载：" + target.getAbsolutePath(), Toast.LENGTH_LONG).show();
+                                })
+                                .setNegativeButton("稍后", null)
+                                .show();
+                    } catch (Throwable ignored) {}
+                });
+            } catch (Throwable ignored) {}
+        }).start();
+    }
+
+    public void refreshStartFab() {
+        try {
+            if (fabStart == null) return;
+            String last = AppPrefs.getString(this, AppPrefs.KEY_LAST_GAME_VERSION, "");
+            if (last == null || last.isEmpty()) {
+                fabStart.setContentDescription("开始游戏");
+            } else {
+                fabStart.setContentDescription("开始游戏：" + last);
+            }
+        } catch (Throwable ignored) {}
     }
 
     private void ensureAgreementsThenAnnouncement() {

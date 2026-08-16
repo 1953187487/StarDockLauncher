@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/rail_avatar"
+        android:layout_width="68dp"
+        android:layout_height="68dp"
+        android:padding="1dp"
+        android:background="@color/sd_secondary_container"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_account_placeholder"
+        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full"
+        app:strokeColor="@color/sd_primary"
+        app:strokeWidth="2dp"
+        android:contentDescription="账号" />
+
+    <TextView
+        android:id="@+id/rail_avatar_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="未登录"
+        android:textColor="@color/sd_on_surface"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:ellipsize="end" />
+
+    <TextView
+        android:id="@+id/rail_avatar_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="离线"
+        android:textColor="@color/sd_on_surface_variant"
+        android:textSize="10sp" />
+</LinearLayout>

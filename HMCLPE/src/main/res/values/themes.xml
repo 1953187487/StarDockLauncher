@@ -66,4 +66,9 @@
         <item name="android:navigationBarColor">@color/sd_surface_dim</item>
         <item name="android:windowLightStatusBar">false</item>
     </style>
+
+    <style name="ShapeAppearance.StarDock.Circle" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>

@@ -58,13 +58,13 @@
                     android:textColor="@color/sd_on_surface_variant"
                     android:textSize="12sp" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/tools_taowa_enter"
-                    style="@style/Widget.Material3.Button.TonalButton"
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="14dp"
-                    android:text="进入淘瓦联机" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="提示：联机入口已迁移到「开始游戏」后的悬浮窗菜单中。"
+                    android:textColor="@color/sd_on_surface_variant"
+                    android:textSize="12sp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
