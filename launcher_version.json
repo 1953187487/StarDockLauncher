@@ -1,16 +1,16 @@
 {
   "latestRelease": {
-    "versionCode": 7,
-    "versionName": "1.0.6",
+    "versionCode": 8,
+    "versionName": "1.0.7",
     "date": "2026.08.16",
-    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.6/StarDockLauncher-v1.0.6-release.apk"],
-    "updateLog": "StarDockLauncher 1.0.6（导航横屏 + 淘瓦联机 + AI 搜索框 + 设置全面完善）：\n\n布局与导航：\n1. 底部导航栏移到左侧改为横向 NavigationRailView，88dp 固定侧栏。\n2. 顶栏删除右侧最小化/关闭两个按钮，仅保留淘瓦联机与 AI 入口。\n3. 应用图标 100% 重写，启动加载动画升级。\n\n淘瓦联机（Taowa）：\n1. 主页一键开关控制，默认关闭。\n2. 复用 Hin2nService 内网穿透 + TunnelMultiplayerFragment + MultiplayerActivity，自动识别房间/生成邀请码。\n\nAI 搜索框：\n1. AI 界面全链重写为搜索框，支持 Modrinth/Curseforge 链接识别与关键词搜索。\n2. 搜索 Mod/Shader/资源包/整合包，结果点击直接跳转。\n3. 设置中新增 AI 协议 + 拉取模型列表 + 测试模型。\n\n下载与模组合并：\n1. 游戏版本/模组/整合包三 Tab 合一，Modrinth API 搜索。\n2. 模组自动识别本地已安装游戏版本并优先跳转，一键下载依赖。\n3. 下载目录统一为 StarDockLauncher/{games,libraries,runtime}，支持 BMCLAPI/MOJANG 下载源切换。\n\n设置全面完善：\n1. 主题：系统/深色/浅色/Android12 动态取色 + 自定义背景。\n2. 登录：正版（微软）/离线/第三方服务器。\n3. 关于：检查版本 + 历史版本直连开源仓库 + 用户须知/AI 协议/语言协议。\n4. 进入应用完成语言选择→用户须知→AI 协议后自动弹出公告。\n\n构建：versionCode 7, versionName 1.0.6, APK 179.5MB（release 签名）。"
+    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.7/StarDockLauncher-v1.0.7-release.apk"],
+    "updateLog": "StarDockLauncher 1.0.7（界面重新规划 + 淘瓦联机开关 + AI 集成下载 + 启动框架设置）：\n\n界面重新规划：\n1. 侧栏菜单重构：主页 / 下载 / 工具 / 设置（删除版本 / 模组两个独立项）。\n2. 删除顶栏右侧联机与 AI 按钮（联机入口移至工具，AI 入口移至右下 FAB）。\n3. 顶栏左侧加圆形账号头像（未登录显示默认占位图）。\n\n淘瓦联机彻底重构：\n1. 工具页淘瓦联机 MaterialSwitch 一键开关。\n2. 开关关闭时不显示淘瓦入口，开启才显示。\n3. 进入淘瓦联机入口（复用旧 MultiplayerActivity）。\n4. 删除主页上的虚假联机开关（v1.0.5 局域网思路彻底删除）。\n\n工具页：\n1. 淘瓦联机开关 + 进入按钮。\n2. 还原 MC 移动版默认键位（直接还原网易 MC Mobile 键位）。\n3. 打开键位编辑器。\n4. AI 生成键位描述。\n\n下载中心大改：\n1. 4 个独立 Tab（游戏版本 / 模组 / 整合包 / 光影）。\n2. 搜索源选择：BMCLAPI / Modrinth / Curseforge。\n3. 模组/整合包/光影默认推荐列表（进入 Tab 即显示热门 5+ 项）。\n4. 关键词搜索实时建议（输入≥2 字符触发 live 搜索）。\n5. AI 搜索框集成：Modrinth/Curseforge 全链路。\n6. 修复 MinecraftVersionService 路径（mc/game/<ver>/client.jar）。\n\n设置新增启动框架：\n1. Java 运行时（默认/Java 8/11/17/21/25）。\n2. 渲染器（默认/GL4ES/Zink/LTW/ANGLE）。\n3. 图形驱动（默认/OpenGL ES/Vulkan）。\n\n修复检查更新：\n1. GitHubService.fetchLatest 直接调 GitHub Releases API。\n2. 检测到新版本弹窗「一键下载 APK」（直接用 DownloadService 下载到本地）。\n\n构建：versionCode 8, versionName 1.0.7, APK 179.5MB（release 签名）。"
   },
   "latestPrerelease": {
-    "versionCode": 7,
-    "versionName": "1.0.6",
+    "versionCode": 8,
+    "versionName": "1.0.7",
     "date": "2026.08.16",
-    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.6/StarDockLauncher-v1.0.6-release.apk"],
-    "updateLog": "StarDockLauncher 1.0.6：导航横屏 + 淘瓦联机 + AI 搜索框 + 下载/模组整合 + 设置全面完善 + 图标/动画重写。"
+    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.7/StarDockLauncher-v1.0.7-release.apk"],
+    "updateLog": "StarDockLauncher 1.0.7：界面重新规划 + 淘瓦联机开关 + AI 集成下载 + 启动框架设置 + 检查更新修复 + Tab 重叠修复。"
   }
 }
