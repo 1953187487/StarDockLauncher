@@ -1,44 +1,4 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.HelloMinecraftLauncherPocketEdition" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryVariant">@color/colorPrimary</item>
-        <item name="colorOnPrimary">@color/colorPrimary</item>
-        <item name="colorSecondary">@color/colorPrimary</item>
-        <item name="colorSecondaryVariant">@color/colorPrimary</item>
-        <item name="colorOnSecondary">@color/colorPrimary</item>
-        <item name="android:statusBarColor" tools:targetApi="l">@color/colorPrimary</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-    </style>
-
-    <style name="MenuStyle" parent="Widget.AppCompat.PopupMenu">
-        <item name="dropdownListPreferredItemHeight">36dp</item>
-        <item name="android:textAppearanceSmallPopupMenu">@style/MenuTextStyle</item>
-        <item name="android:textAppearanceLargePopupMenu">@style/MenuTextStyle</item>
-    </style>
-
-    <style name="MenuTextStyle">
-        <item name="android:textColor">@color/colorPureBlack</item>
-        <item name="android:textSize">11sp</item>
-    </style>
-
-    <style name="Theme.StarDockAI" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorOnPrimary">#FFFFFF</item>
-        <item name="colorSurface">#0F1419</item>
-        <item name="colorOnSurface">#FFFFFF</item>
-        <item name="colorSurfaceVariant">#1F2933</item>
-        <item name="colorOnSurfaceVariant">#A0FFFFFF</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:windowFullscreen">false</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-    </style>
-
     <style name="Theme.StarDock.Main" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/sd_primary</item>
         <item name="colorOnPrimary">@color/sd_on_primary</item>
@@ -50,28 +10,26 @@
         <item name="colorOnSecondaryContainer">@color/sd_on_secondary_container</item>
         <item name="colorTertiary">@color/sd_tertiary</item>
         <item name="colorOnTertiary">@color/sd_on_tertiary</item>
-        <item name="colorTertiaryContainer">@color/sd_tertiary_container</item>
-        <item name="colorOnTertiaryContainer">@color/sd_on_tertiary_container</item>
-        <item name="colorError">@color/sd_error</item>
-        <item name="colorOnError">@color/sd_on_error</item>
-        <item name="android:colorBackground">@drawable/sd_liquid_bg</item>
-        <item name="colorSurface">#161B22</item>
+        <item name="colorSurface">@color/sd_surface</item>
         <item name="colorOnSurface">@color/sd_on_surface</item>
         <item name="colorSurfaceVariant">@color/sd_surface_container</item>
         <item name="colorOnSurfaceVariant">@color/sd_on_surface_variant</item>
-        <item name="colorOutline">@color/sd_outline</item>
-        <item name="colorOutlineVariant">@color/sd_outline_variant</item>
-        <item name="android:windowBackground">@drawable/sd_liquid_bg</item>
-        <item name="android:statusBarColor">#00000000</item>
-        <item name="android:navigationBarColor">#00000000</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowBackground">@color/sd_surface_dim</item>
+        <item name="android:statusBarColor">@color/sd_surface_dim</item>
+        <item name="android:navigationBarColor">@color/sd_surface_dim</item>
+    </style>
+
+    <style name="Theme.StarDock.Splash" parent="Theme.StarDock.Main">
+        <item name="android:windowBackground">@color/sd_surface_dim</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
 
     <style name="ShapeAppearance.StarDock.Circle" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="Widget.StarDock.NavRailItem" parent="Widget.Material3.NavigationRailView.ActiveIndicator">
+        <item name="android:textColor">@color/sd_on_surface</item>
     </style>
 </resources>

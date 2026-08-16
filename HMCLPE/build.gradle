@@ -7,11 +7,11 @@ android {
     dexOptions {
         javaMaxHeapSize "4g"
     }
-	
+
     lintOptions {
         abortOnError false
     }
-	
+
     signingConfigs {
         release {
             storeFile file("key-store.jks")
@@ -20,19 +20,19 @@ android {
             keyPassword "666666"
         }
     }
-    
+
     packagingOptions {
         jniLibs {
             useLegacyPackaging = true
         }
     }
-     
+
     defaultConfig {
-        applicationId "com.tungsten.hmclpe"
+        applicationId "com.stardock.launcher"
         minSdk 26
         targetSdk 34
-        versionCode 10
-        versionName "1.0.9"
+        versionCode 12
+        versionName "1.1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -49,13 +49,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
     packagingOptions {
-        pickFirst 'META-INF/LICENSE.md' // picks the JavaMail license file
+        pickFirst 'META-INF/LICENSE.md'
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
@@ -74,7 +75,6 @@ android {
             outputFileName = "StarDockLauncher-v${defaultConfig.versionName}-${flavor}.apk"
         }
     }
-
 }
 
 dependencies {
@@ -84,26 +84,10 @@ dependencies {
     implementation project(path: ':Boat')
     implementation project(path: ':PojavLauncher')
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.github.naman14:app-theme-engine:0.5.2@aar'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
     implementation 'com.google.android.material:material:1.11.0'
-    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
-    implementation 'com.squareup.okhttp3:okhttp-sse:4.9.3'
-    implementation 'org.nanohttpd:nanohttpd:2.3.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'cat.ereza:customactivityoncrash:2.3.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
     implementation 'com.google.code.gson:gson:2.10.1'
-    implementation 'com.moandjiezana.toml:toml4j:0.7.2'
-    implementation 'org.apache.commons:commons-compress:1.21'
-    implementation 'commons-io:commons-io:2.11.0'
-    implementation 'com.github.steveice10:opennbt:1.5'
-    implementation 'com.jaredrummler:colorpicker:1.1.0'
-    implementation 'com.jaredrummler:android-device-names:2.1.0'
     implementation 'org.jsoup:jsoup:1.14.3'
-    implementation 'org.apache.commons:commons-lang3:3.13.0'
-    implementation 'org.jenkins-ci:constant-pool-scanner:1.2'
-    implementation 'com.github.gzu-liyujiang:Android_CN_OAID:4.2.4'
-    implementation 'com.github.nedimf:maildroid:v0.1.0-release'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }

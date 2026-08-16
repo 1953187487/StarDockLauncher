@@ -1,21 +1,11 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.HelloMinecraftLauncherPocketEdition" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryVariant">@color/colorPrimary</item>
-        <item name="colorOnPrimary">@color/colorPrimary</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/colorPrimary</item>
-        <item name="colorSecondaryVariant">@color/colorPrimary</item>
-        <item name="colorOnSecondary">@color/colorPrimary</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">@color/colorPrimary</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-        <!-- Customize your theme here. -->
+<resources>
+    <style name="Theme.StarDock.Main" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#FFB454</item>
+        <item name="colorOnPrimary">#1A1100</item>
+        <item name="colorSurface">#0F0E1A</item>
+        <item name="colorOnSurface">#E8EAF6</item>
+        <item name="android:windowBackground">#0F0E1A</item>
+        <item name="android:statusBarColor">#0F0E1A</item>
+        <item name="android:navigationBarColor">#0F0E1A</item>
     </style>
 </resources>

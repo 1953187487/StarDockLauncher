@@ -1,557 +1,131 @@
 package com.tungsten.hmclpe.launcher.fragment;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.File;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-import com.tungsten.hmclpe.BuildConfig;
-import com.tungsten.hmclpe.R;
-import com.tungsten.hmclpe.ai.AiProvider;
-import com.tungsten.hmclpe.ai.AiProviderManager;
-import com.tungsten.hmclpe.ai.AiTester;
-import com.tungsten.hmclpe.auth.microsoft.MicrosoftLoginActivity;
-import com.tungsten.hmclpe.launcher.setting.AnnouncementManager;
-import com.tungsten.hmclpe.launcher.setting.AppPrefs;
-import com.tungsten.hmclpe.launcher.setting.AuthManager;
-import com.tungsten.hmclpe.launcher.setting.DownloadSource;
-import com.tungsten.hmclpe.launcher.setting.GitHubService;
-import com.tungsten.hmclpe.launcher.setting.ThemePrefs;
-import com.tungsten.hmclpe.launcher.setting.VersionManager;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.stardock.launcher.R;
+import com.tungsten.hmclpe.ai.AiChatActivity;
+import com.tungsten.hmclpe.launcher.uis.about.AboutActivity;
+import com.tungsten.hmclpe.launcher.uis.crash.CrashLogViewerActivity;
+import com.tungsten.hmclpe.launcher.uis.update.UpdateDownloadActivity;
+import com.tungsten.hmclpe.utils.Prefs;
 
 public class SettingFragment extends Fragment {
 
-    private TextView themeSubtitle;
-    private TextView backgroundSubtitle;
-    private TextView downloadSourceSubtitle;
-    private TextView gameDirSubtitle;
-    private TextView loginSubtitle;
-    private TextView runtimeSubtitle;
-    private TextView rendererSubtitle;
-    private TextView driverSubtitle;
-    private TextView versionText;
-    private TextView aiApiSubtitle;
+    private static final String TAG = "SettingFragment";
 
-    private final ExecutorService io = Executors.newSingleThreadExecutor();
+    private static final String KEY_DARK = "ui_dark_mode";
+    private static final String KEY_RUNTIME = "launcher_runtime";
+    private static final String KEY_AUTO_UPDATE = "auto_check_update";
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_setting, container, false);
+        try {
+            return inflater.inflate(R.layout.fragment_setting, container, false);
+        } catch (Throwable t) {
+            Log.e(TAG, "inflate failed", t);
+            return null;
+        }
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Prefs prefs;
         try {
-            themeSubtitle = view.findViewById(R.id.setting_theme_subtitle);
-            backgroundSubtitle = view.findViewById(R.id.setting_background_subtitle);
-            downloadSourceSubtitle = view.findViewById(R.id.setting_download_source_subtitle);
-            gameDirSubtitle = view.findViewById(R.id.setting_game_dir_subtitle);
-            loginSubtitle = view.findViewById(R.id.setting_login_subtitle);
-            runtimeSubtitle = view.findViewById(R.id.setting_runtime_subtitle);
-            rendererSubtitle = view.findViewById(R.id.setting_renderer_subtitle);
-            driverSubtitle = view.findViewById(R.id.setting_driver_subtitle);
-            versionText = view.findViewById(R.id.setting_version_text);
-
-            view.findViewById(R.id.setting_row_theme).setOnClickListener(v -> pickTheme());
-            view.findViewById(R.id.setting_row_background).setOnClickListener(v -> pickBackground());
-            view.findViewById(R.id.setting_row_download_source).setOnClickListener(v -> pickDownloadSource());
-            view.findViewById(R.id.setting_row_game_dir).setOnClickListener(v -> pickGameDir());
-            view.findViewById(R.id.setting_row_login).setOnClickListener(v -> pickLogin());
-            view.findViewById(R.id.setting_row_runtime).setOnClickListener(v -> pickRuntime());
-            view.findViewById(R.id.setting_row_renderer).setOnClickListener(v -> pickRenderer());
-            view.findViewById(R.id.setting_row_driver).setOnClickListener(v -> pickDriver());
-            view.findViewById(R.id.setting_row_announcement).setOnClickListener(v -> showAnnouncement());
-            view.findViewById(R.id.setting_row_user_agreement).setOnClickListener(v -> showUserAgreement());
-            view.findViewById(R.id.setting_row_ai_agreement).setOnClickListener(v -> showAiAgreement());
-            view.findViewById(R.id.setting_row_language_agreement).setOnClickListener(v -> pickLanguage());
-            view.findViewById(R.id.setting_row_check_update).setOnClickListener(v -> checkUpdate());
-            view.findViewById(R.id.setting_row_history).setOnClickListener(v -> openHistory());
-            view.findViewById(R.id.setting_row_repo).setOnClickListener(v -> openRepo());
-
-            aiApiSubtitle = view.findViewById(R.id.setting_ai_api_subtitle);
-            view.findViewById(R.id.setting_row_ai_api).setOnClickListener(v -> pickAiApi());
-            view.findViewById(R.id.setting_row_ai_models).setOnClickListener(v -> fetchModels());
-            view.findViewById(R.id.setting_row_ai_test).setOnClickListener(v -> testModel());
-
-            refreshAll();
+            prefs = Prefs.get(requireContext());
         } catch (Throwable t) {
-            android.util.Log.e("SettingFragment", "init failed", t);
-        }
-    }
-
-    private void refreshAll() {
-        if (themeSubtitle != null) themeSubtitle.setText(ThemePrefs.name(ThemePrefs.getMode()));
-        if (backgroundSubtitle != null) {
-            String uri = ThemePrefs.getBackgroundUri();
-            backgroundSubtitle.setText(uri == null || uri.isEmpty() ? "使用默认深色" : "已设置自定义背景");
-        }
-        if (downloadSourceSubtitle != null) downloadSourceSubtitle.setText(DownloadSource.name(DownloadSource.current()));
-        if (gameDirSubtitle != null) gameDirSubtitle.setText(VersionManager.currentGameDir());
-        if (loginSubtitle != null) loginSubtitle.setText(AuthManager.name(AuthManager.currentMode()));
-        if (runtimeSubtitle != null) runtimeSubtitle.setText(com.tungsten.hmclpe.launcher.setting.LauncherPrefs.currentRuntime());
-        if (rendererSubtitle != null) rendererSubtitle.setText(com.tungsten.hmclpe.launcher.setting.LauncherPrefs.currentRenderer());
-        if (driverSubtitle != null) driverSubtitle.setText(com.tungsten.hmclpe.launcher.setting.LauncherPrefs.currentDriver());
-        if (versionText != null) versionText.setText("StarDockLauncher v" + BuildConfig.VERSION_NAME + " (build " + BuildConfig.VERSION_CODE + ")");
-        try {
-            if (aiApiSubtitle != null) {
-                AiProvider p = AiProviderManager.getInstance(requireContext()).getActiveProvider();
-                aiApiSubtitle.setText(p.name + " · " + (p.model == null ? "auto" : p.model));
-            }
-        } catch (Throwable t) {
-            if (aiApiSubtitle != null) aiApiSubtitle.setText("默认服务商");
-        }
-    }
-
-    private void pickAiApi() {
-        try {
-            List<AiProvider> list = AiProviderManager.getInstance(requireContext()).listProviders();
-            String[] names = new String[list.size()];
-            for (int i = 0; i < list.size(); i++) names[i] = list.get(i).name;
-            new MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("选择 AI 服务商")
-                    .setItems(names, (d, which) -> {
-                        AiProvider p = list.get(which);
-                        AiProviderManager.getInstance(requireContext()).setActiveProvider(p.id);
-                        refreshAll();
-                    })
-                    .setNegativeButton("新增自定义", (d, w) -> showAddProvider())
-                    .show();
-        } catch (Throwable t) {
-            Toast.makeText(requireContext(), "AI 配置失败：" + t.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void showAddProvider() {
-        LinearLayout wrap = new LinearLayout(requireContext());
-        wrap.setOrientation(LinearLayout.VERTICAL);
-        wrap.setPadding(48, 24, 48, 0);
-        EditText name = new EditText(requireContext()); name.setHint("名称");
-        EditText url = new EditText(requireContext()); url.setHint("Base URL（含 /v1）");
-        EditText key = new EditText(requireContext()); key.setHint("API Key");
-        EditText model = new EditText(requireContext()); model.setHint("模型（可空）");
-        wrap.addView(name); wrap.addView(url); wrap.addView(key); wrap.addView(model);
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("新增 AI 服务商")
-                .setView(wrap)
-                .setPositiveButton("保存", (d, w) -> {
-                    try {
-                        AiProvider p = new AiProvider();
-                        p.id = "custom_" + System.currentTimeMillis();
-                        p.name = name.getText().toString().trim();
-                        p.baseUrl = url.getText().toString().trim();
-                        p.apiKey = key.getText().toString().trim();
-                        p.model = model.getText().toString().trim();
-                        p.systemPrompt = "你是消息小溪，友好的游戏助手。";
-                        p.isLocked = false;
-                        AiProviderManager.getInstance(requireContext()).addProvider(p);
-                        AiProviderManager.getInstance(requireContext()).setActiveProvider(p.id);
-                        refreshAll();
-                    } catch (Throwable t) {
-                        Toast.makeText(requireContext(), "保存失败：" + t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setNegativeButton("取消", null)
-                .show();
-    }
-
-    private void fetchModels() {
-        Toast.makeText(requireContext(), "正在拉取模型列表…", Toast.LENGTH_SHORT).show();
-        io.execute(() -> {
-            try {
-                AiProvider p = AiProviderManager.getInstance(requireContext()).getActiveProvider();
-                final List<String> models = AiTester.fetchModels(p.baseUrl, p.apiKey);
-                requireActivity().runOnUiThread(() -> {
-                    if (models == null || models.isEmpty()) {
-                        Toast.makeText(requireContext(), "未取到模型。请检查 API 地址或 Key。", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    new MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("可用模型（点击使用）")
-                            .setItems(models.toArray(new String[0]), (d, which) -> {
-                                p.model = models.get(which);
-                                AppPrefs.setString(requireContext(), AppPrefs.KEY_AI_MODEL, p.model);
-                                refreshAll();
-                            })
-                            .show();
-                });
-            } catch (Throwable t) {
-                requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), "拉取失败：" + t.getMessage(), Toast.LENGTH_SHORT).show());
-            }
-        });
-    }
-
-    private void testModel() {
-        final EditText input = new EditText(requireContext());
-        input.setHint("要发送的测试消息");
-        input.setText("你好，请用一句话介绍你自己。");
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("测试模型")
-                .setView(input)
-                .setPositiveButton("发送", (d, w) -> {
-                    final String msg = input.getText().toString().trim();
-                    Toast.makeText(requireContext(), "正在测试…", Toast.LENGTH_SHORT).show();
-                    io.execute(() -> {
-                        try {
-                            AiProvider p = AiProviderManager.getInstance(requireContext()).getActiveProvider();
-                            AiTester.test(p.baseUrl, p.apiKey, p.model, msg, new AiTester.Callback() {
-                                @Override public void onSuccess(String message) {
-                                    requireActivity().runOnUiThread(() -> new MaterialAlertDialogBuilder(requireContext())
-                                            .setTitle("模型回复")
-                                            .setMessage(message)
-                                            .setPositiveButton("好的", null)
-                                            .show());
-                                }
-                                @Override public void onFailed(String error) {
-                                    requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), "测试失败：" + error, Toast.LENGTH_SHORT).show());
-                                }
-                            });
-                        } catch (Throwable t) {
-                            requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), "测试失败：" + t.getMessage(), Toast.LENGTH_SHORT).show());
-                        }
-                    });
-                })
-                .setNegativeButton("取消", null)
-                .show();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        refreshAll();
-    }
-
-    private void pickTheme() {
-        final String[] items = new String[]{"深色（默认）", "浅色", "跟随系统", "动态取色（Android 12+）"};
-        final int[] modes = new int[]{ThemePrefs.MODE_DARK, ThemePrefs.MODE_LIGHT, ThemePrefs.MODE_SYSTEM, ThemePrefs.MODE_DYNAMIC};
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("选择主题")
-                .setItems(items, (d, which) -> {
-                    ThemePrefs.setMode(modes[which]);
-                    refreshAll();
-                    Toast.makeText(requireContext(), "主题已切换为：" + ThemePrefs.name(modes[which]), Toast.LENGTH_SHORT).show();
-                })
-                .show();
-    }
-
-    private void pickBackground() {
-        final String[] items = new String[]{"使用默认深色", "使用默认渐变", "清除自定义"};
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("背景")
-                .setItems(items, (d, which) -> {
-                    if (which == 0) ThemePrefs.setBackgroundUri("");
-                    else if (which == 1) ThemePrefs.setBackgroundUri("default_gradient");
-                    else ThemePrefs.setBackgroundUri("");
-                    refreshAll();
-                })
-                .show();
-    }
-
-    private void pickDownloadSource() {
-        final String[] items = new String[]{DownloadSource.name(DownloadSource.BMCLAPI), DownloadSource.name(DownloadSource.MOJANG)};
-        final int[] srcs = new int[]{DownloadSource.BMCLAPI, DownloadSource.MOJANG};
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("下载源")
-                .setItems(items, (d, which) -> {
-                    DownloadSource.setCurrent(srcs[which]);
-                    refreshAll();
-                })
-                .show();
-    }
-
-    private void pickGameDir() {
-        final EditText input = new EditText(requireContext());
-        input.setText(VersionManager.currentGameDir());
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("游戏目录")
-                .setView(input)
-                .setPositiveButton("保存", (d, w) -> {
-                    String s = input.getText().toString().trim();
-                    if (s.isEmpty()) s = VersionManager.gamesDir().getAbsolutePath();
-                    AppPrefs.setString(requireContext(), AppPrefs.KEY_GAME_DIR, s);
-                    refreshAll();
-                })
-                .setNegativeButton("取消", null)
-                .show();
-    }
-
-    private void pickLogin() {
-        final String[] items = new String[]{AuthManager.name(AuthManager.OFFLINE), AuthManager.name(AuthManager.MICROSOFT), AuthManager.name(AuthManager.THIRD_PARTY)};
-        final int[] modes = new int[]{AuthManager.OFFLINE, AuthManager.MICROSOFT, AuthManager.THIRD_PARTY};
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("登录方式")
-                .setItems(items, (d, which) -> {
-                    AuthManager.setMode(modes[which]);
-                    if (modes[which] == AuthManager.OFFLINE) {
-                        promptNickname();
-                    } else if (modes[which] == AuthManager.MICROSOFT) {
-                        try {
-                            Intent i = new Intent(requireContext(), MicrosoftLoginActivity.class);
-                            startActivity(i);
-                        } catch (Throwable t) {
-                            Toast.makeText(requireContext(), "无法启动微软登录：" + t.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    } else if (modes[which] == AuthManager.THIRD_PARTY) {
-                        promptThirdPartyServer();
-                    }
-                    refreshAll();
-                })
-                .show();
-    }
-
-    private void promptNickname() {
-        final EditText input = new EditText(requireContext());
-        input.setHint("玩家名");
-        input.setText(AuthManager.currentNickname());
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("离线玩家名")
-                .setView(input)
-                .setPositiveButton("保存", (d, w) -> AuthManager.setNickname(input.getText().toString().trim()))
-                .setNegativeButton("取消", null)
-                .show();
-    }
-
-    private void promptThirdPartyServer() {
-        LinearLayout wrap = new LinearLayout(requireContext());
-        wrap.setOrientation(LinearLayout.VERTICAL);
-        wrap.setPadding(48, 24, 48, 0);
-        final EditText api = new EditText(requireContext());
-        api.setHint("API 服务器地址，如 https://example.yggdrasil/");
-        api.setText(AuthManager.currentServer());
-        final EditText email = new EditText(requireContext());
-        email.setHint("邮箱（可选）");
-        final EditText pwd = new EditText(requireContext());
-        pwd.setHint("密码（可选）");
-        wrap.addView(api);
-        wrap.addView(email);
-        wrap.addView(pwd);
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("第三方服务器（authlib-injector）")
-                .setView(wrap)
-                .setPositiveButton("保存", (d, w) -> {
-                    AuthManager.setServer(api.getText().toString().trim());
-                    Toast.makeText(requireContext(), "已保存第三方服务器配置。启动游戏时将通过 authlib-injector 注入。", Toast.LENGTH_LONG).show();
-                })
-                .setNegativeButton("取消", null)
-                .show();
-    }
-
-    private void showAnnouncement() {
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("公告")
-                .setMessage(AnnouncementManager.current())
-                .setPositiveButton("知道了", null)
-                .show();
-    }
-
-    private void showUserAgreement() {
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("用户须知协议")
-                .setMessage("本启动器基于 HMCL-PE / PojavLauncher / Boat 等开源项目二次开发。\n\n" +
-                        "使用本启动器下载、安装和启动 Minecraft 时，请遵守 Mojang EULA 和您所在地区法律法规。\n\n" +
-                        "本启动器不收集您的个人信息；崩溃日志（仅在崩溃时）保存在本地，您可以在「下载与游戏」中查看。\n\n" +
-                        "启动器不保证所有版本都可在所有机型上正常运行。")
-                .setPositiveButton("同意", (d, w) -> AppPrefs.setBool(requireContext(), AppPrefs.KEY_USER_AGREED, true))
-                .setNegativeButton("取消", null)
-                .show();
-    }
-
-    private void showAiAgreement() {
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("AI 服务协议")
-                .setMessage("AI 功能由第三方 API（默认 api.hcnsec.cn）提供。\n\n" +
-                        "您发送的消息、日志内容、游戏版本信息会传递给 AI 服务端，用于生成回复。\n\n" +
-                        "请勿发送个人敏感信息。")
-                .setPositiveButton("同意", (d, w) -> AppPrefs.setBool(requireContext(), AppPrefs.KEY_AI_AGREED, true))
-                .setNegativeButton("取消", null)
-                .show();
-    }
-
-    private void pickLanguage() {
-        final String[] items = new String[]{"简体中文", "繁體中文", "English"};
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("语言")
-                .setItems(items, (d, which) -> {
-                    String code = which == 1 ? "zh-TW" : which == 2 ? "en-US" : "zh-CN";
-                    AppPrefs.setString(requireContext(), AppPrefs.KEY_LANGUAGE, code);
-                    Toast.makeText(requireContext(), "重启启动器后生效", Toast.LENGTH_SHORT).show();
-                })
-                .show();
-    }
-
-    private void checkUpdate() {
-        Toast.makeText(requireContext(), "正在检查更新…", Toast.LENGTH_SHORT).show();
-        io.execute(() -> {
-            final GitHubService.Release r = GitHubService.fetchLatest();
-            requireActivity().runOnUiThread(() -> {
-                if (r == null) {
-                    new MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("检查更新")
-                            .setMessage("无法连接 GitHub。\n\n请直接打开：\nhttps://github.com/" + GitHubService.REPO + "/releases")
-                            .setPositiveButton("打开网页", (d, w) -> {
-                                try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/" + GitHubService.REPO + "/releases"))); } catch (Throwable ignored) {}
-                            })
-                            .setNegativeButton("取消", null)
-                            .show();
-                    return;
-                }
-                String cur = "v" + BuildConfig.VERSION_NAME;
-                if (r.tagName != null && r.tagName.equals(cur)) {
-                    Toast.makeText(requireContext(), "已是最新版本 " + cur, Toast.LENGTH_SHORT).show();
-                } else {
-                    final String apk = r.apkUrl;
-                    final String tag = r.tagName;
-                    new MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("发现新版本 " + tag)
-                            .setMessage((r.body == null ? "" : r.body) + "\n\n下载链接：" + (apk == null ? "未发布 APK" : apk))
-                            .setPositiveButton("一键下载 APK", (d, w) -> downloadApkDirectly(apk, tag))
-                            .setNeutralButton("打开网页", (d, w) -> {
-                                try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/" + GitHubService.REPO + "/releases/tag/" + tag))); } catch (Throwable ignored) {}
-                            })
-                            .setNegativeButton("取消", null)
-                            .show();
-                }
-            });
-        });
-    }
-
-    private void downloadApkDirectly(String url, String tag) {
-        if (url == null || url.isEmpty()) {
-            Toast.makeText(requireContext(), "APK 未发布", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "prefs failed", t);
             return;
         }
         try {
-            File root = com.tungsten.hmclpe.launcher.setting.VersionManager.root();
-            if (!root.exists()) root.mkdirs();
-            File target = new File(root, "StarDockLauncher-" + tag + ".apk");
-            com.tungsten.hmclpe.launcher.download.DownloadService.Task t = new com.tungsten.hmclpe.launcher.download.DownloadService.Task();
-            t.id = "apk-" + tag;
-            t.name = "StarDockLauncher-" + tag + ".apk";
-            t.url = url;
-            t.destination = target;
-            t.targetVersion = "update";
-            com.tungsten.hmclpe.launcher.download.DownloadService.enqueue(t);
-            Toast.makeText(requireContext(), "已开始下载新版本 APK，保存到：" + target.getAbsolutePath(), Toast.LENGTH_LONG).show();
-        } catch (Throwable ex) {
-            try {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-            } catch (Throwable t) {
-                Toast.makeText(requireContext(), "下载失败：" + ex.getMessage(), Toast.LENGTH_SHORT).show();
+            SwitchMaterial swDark = view.findViewById(R.id.setting_switch_dark);
+            if (swDark != null) {
+                swDark.setChecked(prefs.getBool(KEY_DARK, false));
+                swDark.setOnCheckedChangeListener((b, c) -> {
+                    prefs.putBool(KEY_DARK, c);
+                    toast(c ? "已启用深色主题（重启后生效）" : "已切换浅色主题（重启后生效）");
+                });
             }
-        }
-    }
-
-    private void openHistory() {
-        Toast.makeText(requireContext(), "正在拉取历史版本…", Toast.LENGTH_SHORT).show();
-        io.execute(() -> {
-            final List<GitHubService.Release> list = GitHubService.fetchAllReleases();
-            requireActivity().runOnUiThread(() -> {
-                if (list == null || list.isEmpty()) {
-                    new MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("历史版本")
-                            .setMessage("无法连接 GitHub。\n\n请直接打开：\nhttps://github.com/" + GitHubService.REPO + "/releases")
-                            .setPositiveButton("打开网页", (d, w) -> {
-                                try {
-                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/" + GitHubService.REPO + "/releases")));
-                                } catch (Throwable ignored) {}
-                            })
-                            .setNegativeButton("关闭", null)
-                            .show();
-                    return;
-                }
-                String[] names = new String[list.size()];
-                for (int i = 0; i < list.size(); i++) names[i] = list.get(i).tagName + " · " + (list.get(i).publishedAt == null ? "" : list.get(i).publishedAt.substring(0, Math.min(10, list.get(i).publishedAt.length())));
-                new MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("历史版本（点击打开）")
-                        .setItems(names, (d, which) -> {
-                            try {
-                                String url = list.get(which).apkUrl != null ? list.get(which).apkUrl : ("https://github.com/" + GitHubService.REPO + "/releases/tag/" + list.get(which).tagName);
-                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-                            } catch (Throwable ignored) {}
-                        })
-                        .show();
-            });
-        });
-    }
-
-    private void openRepo() {
-        try {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/" + GitHubService.REPO)));
         } catch (Throwable t) {
-            Toast.makeText(requireContext(), "无法打开链接", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "dark switch failed", t);
+        }
+        try {
+            SwitchMaterial swAuto = view.findViewById(R.id.setting_switch_auto_update);
+            if (swAuto != null) {
+                swAuto.setChecked(prefs.getBool(KEY_AUTO_UPDATE, true));
+                swAuto.setOnCheckedChangeListener((b, c) -> prefs.putBool(KEY_AUTO_UPDATE, c));
+            }
+        } catch (Throwable t) {
+            Log.e(TAG, "auto switch failed", t);
+        }
+        try {
+            MaterialButton btnRuntime = view.findViewById(R.id.setting_btn_runtime);
+            if (btnRuntime != null) {
+                btnRuntime.setOnClickListener(v -> toast("运行时：" + (prefs.getString(KEY_RUNTIME, "Boat"))));
+            }
+        } catch (Throwable t) {
+            Log.e(TAG, "runtime btn failed", t);
+        }
+        try {
+            MaterialButton btnAi = view.findViewById(R.id.setting_btn_ai);
+            if (btnAi != null) {
+                btnAi.setOnClickListener(v -> openActivity(AiChatActivity.class));
+            }
+        } catch (Throwable t) {
+            Log.e(TAG, "ai btn failed", t);
+        }
+        try {
+            MaterialButton btnUpdate = view.findViewById(R.id.setting_btn_update);
+            if (btnUpdate != null) {
+                btnUpdate.setOnClickListener(v -> openActivity(UpdateDownloadActivity.class));
+            }
+        } catch (Throwable t) {
+            Log.e(TAG, "update btn failed", t);
+        }
+        try {
+            MaterialButton btnCrash = view.findViewById(R.id.setting_btn_crash);
+            if (btnCrash != null) {
+                btnCrash.setOnClickListener(v -> openActivity(CrashLogViewerActivity.class));
+            }
+        } catch (Throwable t) {
+            Log.e(TAG, "crash btn failed", t);
+        }
+        try {
+            MaterialButton btnAbout = view.findViewById(R.id.setting_btn_about);
+            if (btnAbout != null) {
+                btnAbout.setOnClickListener(v -> openActivity(AboutActivity.class));
+            }
+        } catch (Throwable t) {
+            Log.e(TAG, "about btn failed", t);
         }
     }
 
-    private void pickRuntime() {
-        final String[] opts = com.tungsten.hmclpe.launcher.setting.LauncherPrefs.RUNTIMES;
-        String cur = com.tungsten.hmclpe.launcher.setting.LauncherPrefs.currentRuntime();
-        int idx = 0;
-        for (int i = 0; i < opts.length; i++) if (opts[i].equals(cur)) { idx = i; break; }
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Java 运行时（启动框架）")
-                .setSingleChoiceItems(opts, idx, (d, w) -> {
-                    com.tungsten.hmclpe.launcher.setting.LauncherPrefs.setRuntime(opts[w]);
-                    if (runtimeSubtitle != null) runtimeSubtitle.setText(opts[w]);
-                    Toast.makeText(requireContext(), "已选择：" + opts[w] + "（下次启动游戏时生效）", Toast.LENGTH_SHORT).show();
-                    d.dismiss();
-                })
-                .setNegativeButton("取消", null)
-                .show();
+    private void openActivity(Class<?> cls) {
+        try {
+            startActivity(new Intent(requireContext(), cls));
+        } catch (Throwable t) {
+            Log.e(TAG, "open " + cls.getSimpleName() + " failed", t);
+            toast("打开失败：" + cls.getSimpleName());
+        }
     }
 
-    private void pickRenderer() {
-        final String[] opts = com.tungsten.hmclpe.launcher.setting.LauncherPrefs.RENDERERS;
-        String cur = com.tungsten.hmclpe.launcher.setting.LauncherPrefs.currentRenderer();
-        int idx = 0;
-        for (int i = 0; i < opts.length; i++) if (opts[i].equals(cur)) { idx = i; break; }
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("渲染器（启动框架）")
-                .setSingleChoiceItems(opts, idx, (d, w) -> {
-                    com.tungsten.hmclpe.launcher.setting.LauncherPrefs.setRenderer(opts[w]);
-                    if (rendererSubtitle != null) rendererSubtitle.setText(opts[w]);
-                    Toast.makeText(requireContext(), "已选择：" + opts[w] + "（下次启动游戏时生效）", Toast.LENGTH_SHORT).show();
-                    d.dismiss();
-                })
-                .setNegativeButton("取消", null)
-                .show();
-    }
-
-    private void pickDriver() {
-        final String[] opts = com.tungsten.hmclpe.launcher.setting.LauncherPrefs.DRIVERS;
-        String cur = com.tungsten.hmclpe.launcher.setting.LauncherPrefs.currentDriver();
-        int idx = 0;
-        for (int i = 0; i < opts.length; i++) if (opts[i].equals(cur)) { idx = i; break; }
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("图形驱动（启动框架）")
-                .setSingleChoiceItems(opts, idx, (d, w) -> {
-                    com.tungsten.hmclpe.launcher.setting.LauncherPrefs.setDriver(opts[w]);
-                    if (driverSubtitle != null) driverSubtitle.setText(opts[w]);
-                    Toast.makeText(requireContext(), "已选择：" + opts[w] + "（下次启动游戏时生效）", Toast.LENGTH_SHORT).show();
-                    d.dismiss();
-                })
-                .setNegativeButton("取消", null)
-                .show();
+    private void toast(String s) {
+        try {
+            Toast.makeText(requireContext(), s, Toast.LENGTH_SHORT).show();
+        } catch (Throwable ignored) {
+        }
     }
 }

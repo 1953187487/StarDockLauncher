@@ -3,104 +3,86 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/sd_surface_dim"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/ai_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/sd_surface"
-        app:titleTextColor="@color/sd_on_surface"
-        app:navigationIcon="@android:drawable/ic_menu_revert"
-        app:title="AI 搜索框" />
+        app:title="@string/ai_title"
+        app:titleCentered="true" />
 
-    <com.google.android.material.textfield.TextInputLayout
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/ai_provider_toggle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
-        android:hint="输入模组名 / 链接 / 关键词"
-        app:boxBackgroundMode="filled"
-        app:boxBackgroundColor="@color/sd_surface_bright"
-        app:boxStrokeColor="@color/sd_primary"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+        android:padding="12dp"
+        app:singleSelection="true">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/ai_search_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:imeOptions="actionSearch"
-            android:singleLine="true"
-            android:textColor="@color/sd_on_surface" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/ai_chips"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="6dp"
-        app:singleSelection="true"
-        app:selectionRequired="true">
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/ai_chip_mod"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/ai_btn_provider_deepseek"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checkable="true"
-            android:checked="true"
-            android:text="模组" />
-        <com.google.android.material.chip.Chip
-            android:id="@+id/ai_chip_shader"
+            android:text="DeepSeek" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/ai_btn_provider_openai"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checkable="true"
-            android:text="光影" />
-        <com.google.android.material.chip.Chip
-            android:id="@+id/ai_chip_resourcepack"
+            android:text="OpenAI" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/ai_btn_provider_mock"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checkable="true"
-            android:text="资源包" />
-        <com.google.android.material.chip.Chip
-            android:id="@+id/ai_chip_modpack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checkable="true"
-            android:text="整合包" />
-    </com.google.android.material.chip.ChipGroup>
+            android:text="离线演示" />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/ai_btn_search"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="6dp"
-        android:text="搜索"
-        app:cornerRadius="24dp" />
-
-    <com.google.android.material.divider.MaterialDivider
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_marginTop="12dp"
-        app:dividerColor="@color/sd_outline_variant" />
-
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/ai_progress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:visibility="gone" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/ai_results"
+    <ScrollView
+        android:id="@+id/ai_scroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="8dp"
-        android:clipToPadding="false" />
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/ai_log"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp" />
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <EditText
+            android:id="@+id/ai_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/ai_input_hint"
+            android:inputType="text"
+            android:maxLines="4" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/ai_btn_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/ai_send" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/ai_btn_clear"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/ai_clear" />
+    </LinearLayout>
 </LinearLayout>

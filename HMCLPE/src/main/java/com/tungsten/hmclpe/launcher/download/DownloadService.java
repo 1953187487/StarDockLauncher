@@ -1,158 +1,92 @@
 package com.tungsten.hmclpe.launcher.download;
 
-import android.os.Handler;
-import android.os.Looper;
+import android.content.Context;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class DownloadService {
 
-    private static final OkHttpClient http = new OkHttpClient.Builder().build();
-    private static final List<Task> tasks = new ArrayList<>();
-    private static final List<Listener> listeners = new ArrayList<>();
-    private static final Handler main = new Handler(Looper.getMainLooper());
+    private static final String TAG = "DownloadService";
 
-    public static class Task {
-        public String id;
-        public String name;
-        public String url;
-        public String targetVersion;
-        public long totalBytes;
-        public long downloadedBytes;
-        public int progress;
-        public State state = State.QUEUED;
-        public File destination;
-        public String category;
-        public boolean autoTranslate = false;
+    private static volatile DownloadService instance;
+    private final OkHttpClient client = new OkHttpClient.Builder().build();
+    private final ExecutorService exec = Executors.newFixedThreadPool(2);
 
-        public enum State { QUEUED, RUNNING, PAUSED, COMPLETED, FAILED, CANCELED }
-    }
-
-    public interface Listener {
-        void onUpdate(List<Task> snapshot);
-        void onCompleted(Task task);
-        void onFailed(Task task, String error);
-    }
-
-    public synchronized static void addListener(Listener l) {
-        if (!listeners.contains(l)) listeners.add(l);
-    }
-
-    public synchronized static void removeListener(Listener l) {
-        listeners.remove(l);
-    }
-
-    public static List<Task> snapshot() {
-        synchronized (tasks) {
-            return new ArrayList<>(tasks);
+    public static DownloadService get() {
+        if (instance == null) {
+            instance = new DownloadService();
         }
+        return instance;
     }
 
-    public static void enqueue(Task t) {
-        synchronized (tasks) {
-            tasks.add(t);
-        }
-        notifyUpdate();
-        new Thread(() -> runTask(t)).start();
+    public interface Callback {
+        void onProgress(long downloaded, long total);
+
+        void onDone(File file);
+
+        void onError(Throwable t);
     }
 
-    public static void cancel(Task t) {
-        t.state = Task.State.CANCELED;
-        notifyUpdate();
+    public void download(Context ctx, DownloadTask task, Callback cb) {
+        exec.submit(() -> doDownload(task, cb));
     }
 
-    private static void runTask(Task t) {
+    private void doDownload(DownloadTask task, Callback cb) {
         try {
-            t.state = Task.State.RUNNING;
-            notifyUpdate();
-            HttpURLConnection conn = (HttpURLConnection) new URL(t.url).openConnection();
-            conn.setConnectTimeout(15000);
-            conn.setReadTimeout(60000);
-            conn.setRequestProperty("User-Agent", "StarDockLauncher/1.0.6");
-            conn.connect();
-            int code = conn.getResponseCode();
-            if (code / 100 != 2) {
-                fail(t, "HTTP " + code);
-                return;
+            File out = new File(task.target);
+            File parent = out.getParentFile();
+            if (parent != null && !parent.exists()) {
+                parent.mkdirs();
             }
-            t.totalBytes = conn.getContentLengthLong();
-            if (t.destination.getParentFile() != null) t.destination.getParentFile().mkdirs();
-            try (InputStream in = conn.getInputStream(); FileOutputStream out = new FileOutputStream(t.destination)) {
-                byte[] buf = new byte[8192];
-                int n;
-                long lastUpdate = 0;
-                while ((n = in.read(buf)) != -1) {
-                    if (t.state == Task.State.CANCELED || t.state == Task.State.PAUSED) {
-                        try { out.close(); } catch (Throwable ignored) {}
-                        if (t.destination.exists()) t.destination.delete();
-                        return;
+            Request req = new Request.Builder().url(task.url).build();
+            try (Response resp = client.newCall(req).execute()) {
+                if (!resp.isSuccessful()) {
+                    task.state = DownloadTask.STATE_FAILED;
+                    if (cb != null) {
+                        cb.onError(new IOException("HTTP " + resp.code()));
                     }
-                    out.write(buf, 0, n);
-                    t.downloadedBytes += n;
-                    if (t.totalBytes > 0) t.progress = (int) (t.downloadedBytes * 100 / t.totalBytes);
-                    long now = System.currentTimeMillis();
-                    if (now - lastUpdate > 200) {
-                        lastUpdate = now;
-                        notifyUpdate();
+                    return;
+                }
+                long total = resp.body().contentLength();
+                task.size = total;
+                task.state = DownloadTask.STATE_RUNNING;
+                try (InputStream in = resp.body().byteStream();
+                     FileOutputStream fos = new FileOutputStream(out)) {
+                    byte[] buf = new byte[8192];
+                    long read = 0;
+                    int n;
+                    while ((n = in.read(buf)) != -1) {
+                        fos.write(buf, 0, n);
+                        read += n;
+                        task.downloaded = read;
+                        if (cb != null) {
+                            cb.onProgress(read, total);
+                        }
                     }
+                    fos.flush();
                 }
             }
-            t.state = Task.State.COMPLETED;
-            t.progress = 100;
-            notifyUpdate();
-            for (Listener l : listeners) {
-                try { l.onCompleted(t); } catch (Throwable ignored) {}
+            task.state = DownloadTask.STATE_DONE;
+            if (cb != null) {
+                cb.onDone(out);
             }
-            if (t.autoTranslate && "mod".equals(t.category) && t.destination != null && t.destination.exists()) {
-                com.tungsten.hmclpe.ai.AiTranslate.translateModName(stripExt(t.name), new com.tungsten.hmclpe.ai.AiTranslate.Callback() {
-                    @Override public void onSuccess(String translated) {
-                        File note = new File(t.destination.getParentFile(), stripExt(t.name) + ".zh.txt");
-                        try (FileOutputStream fos = new FileOutputStream(note)) {
-                            String content = "原名：" + t.name + "\n中文：" + translated + "\n下载时间：" + System.currentTimeMillis() + "\n";
-                            fos.write(content.getBytes("UTF-8"));
-                        } catch (Throwable ignored) {}
-                    }
-                    @Override public void onFailed(String err) {}
-                });
-            }
-        } catch (IOException e) {
-            fail(t, e.getMessage() == null ? "IO 错误" : e.getMessage());
-        } catch (Throwable t2) {
-            fail(t, t2.getMessage() == null ? "未知错误" : t2.getMessage());
-        }
-    }
-
-    private static void fail(Task t, String error) {
-        t.state = Task.State.FAILED;
-        synchronized (tasks) {
-            for (Listener l : listeners) {
-                try { l.onFailed(t, error); } catch (Throwable ignored) {}
+        } catch (Throwable t) {
+            Log.e(TAG, "download failed: " + task.url, t);
+            task.state = DownloadTask.STATE_FAILED;
+            task.error = t;
+            if (cb != null) {
+                cb.onError(t);
             }
         }
-        notifyUpdate();
-    }
-
-    private static void notifyUpdate() {
-        final List<Task> snap = snapshot();
-        main.post(() -> {
-            for (Listener l : listeners) {
-                try { l.onUpdate(snap); } catch (Throwable ignored) {}
-            }
-        });
-    }
-
-    private static String stripExt(String name) {
-        if (name == null) return "";
-        int i = name.lastIndexOf('.');
-        return i < 0 ? name : name.substring(0, i);
     }
 }

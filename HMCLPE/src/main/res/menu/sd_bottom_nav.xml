@@ -2,18 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_home"
-        android:icon="@drawable/ic_baseline_home_white"
-        android:title="主页" />
+        android:icon="@drawable/ic_nav_home"
+        android:title="@string/nav_home" />
     <item
         android:id="@+id/nav_download"
-        android:icon="@drawable/ic_chest"
-        android:title="下载" />
+        android:icon="@drawable/ic_nav_download"
+        android:title="@string/nav_download" />
     <item
         android:id="@+id/nav_tools"
-        android:icon="@drawable/ic_command"
-        android:title="工具" />
+        android:icon="@drawable/ic_nav_tools"
+        android:title="@string/nav_tools" />
     <item
         android:id="@+id/nav_setting"
-        android:icon="@drawable/ic_outline_settings_black_24"
-        android:title="设置" />
+        android:icon="@drawable/ic_nav_setting"
+        android:title="@string/nav_setting" />
 </menu>

@@ -1,79 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/home_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/sd_liquid_bg"
-    android:fitsSystemWindows="true">
+    android:orientation="vertical">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/home_appbar"
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/home_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
-        android:background="#00000000"
-        android:elevation="0dp"
-        app:liftOnScroll="false">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/home_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="#00000000"
-            app:titleTextColor="@color/sd_on_surface">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="StarDockLauncher"
-                        android:textColor="@color/sd_on_surface"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/home_toolbar_subtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="主页"
-                        android:textColor="@color/sd_on_surface_variant"
-                        android:textSize="11sp" />
-                </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.appbar.MaterialToolbar>
-    </com.google.android.material.appbar.AppBarLayout>
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/transparent"
+        app:title="@string/app_name"
+        app:subtitle="v1.1.0"
+        app:subtitleTextColor="@color/sd_on_surface_variant"
+        app:titleCentered="true" />
 
     <FrameLayout
         android:id="@+id/home_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="96dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
-    <com.google.android.material.navigationrail.NavigationRailView
-        android:id="@+id/home_nav_rail"
-        android:layout_width="96dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="#660B1020"
-        app:itemIconTint="@color/sd_nav_item_color"
-        app:itemTextColor="@color/sd_nav_item_color"
-        app:itemRippleColor="@color/sd_secondary_container"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/home_bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/sd_bottom_nav" />
 
@@ -81,12 +34,10 @@
         android:id="@+id/home_fab_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="22dp"
-        android:layout_marginBottom="24dp"
-        android:contentDescription="开始游戏"
+        android:layout_gravity="end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="-32dp"
+        android:contentDescription="@string/home_fab_start"
         android:src="@drawable/ic_baseline_arrow_forward_white"
-        app:backgroundTint="@color/sd_primary"
-        app:tint="@color/sd_on_primary" />
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        app:backgroundTint="@color/sd_primary" />
+</LinearLayout>

@@ -1,258 +1,196 @@
 package com.tungsten.hmclpe.launcher.uis.update;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
+import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.google.android.material.textview.MaterialTextView;
-import com.tungsten.hmclpe.BuildConfig;
-import com.tungsten.hmclpe.R;
-import com.tungsten.hmclpe.launcher.setting.VersionManager;
+import com.stardock.launcher.BuildConfig;
+import com.stardock.launcher.R;
+import com.tungsten.hmclpe.launcher.download.DownloadService;
+import com.tungsten.hmclpe.launcher.download.DownloadSource;
+import com.tungsten.hmclpe.launcher.download.DownloadTask;
+import com.tungsten.hmclpe.launcher.update.LauncherUpdate;
+import com.tungsten.hmclpe.launcher.update.UpdateService;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 public class UpdateDownloadActivity extends AppCompatActivity {
 
-    private String tag;
-    private String apkUrl;
-    private String changelog;
-    private File target;
+    private static final String TAG = "UpdateDownloadActivity";
 
-    private MaterialTextView versionView;
-    private MaterialTextView percentView;
-    private MaterialTextView speedView;
-    private MaterialTextView sizeView;
-    private MaterialTextView changelogView;
-    private LinearProgressIndicator progress;
-    private MaterialButton btnCancel;
-    private MaterialButton btnInstall;
-
-    private volatile boolean cancelled = false;
-    private volatile boolean finished = false;
-    private long downloaded = 0;
-    private long total = 0;
-    private long lastTick = 0;
-    private long lastBytes = 0;
-
-    private Thread workThread;
-    private final Handler ui = new Handler(Looper.getMainLooper());
+    private TextView info;
+    private LinearProgressIndicator bar;
+    private MaterialButton btn;
+    private LauncherUpdate update;
+    private File targetApk;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
             setContentView(R.layout.activity_update_download);
         } catch (Throwable t) {
-            Toast.makeText(this, "加载失败：" + t.getMessage(), Toast.LENGTH_LONG).show();
-            finish();
+            Log.e(TAG, "setContentView failed", t);
             return;
         }
-        MaterialToolbar toolbar = findViewById(R.id.update_toolbar);
-        if (toolbar != null) toolbar.setNavigationOnClickListener(v -> finish());
+        try {
+            MaterialToolbar tb = findViewById(R.id.update_toolbar);
+            if (tb != null) {
+                setSupportActionBar(tb);
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                }
+                tb.setNavigationOnClickListener(v -> finish());
+            }
+        } catch (Throwable t) {
+            Log.e(TAG, "toolbar failed", t);
+        }
+        try {
+            info = findViewById(R.id.update_info);
+            bar = findViewById(R.id.update_progress);
+            btn = findViewById(R.id.update_btn_action);
+        } catch (Throwable t) {
+            Log.e(TAG, "bind failed", t);
+        }
+        try {
+            if (info != null) {
+                info.setText("当前版本：v" + BuildConfig.VERSION_NAME + "（versionCode=" + BuildConfig.VERSION_CODE + "）\n点击下方按钮检查最新版本");
+            }
+            if (bar != null) {
+                bar.setMax(100);
+            }
+            if (btn != null) {
+                btn.setOnClickListener(v -> {
+                    if (update == null || update.downloadUrl == null) {
+                        checkUpdate();
+                    } else {
+                        startDownload();
+                    }
+                });
+            }
+        } catch (Throwable t) {
+            Log.e(TAG, "init failed", t);
+        }
+    }
 
-        tag = getIntent() == null ? "v" + BuildConfig.VERSION_NAME : getIntent().getStringExtra("tag");
-        apkUrl = getIntent() == null ? null : getIntent().getStringExtra("apkUrl");
-        changelog = getIntent() == null ? "" : getIntent().getStringExtra("changelog");
-        if (tag == null) tag = "latest";
-        if (changelog == null) changelog = "";
+    private void checkUpdate() {
+        try {
+            new UpdateService().fetchLatest(new UpdateService.Callback() {
+                @Override
+                public void onResult(LauncherUpdate u) {
+                    runOnUiThread(() -> renderUpdate(u));
+                }
 
-        versionView = findViewById(R.id.update_version);
-        percentView = findViewById(R.id.update_percent);
-        speedView = findViewById(R.id.update_speed);
-        sizeView = findViewById(R.id.update_size);
-        changelogView = findViewById(R.id.update_changelog);
-        progress = findViewById(R.id.update_progress);
-        btnCancel = findViewById(R.id.update_btn_cancel);
-        btnInstall = findViewById(R.id.update_btn_install);
+                @Override
+                public void onError(Throwable t) {
+                    runOnUiThread(() -> {
+                        if (info != null) {
+                            info.setText("检查更新失败：" + t.getMessage());
+                        }
+                    });
+                }
+            });
+        } catch (Throwable t) {
+            Log.e(TAG, "checkUpdate failed", t);
+        }
+    }
 
-        versionView.setText("当前 v" + BuildConfig.VERSION_NAME + "  →  " + tag);
-        changelogView.setText(changelog);
-        progress.setProgress(0, true);
-
-        File root = VersionManager.root();
-        if (!root.exists()) root.mkdirs();
-        target = new File(root, "StarDockLauncher-" + tag + ".apk");
-
-        btnCancel.setOnClickListener(v -> {
-            if (finished) {
-                finish();
+    private void renderUpdate(LauncherUpdate u) {
+        try {
+            this.update = u;
+            if (u == null || u.tagName == null) {
+                if (info != null) {
+                    info.setText("未获取到更新信息");
+                }
+                if (btn != null) {
+                    btn.setEnabled(false);
+                }
                 return;
             }
-            cancelled = true;
-            new MaterialAlertDialogBuilder(this)
-                    .setTitle("取消下载？")
-                    .setMessage("下载进度将丢失。")
-                    .setPositiveButton("确定", (d, w) -> {
-                        cancelWork();
-                        finish();
-                    })
-                    .setNegativeButton("继续下载", null)
-                    .show();
-        });
-
-        btnInstall.setOnClickListener(v -> installApk());
-
-        if (apkUrl == null || apkUrl.isEmpty()) {
-            Toast.makeText(this, "下载链接为空", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
+            boolean newer = u.isNewer(BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME);
+            if (info != null) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("最新版本：").append(u.tagName).append("\n");
+                sb.append("本地版本：v").append(BuildConfig.VERSION_NAME).append("\n");
+                sb.append("状态：").append(newer ? "有新版本" : "已是最新").append("\n");
+                if (u.changelog != null && !u.changelog.isEmpty()) {
+                    sb.append("\n").append(u.changelog);
+                }
+                info.setText(sb.toString());
+            }
+            if (btn != null) {
+                btn.setEnabled(newer);
+                btn.setText(newer ? "下载并安装" : "已是最新");
+            }
+        } catch (Throwable t) {
+            Log.e(TAG, "renderUpdate failed", t);
         }
-
-        startDownload();
     }
 
     private void startDownload() {
-        btnInstall.setEnabled(false);
-        progress.setIndeterminate(false);
-        progress.setProgress(0, true);
-        downloaded = 0;
-        total = 0;
-        lastTick = System.currentTimeMillis();
-        lastBytes = 0;
-        cancelled = false;
-        finished = false;
-
-        workThread = new Thread(() -> {
-            HttpURLConnection con = null;
-            InputStream in = null;
-            FileOutputStream out = null;
-            try {
-                URL u = new URL(apkUrl);
-                con = (HttpURLConnection) u.openConnection();
-                con.setConnectTimeout(15000);
-                con.setReadTimeout(30000);
-                con.setRequestProperty("User-Agent", "StarDockLauncher");
-                con.connect();
-                int code = con.getResponseCode();
-                if (code >= 300 && code < 400) {
-                    String loc = con.getHeaderField("Location");
-                    if (loc != null) {
-                        con = (HttpURLConnection) new URL(loc).openConnection();
-                        con.setConnectTimeout(15000);
-                        con.setReadTimeout(30000);
-                        con.connect();
-                        code = con.getResponseCode();
-                    }
-                }
-                if (code != 200) {
-                    final int statusCode = code;
-                ui.post(() -> Toast.makeText(this, "下载失败 HTTP " + statusCode, Toast.LENGTH_LONG).show());
-                    return;
-                }
-                int len = con.getContentLength();
-                if (len > 0) total = len;
-                in = con.getInputStream();
-                out = new FileOutputStream(target);
-                byte[] buf = new byte[16 * 1024];
-                int n;
-                while ((n = in.read(buf)) > 0) {
-                    if (cancelled) {
-                        try { target.delete(); } catch (Throwable ignored) {}
-                        return;
-                    }
-                    out.write(buf, 0, n);
-                    downloaded += n;
-                    tick();
-                }
-                out.flush();
-                finished = true;
-                ui.post(this::onDone);
-            } catch (Throwable t) {
-                try { if (target != null) target.delete(); } catch (Throwable ignored) {}
-                ui.post(() -> Toast.makeText(this, "下载异常：" + t.getMessage(), Toast.LENGTH_LONG).show());
-            } finally {
-                try { if (in != null) in.close(); } catch (Throwable ignored) {}
-                try { if (out != null) out.close(); } catch (Throwable ignored) {}
-                try { if (con != null) con.disconnect(); } catch (Throwable ignored) {}
+        try {
+            targetApk = new File(getExternalCacheDir("update"), (update.assetName == null ? "update.apk" : update.assetName));
+            DownloadTask task = new DownloadTask(update.downloadUrl, targetApk.getAbsolutePath(), update.assetName);
+            task.source = DownloadSource.SOURCE_BMCLAPI;
+            if (bar != null) {
+                bar.setProgressCompat(0, false);
             }
-        }, "UpdateDownloader");
-        workThread.start();
-    }
+            if (btn != null) {
+                btn.setEnabled(false);
+            }
+            DownloadService.get().download(this, task, new DownloadService.Callback() {
+                @Override
+                public void onProgress(long downloaded, long total) {
+                    runOnUiThread(() -> {
+                        if (bar != null && total > 0) {
+                            bar.setProgressCompat((int) Math.min(100, downloaded * 100 / total), true);
+                        }
+                    });
+                }
 
-    private void tick() {
-        long now = System.currentTimeMillis();
-        long dt = now - lastTick;
-        if (dt < 250) return;
-        long dbytes = downloaded - lastBytes;
-        long speedBps = (dbytes * 1000) / Math.max(dt, 1);
-        lastTick = now;
-        lastBytes = downloaded;
+                @Override
+                public void onDone(File file) {
+                    runOnUiThread(() -> {
+                        if (info != null) {
+                            info.setText("下载完成：" + file.getAbsolutePath() + "\n请用系统安装器打开安装");
+                        }
+                        if (btn != null) {
+                            btn.setEnabled(true);
+                            btn.setText("完成");
+                        }
+                    });
+                }
 
-        final int percent = (total > 0) ? (int) (downloaded * 100 / total) : 0;
-        final String speed = formatSize(speedBps) + "/s";
-        final String size = formatSize(downloaded) + " / " + (total > 0 ? formatSize(total) : "未知");
-
-        ui.post(() -> {
-            try {
-                progress.setProgressCompat(percent, true);
-                percentView.setText(percent + "%");
-                speedView.setText(speed);
-                sizeView.setText(size);
-            } catch (Throwable ignored) {}
-        });
-    }
-
-    private void onDone() {
-        progress.setProgressCompat(100, true);
-        percentView.setText("100%");
-        speedView.setText("已完成");
-        sizeView.setText(formatSize(downloaded) + " / " + formatSize(downloaded));
-        btnInstall.setEnabled(true);
-        btnCancel.setText("关闭");
-        Toast.makeText(this, "下载完成：" + target.getAbsolutePath(), Toast.LENGTH_LONG).show();
-    }
-
-    private void cancelWork() {
-        cancelled = true;
-        try {
-            if (workThread != null) workThread.interrupt();
-        } catch (Throwable ignored) {}
-        try {
-            if (target != null && target.exists()) target.delete();
-        } catch (Throwable ignored) {}
-    }
-
-    private void installApk() {
-        try {
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setDataAndType(Uri.fromFile(target), "application/vnd.android.package-archive");
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            startActivity(i);
+                @Override
+                public void onError(Throwable t) {
+                    runOnUiThread(() -> {
+                        if (info != null) {
+                            info.setText("下载失败：" + t.getMessage());
+                        }
+                        if (btn != null) {
+                            btn.setEnabled(true);
+                            btn.setText("重试");
+                        }
+                    });
+                }
+            });
         } catch (Throwable t) {
-            Toast.makeText(this, "无法安装：" + t.getMessage() + "\n文件位置：" + target.getAbsolutePath(), Toast.LENGTH_LONG).show();
+            Log.e(TAG, "startDownload failed", t);
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        cancelWork();
-        super.onDestroy();
-    }
-
-    private static String formatSize(long bytes) {
-        if (bytes <= 0) return "0 B";
-        String[] units = {"B", "KB", "MB", "GB"};
-        double v = bytes;
-        int i = 0;
-        while (v >= 1024 && i < units.length - 1) {
-            v /= 1024;
-            i++;
+    private File getExternalCacheDir(String sub) {
+        File base = getExternalCacheDir();
+        File out = new File(base, sub);
+        if (!out.exists()) {
+            out.mkdirs();
         }
-        return String.format("%.1f %s", v, units[i]);
+        return out;
     }
 }

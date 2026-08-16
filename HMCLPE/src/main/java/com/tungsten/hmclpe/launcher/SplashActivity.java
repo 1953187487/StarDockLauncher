@@ -1,258 +1,110 @@
 package com.tungsten.hmclpe.launcher;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.Settings;
-import android.view.View;
-import android.view.WindowManager;
-import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.google.android.material.progressindicator.CircularProgressIndicator;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import com.tungsten.hmclpe.R;
-import com.tungsten.hmclpe.launcher.setting.InitializeSetting;
-import com.tungsten.hmclpe.launcher.setting.InstallLauncherFile;
-import com.tungsten.hmclpe.launcher.setting.launcher.LauncherSetting;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.stardock.launcher.R;
 import com.tungsten.hmclpe.manifest.AppManifest;
-import com.tungsten.hmclpe.utils.LocaleUtils;
-import com.tungsten.hmclpe.utils.io.FileUtils;
 
-import org.json.JSONObject;
-
-import java.io.File;
-
-@SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
 
-    public LinearProgressIndicator loadingProgress;
-    public TextView loadingText;
-    public TextView loadingProgressText;
-    public CircularProgressIndicator loadingSpinner;
+    private static final String TAG = "SplashActivity";
+    private static final String[] STAGES = new String[]{
+            "正在初始化运行时...",
+            "正在加载资源...",
+            "正在准备启动框架...",
+            "正在检查更新...",
+            "正在进入启动器..."
+    };
 
-    public TextView titleTextFirst;
-    public TextView titleTextSecond;
-    public TextView titleTextThird;
-    public ConstraintLayout background;
-
-    public LauncherSetting launcherSetting;
+    private LinearProgressIndicator progress;
+    private TextView loadingText;
+    private final Handler main = new Handler(Looper.getMainLooper());
+    private int stage = 0;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
-        loadingProgress = findViewById(R.id.loading_progress_bar);
-        loadingText = findViewById(R.id.loading_text);
-        loadingProgressText = findViewById(R.id.loading_progress_text);
-        loadingSpinner = findViewById(R.id.loading_spinner);
-
-        titleTextFirst = findViewById(R.id.title_text_first);
-        titleTextSecond = findViewById(R.id.title_text_second);
-        titleTextThird = findViewById(R.id.title_text_third);
-        background = findViewById(R.id.background);
-
-        initTheme();
-        requestPermission();
-    }
-
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(LocaleUtils.setLanguage(base));
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        LocaleUtils.setLanguage(this);
-    }
-
-    private void initTheme() {
-        File themePath = getExternalFilesDir("Theme");
-        if (!themePath.exists()) {
-            return;
+        try {
+            progress = findViewById(R.id.loading_progress_bar);
+            loadingText = findViewById(R.id.loading_text);
+            if (progress != null) {
+                progress.setMax(100);
+                progress.setProgressCompat(0, false);
+            }
+            if (loadingText != null && STAGES.length > 0) {
+                loadingText.setText(STAGES[0]);
+            }
+        } catch (Throwable t) {
+            Log.e(TAG, "view init failed", t);
         }
-        changeIcon(background, themePath, "splashBackground");
-        if (new File(themePath, "text.json").exists()) {
+        try {
+            new Thread(this::doInit, "sd-init").start();
+        } catch (Throwable t) {
+            Log.e(TAG, "init thread failed", t);
+            enterLauncher();
+        }
+    }
+
+    private void doInit() {
+        try {
+            advance("运行时目录：" + AppManifest.RUNTIME_DIR);
+            Thread.sleep(300);
+            advance("渲染器与控件目录已就绪");
+            Thread.sleep(300);
+            advance("启动框架：Boat + Pojav");
+            Thread.sleep(300);
+            advance("检查更新中...");
+            Thread.sleep(300);
+            advance("进入启动器...");
+            Thread.sleep(200);
+        } catch (Throwable t) {
+            Log.e(TAG, "init failed", t);
+        }
+        main.post(this::enterLauncher);
+    }
+
+    private void advance(String text) {
+        stage++;
+        int pct = Math.min(100, stage * 100 / STAGES.length);
+        main.post(() -> {
             try {
-                JSONObject jsonObject = new JSONObject(FileUtils.readText(new File(themePath, "text.json")));
-                String s1 = jsonObject.getString("titleTextFirst");
-                String s2 = jsonObject.getString("titleTextSecond");
-                String s3 = jsonObject.getString("titleTextThird");
-                String s5 = jsonObject.getString("textColor");
-                if (!s1.equals("")) {
-                    titleTextFirst.setText(s1);
+                if (progress != null) {
+                    progress.setProgressCompat(pct, true);
                 }
-                if (!s2.equals("")) {
-                    titleTextSecond.setText(s2);
+                if (loadingText != null && text != null) {
+                    loadingText.setText(text);
                 }
-                if (!s3.equals("")) {
-                    titleTextThird.setText(s3);
-                }
-                if (!s5.equals("")) {
-                    titleTextFirst.setTextColor(Color.parseColor(s5));
-                    titleTextSecond.setTextColor(Color.parseColor(s5));
-                    titleTextThird.setTextColor(Color.parseColor(s5));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private void changeIcon(View view, File themePath, String iconName) {
-        File path = new File(themePath, iconName + ".png");
-        if (path.exists()) {
-            Bitmap bitmap = BitmapFactory.decodeFile(path.getAbsolutePath());
-            view.setBackground(new BitmapDrawable(getResources(), bitmap));
-        }
-    }
-
-    private void requestPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // 先判断有没有权限
-            if (Environment.isExternalStorageManager()) {
-                init();
-            } else {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                intent.setData(Uri.parse("package:" + getPackageName()));
-                startActivityForResult(intent, 1000);
-            }
-        } else {
-            // 先判断有没有权限
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-                    ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                init();
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1000);
-            }
-        }
-    }
-
-    private void init() {
-        loadingProgress.setProgressCompat(0, true);
-        final int[] stages = {15, 35, 60, 85, 100};
-        final String[] labels = {"加载配置", "校验运行环境", "加载 Java 运行时", "加载版本列表", "就绪"};
-        new Thread(() -> {
-            try {
-                AppManifest.initializeManifest(SplashActivity.this);
-                runOnUiThread(() -> {
-                    loadingProgress.setProgressCompat(stages[0], true);
-                    if (loadingText != null) loadingText.setText(labels[0]);
-                });
-                launcherSetting = InitializeSetting.initializeLauncherSetting();
-                Thread.sleep(120);
-                runOnUiThread(() -> {
-                    loadingProgress.setProgressCompat(stages[1], true);
-                    if (loadingText != null) loadingText.setText(labels[1]);
-                });
-                Thread.sleep(120);
-                runOnUiThread(() -> {
-                    loadingProgress.setProgressCompat(stages[2], true);
-                    if (loadingText != null) loadingText.setText(labels[2]);
-                });
-                Thread.sleep(120);
-                InstallLauncherFile.checkLauncherFiles(SplashActivity.this);
-                runOnUiThread(() -> {
-                    loadingProgress.setProgressCompat(stages[3], true);
-                    if (loadingText != null) loadingText.setText(labels[3]);
-                });
-                Thread.sleep(150);
             } catch (Throwable t) {
-                android.util.Log.e("SplashActivity", "init failed", t);
+                Log.e(TAG, "advance ui failed", t);
             }
-            runOnUiThread(() -> {
-                loadingProgress.setProgressCompat(stages[4], true);
-                if (loadingText != null) loadingText.setText(labels[4]);
-                new android.os.Handler().postDelayed(() -> {
-                    Intent intent = new Intent(this, HomeActivity.class);
-                    startActivity(intent);
-                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                    finish();
-                }, 220);
-            });
-        }).start();
+        });
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        //通过requestCode来识别是否同一个请求
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1000) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //用户同意，执行操作
-                init();
-            } else {
-                //用户不同意，向用户展示该权限作用
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    new AlertDialog.Builder(this)
-                            .setMessage(R.string.storage_permissions_remind)
-                            .setPositiveButton("OK", (dialog1, which) ->
-                                    ActivityCompat.requestPermissions(this,
-                                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                            1000))
-                            .setNegativeButton("Cancel", null)
-                            .create()
-                            .show();
-                }
-            }
+    private void enterLauncher() {
+        try {
+            Intent i = new Intent(this, HomeActivity.class);
+            startActivity(i);
+        } catch (Throwable t) {
+            Log.e(TAG, "start HomeActivity failed", t);
         }
+        finish();
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1000 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (Environment.isExternalStorageManager()) {
-                init();
-            } else {
-                new AlertDialog.Builder(this)
-                        .setMessage(R.string.storage_permissions_remind)
-                        .setPositiveButton("OK", (dialog1, which) ->
-                                requestPermission())
-                        .setNegativeButton("Cancel", null)
-                        .create()
-                        .show();
-            }
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        //do nothing
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            main.removeCallbacksAndMessages(null);
+        } catch (Throwable ignored) {
         }
     }
 }
