@@ -26,6 +26,9 @@ public class AppPrefs {
     public static final String KEY_AI_API_KEY = "ai_api_key";
     public static final String KEY_AI_MODEL = "ai_model";
     public static final String KEY_AI_CHARACTER = "ai_character";
+    public static final String KEY_LAUNCH_RUNTIME = "launch_runtime";
+    public static final String KEY_LAUNCH_RENDERER = "launch_renderer";
+    public static final String KEY_LAUNCH_DRIVER = "launch_driver";
 
     private static SharedPreferences sp(Context c) {
         return c.getSharedPreferences(NAME, Context.MODE_PRIVATE);

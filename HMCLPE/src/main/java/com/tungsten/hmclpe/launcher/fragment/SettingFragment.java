@@ -11,6 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -45,6 +47,9 @@ public class SettingFragment extends Fragment {
     private TextView downloadSourceSubtitle;
     private TextView gameDirSubtitle;
     private TextView loginSubtitle;
+    private TextView runtimeSubtitle;
+    private TextView rendererSubtitle;
+    private TextView driverSubtitle;
     private TextView versionText;
     private TextView aiApiSubtitle;
 
@@ -65,6 +70,9 @@ public class SettingFragment extends Fragment {
             downloadSourceSubtitle = view.findViewById(R.id.setting_download_source_subtitle);
             gameDirSubtitle = view.findViewById(R.id.setting_game_dir_subtitle);
             loginSubtitle = view.findViewById(R.id.setting_login_subtitle);
+            runtimeSubtitle = view.findViewById(R.id.setting_runtime_subtitle);
+            rendererSubtitle = view.findViewById(R.id.setting_renderer_subtitle);
+            driverSubtitle = view.findViewById(R.id.setting_driver_subtitle);
             versionText = view.findViewById(R.id.setting_version_text);
 
             view.findViewById(R.id.setting_row_theme).setOnClickListener(v -> pickTheme());
@@ -72,6 +80,9 @@ public class SettingFragment extends Fragment {
             view.findViewById(R.id.setting_row_download_source).setOnClickListener(v -> pickDownloadSource());
             view.findViewById(R.id.setting_row_game_dir).setOnClickListener(v -> pickGameDir());
             view.findViewById(R.id.setting_row_login).setOnClickListener(v -> pickLogin());
+            view.findViewById(R.id.setting_row_runtime).setOnClickListener(v -> pickRuntime());
+            view.findViewById(R.id.setting_row_renderer).setOnClickListener(v -> pickRenderer());
+            view.findViewById(R.id.setting_row_driver).setOnClickListener(v -> pickDriver());
             view.findViewById(R.id.setting_row_announcement).setOnClickListener(v -> showAnnouncement());
             view.findViewById(R.id.setting_row_user_agreement).setOnClickListener(v -> showUserAgreement());
             view.findViewById(R.id.setting_row_ai_agreement).setOnClickListener(v -> showAiAgreement());
@@ -100,6 +111,9 @@ public class SettingFragment extends Fragment {
         if (downloadSourceSubtitle != null) downloadSourceSubtitle.setText(DownloadSource.name(DownloadSource.current()));
         if (gameDirSubtitle != null) gameDirSubtitle.setText(VersionManager.currentGameDir());
         if (loginSubtitle != null) loginSubtitle.setText(AuthManager.name(AuthManager.currentMode()));
+        if (runtimeSubtitle != null) runtimeSubtitle.setText(com.tungsten.hmclpe.launcher.setting.LauncherPrefs.currentRuntime());
+        if (rendererSubtitle != null) rendererSubtitle.setText(com.tungsten.hmclpe.launcher.setting.LauncherPrefs.currentRenderer());
+        if (driverSubtitle != null) driverSubtitle.setText(com.tungsten.hmclpe.launcher.setting.LauncherPrefs.currentDriver());
         if (versionText != null) versionText.setText("StarDockLauncher v" + BuildConfig.VERSION_NAME + " (build " + BuildConfig.VERSION_CODE + ")");
         try {
             if (aiApiSubtitle != null) {
@@ -393,29 +407,60 @@ public class SettingFragment extends Fragment {
             final GitHubService.Release r = GitHubService.fetchLatest();
             requireActivity().runOnUiThread(() -> {
                 if (r == null) {
-                    Toast.makeText(requireContext(), "检查失败，请稍后重试", Toast.LENGTH_SHORT).show();
+                    new MaterialAlertDialogBuilder(requireContext())
+                            .setTitle("检查更新")
+                            .setMessage("无法连接 GitHub。\n\n请直接打开：\nhttps://github.com/" + GitHubService.REPO + "/releases")
+                            .setPositiveButton("打开网页", (d, w) -> {
+                                try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/" + GitHubService.REPO + "/releases"))); } catch (Throwable ignored) {}
+                            })
+                            .setNegativeButton("取消", null)
+                            .show();
                     return;
                 }
                 String cur = "v" + BuildConfig.VERSION_NAME;
                 if (r.tagName != null && r.tagName.equals(cur)) {
                     Toast.makeText(requireContext(), "已是最新版本 " + cur, Toast.LENGTH_SHORT).show();
                 } else {
+                    final String apk = r.apkUrl;
+                    final String tag = r.tagName;
                     new MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("发现新版本 " + r.tagName)
-                            .setMessage((r.body == null ? "" : r.body) + "\n\n下载地址：" + r.apkUrl)
-                            .setPositiveButton("前往下载", (d, w) -> {
-                                try {
-                                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(r.apkUrl));
-                                    startActivity(i);
-                                } catch (Throwable t) {
-                                    Toast.makeText(requireContext(), "无法打开链接", Toast.LENGTH_SHORT).show();
-                                }
+                            .setTitle("发现新版本 " + tag)
+                            .setMessage((r.body == null ? "" : r.body) + "\n\n下载链接：" + (apk == null ? "未发布 APK" : apk))
+                            .setPositiveButton("一键下载 APK", (d, w) -> downloadApkDirectly(apk, tag))
+                            .setNeutralButton("打开网页", (d, w) -> {
+                                try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/" + GitHubService.REPO + "/releases/tag/" + tag))); } catch (Throwable ignored) {}
                             })
                             .setNegativeButton("取消", null)
                             .show();
                 }
             });
         });
+    }
+
+    private void downloadApkDirectly(String url, String tag) {
+        if (url == null || url.isEmpty()) {
+            Toast.makeText(requireContext(), "APK 未发布", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        try {
+            File root = com.tungsten.hmclpe.launcher.setting.VersionManager.root();
+            if (!root.exists()) root.mkdirs();
+            File target = new File(root, "StarDockLauncher-" + tag + ".apk");
+            com.tungsten.hmclpe.launcher.download.DownloadService.Task t = new com.tungsten.hmclpe.launcher.download.DownloadService.Task();
+            t.id = "apk-" + tag;
+            t.name = "StarDockLauncher-" + tag + ".apk";
+            t.url = url;
+            t.destination = target;
+            t.targetVersion = "update";
+            com.tungsten.hmclpe.launcher.download.DownloadService.enqueue(t);
+            Toast.makeText(requireContext(), "已开始下载新版本 APK，保存到：" + target.getAbsolutePath(), Toast.LENGTH_LONG).show();
+        } catch (Throwable ex) {
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            } catch (Throwable t) {
+                Toast.makeText(requireContext(), "下载失败：" + ex.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void openHistory() {
@@ -457,5 +502,56 @@ public class SettingFragment extends Fragment {
         } catch (Throwable t) {
             Toast.makeText(requireContext(), "无法打开链接", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void pickRuntime() {
+        final String[] opts = com.tungsten.hmclpe.launcher.setting.LauncherPrefs.RUNTIMES;
+        String cur = com.tungsten.hmclpe.launcher.setting.LauncherPrefs.currentRuntime();
+        int idx = 0;
+        for (int i = 0; i < opts.length; i++) if (opts[i].equals(cur)) { idx = i; break; }
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Java 运行时（启动框架）")
+                .setSingleChoiceItems(opts, idx, (d, w) -> {
+                    com.tungsten.hmclpe.launcher.setting.LauncherPrefs.setRuntime(opts[w]);
+                    if (runtimeSubtitle != null) runtimeSubtitle.setText(opts[w]);
+                    Toast.makeText(requireContext(), "已选择：" + opts[w] + "（下次启动游戏时生效）", Toast.LENGTH_SHORT).show();
+                    d.dismiss();
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
+
+    private void pickRenderer() {
+        final String[] opts = com.tungsten.hmclpe.launcher.setting.LauncherPrefs.RENDERERS;
+        String cur = com.tungsten.hmclpe.launcher.setting.LauncherPrefs.currentRenderer();
+        int idx = 0;
+        for (int i = 0; i < opts.length; i++) if (opts[i].equals(cur)) { idx = i; break; }
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("渲染器（启动框架）")
+                .setSingleChoiceItems(opts, idx, (d, w) -> {
+                    com.tungsten.hmclpe.launcher.setting.LauncherPrefs.setRenderer(opts[w]);
+                    if (rendererSubtitle != null) rendererSubtitle.setText(opts[w]);
+                    Toast.makeText(requireContext(), "已选择：" + opts[w] + "（下次启动游戏时生效）", Toast.LENGTH_SHORT).show();
+                    d.dismiss();
+                })
+                .setNegativeButton("取消", null)
+                .show();
+    }
+
+    private void pickDriver() {
+        final String[] opts = com.tungsten.hmclpe.launcher.setting.LauncherPrefs.DRIVERS;
+        String cur = com.tungsten.hmclpe.launcher.setting.LauncherPrefs.currentDriver();
+        int idx = 0;
+        for (int i = 0; i < opts.length; i++) if (opts[i].equals(cur)) { idx = i; break; }
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("图形驱动（启动框架）")
+                .setSingleChoiceItems(opts, idx, (d, w) -> {
+                    com.tungsten.hmclpe.launcher.setting.LauncherPrefs.setDriver(opts[w]);
+                    if (driverSubtitle != null) driverSubtitle.setText(opts[w]);
+                    Toast.makeText(requireContext(), "已选择：" + opts[w] + "（下次启动游戏时生效）", Toast.LENGTH_SHORT).show();
+                    d.dismiss();
+                })
+                .setNegativeButton("取消", null)
+                .show();
     }
 }

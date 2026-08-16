@@ -10,6 +10,7 @@ public class VersionManager {
 
     public static final String ROOT_NAME = "StarDockLauncher";
 
+    public static File root() { return rootDir(); }
     public static File rootDir() {
         File root = new File(Environment.getExternalStorageDirectory(), ROOT_NAME);
         if (!root.exists()) root.mkdirs();

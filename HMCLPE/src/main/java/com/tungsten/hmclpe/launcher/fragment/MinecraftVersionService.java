@@ -87,8 +87,9 @@ public class MinecraftVersionService {
                 }
             }
             if (versionUrl == null) return files;
-            files.add(new MinecraftVersionFile("client_" + mcVersion, mcVersion + "/client.jar", "minecraft/" + mcVersion + "/client.jar"));
-            files.add(new MinecraftVersionFile("client_index_" + mcVersion, mcVersion + "/version.json", "minecraft/" + mcVersion + "/version.json"));
+            String verDir = "mc/game/" + mcVersion;
+            files.add(new MinecraftVersionFile("client_" + mcVersion, mcVersion + "/client.jar", verDir + "/client.jar"));
+            files.add(new MinecraftVersionFile("client_index_" + mcVersion, mcVersion + "/version.json", verDir + "/" + mcVersion + ".json"));
         } catch (Throwable t) {
             android.util.Log.e("MinecraftVersionService", "assetsFor failed", t);
         }

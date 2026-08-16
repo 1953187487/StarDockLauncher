@@ -5,19 +5,15 @@
         android:icon="@drawable/ic_baseline_home_white"
         android:title="主页" />
     <item
-        android:id="@+id/nav_version"
-        android:icon="@drawable/ic_bookshelf"
-        android:title="版本" />
-    <item
         android:id="@+id/nav_download"
         android:icon="@drawable/ic_chest"
         android:title="下载" />
     <item
-        android:id="@+id/nav_mod"
-        android:icon="@drawable/ic_mod"
-        android:title="模组" />
+        android:id="@+id/nav_tools"
+        android:icon="@drawable/ic_command"
+        android:title="工具" />
     <item
         android:id="@+id/nav_setting"
-        android:icon="@drawable/ic_command"
+        android:icon="@drawable/ic_outline_settings_black_24"
         android:title="设置" />
 </menu>

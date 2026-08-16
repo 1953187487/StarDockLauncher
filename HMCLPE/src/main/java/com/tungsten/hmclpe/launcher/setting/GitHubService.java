@@ -13,7 +13,8 @@ import java.util.List;
 public class GitHubService {
 
     public static final String REPO = "1953187487/StarDockLauncher";
-    public static final String VERSION_URL = "https://raw.githubusercontent.com/" + REPO + "/main/launcher_version.json";
+    public static final String VERSION_URL = "https://raw.githubusercontent.com/" + REPO + "/1.0.3-dev/launcher_version.json";
+    public static final String GITHUB_API_LATEST = "https://api.github.com/repos/" + REPO + "/releases/latest";
 
     public static class Release {
         public String tagName;
@@ -24,6 +25,45 @@ public class GitHubService {
     }
 
     public static Release fetchLatest() {
+        try {
+            String api = "https://api.github.com/repos/" + REPO + "/releases/latest";
+            HttpURLConnection conn = (HttpURLConnection) new URL(api).openConnection();
+            conn.setConnectTimeout(8000);
+            conn.setReadTimeout(8000);
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/vnd.github+json");
+            conn.setRequestProperty("User-Agent", "StarDockLauncher-Updater");
+            int code = conn.getResponseCode();
+            if (code != 200) return fetchLatestFromVersionFile();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) sb.append(line);
+            reader.close();
+            JSONObject obj = new JSONObject(sb.toString());
+            Release r = new Release();
+            r.tagName = obj.optString("tag_name");
+            r.name = obj.optString("name");
+            r.body = obj.optString("body");
+            r.publishedAt = obj.optString("published_at");
+            JSONArray assets = obj.optJSONArray("assets");
+            if (assets != null) {
+                for (int j = 0; j < assets.length(); j++) {
+                    JSONObject a = assets.optJSONObject(j);
+                    if (a != null && a.optString("name", "").endsWith(".apk")) {
+                        r.apkUrl = a.optString("browser_download_url");
+                        break;
+                    }
+                }
+            }
+            return r;
+        } catch (Throwable t) {
+            android.util.Log.e("GitHubService", "fetchLatest API failed", t);
+            return fetchLatestFromVersionFile();
+        }
+    }
+
+    private static Release fetchLatestFromVersionFile() {
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL(VERSION_URL).openConnection();
             conn.setConnectTimeout(8000);
@@ -48,7 +88,7 @@ public class GitHubService {
             if (urls != null && urls.length() > 0) r.apkUrl = urls.optString(0);
             return r;
         } catch (Throwable t) {
-            android.util.Log.e("GitHubService", "fetchLatest failed", t);
+            android.util.Log.e("GitHubService", "fetchLatest version file failed", t);
             return null;
         }
     }

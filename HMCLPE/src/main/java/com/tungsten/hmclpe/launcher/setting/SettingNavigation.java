@@ -25,10 +25,21 @@ public class SettingNavigation {
         }
     }
 
-    public static void openVersionTab(FragmentActivity activity) {
+    public static void openToolsTab(FragmentActivity activity) {
         try {
             NavigationRailView rail = activity.findViewById(R.id.home_nav_rail);
-            if (rail != null) rail.setSelectedItemId(R.id.nav_version);
+            if (rail != null) rail.setSelectedItemId(R.id.nav_tools);
+        } catch (Throwable t) {
+            android.util.Log.e("SettingNavigation", "openToolsTab failed", t);
+        }
+    }
+
+    public static void openVersionTab(FragmentActivity activity) {
+        // legacy Version tab removed in v1.0.7
+        if (activity == null) return;
+        try {
+            NavigationRailView rail = activity.findViewById(R.id.home_nav_rail);
+            if (rail != null) rail.setSelectedItemId(R.id.nav_download);
         } catch (Throwable t) {
             android.util.Log.e("SettingNavigation", "openVersionTab failed", t);
         }

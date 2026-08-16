@@ -30,12 +30,26 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingStart="16dp"
-                android:paddingEnd="12dp">
+                android:paddingEnd="16dp">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/home_avatar"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="1dp"
+                    android:background="@color/sd_secondary_container"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_account_placeholder"
+                    app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full"
+                    app:strokeColor="@color/sd_primary"
+                    app:strokeWidth="2dp"
+                    android:contentDescription="账号" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:layout_marginStart="14dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -54,27 +68,6 @@
                         android:textColor="@color/sd_on_surface_variant"
                         android:textSize="11sp" />
                 </LinearLayout>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/home_btn_multiplayer"
-                    style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    app:icon="@android:drawable/ic_menu_share"
-                    app:iconTint="@color/sd_on_secondary_container"
-                    app:iconSize="20dp"
-                    android:contentDescription="联机" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/home_btn_ai"
-                    style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_marginStart="4dp"
-                    app:icon="@drawable/ic_ai_assistant"
-                    app:iconTint="@color/sd_on_primary_container"
-                    app:iconSize="20dp"
-                    android:contentDescription="AI 助手" />
 
             </LinearLayout>
 
@@ -105,5 +98,17 @@
         app:itemRippleColor="@color/sd_secondary_container"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/sd_bottom_nav" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/home_fab_ai"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/ic_ai_assistant"
+        app:backgroundTint="@color/sd_primary"
+        app:tint="@color/sd_on_primary"
+        android:contentDescription="AI 助手" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

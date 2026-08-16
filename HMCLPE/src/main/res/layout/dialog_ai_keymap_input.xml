@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="描述想要的键位布局（手柄式 / FPS / 简洁 / 自定义按钮数量）"
+        android:textColor="@color/sd_on_surface_variant"
+        android:textSize="13sp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ai_keymap_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="例如：FPS 风格，左侧大摇杆，右侧 8 个动作按钮（含跳跃/蹲伏/破坏/放置/物品栏）"
+            android:inputType="textMultiLine"
+            android:maxLines="6"
+            android:minLines="3" />
+    </com.google.android.material.textfield.TextInputLayout>
+</LinearLayout>
