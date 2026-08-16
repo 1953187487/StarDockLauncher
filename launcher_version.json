@@ -1,16 +1,16 @@
 {
   "latestRelease": {
-    "versionCode": 6,
-    "versionName": "1.0.5",
-    "date": "2026.08.15",
-    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.5/StarDockLauncher-v1.0.5-release.apk"],
-    "updateLog": "StarDockLauncher 1.0.5 全面重写版（UI/架构重写 + 局域网联机功能）：\n\n全面 UI/架构重写：\n1. 主入口切换到 HomeActivity：Material3 CoordinatorLayout + Toolbar + BottomNavigationView + Fragment 容器。\n2. 5 个 Fragment：Home / Version / Download / Mod / Setting。\n3. 新主题 Theme.StarDock.Main（Material3 DayNight 深色）+ 完整色板 colors_sd.xml。\n4. MainActivityHolder 类型兼容（AppCompatActivity），新 HomeActivity 与旧 MainActivity 双兼容。\n5. 主界面 64dp 顶栏 + 渐变 Logo + 联机/AI/最小化/关闭按钮。\n\n局域网联机功能：\n1. 启用开关（默认关闭，开启后在游戏悬浮窗显示联机按钮）。\n2. 创建房间：扫描 latest.log 识别「对局域网开放」端口，自动生成 8 位邀请码（XXXX-XXXX）。\n3. 加入房间：粘贴邀请码 → 自动解析端口，提示在多人游戏中添加服务器。\n4. 邀请码格式：BASE32 无歧义字符 SHA-256 取前 8 位。\n5. 联机邀请链接：stardock://join?code=XXXX-XXXX&port=NNNNN。\n\nBug 修复：\n1. VerifyInterface 引用修正（VerifyDialog.VerifyInterface → com.tungsten.hmclpe.launcher.VerifyInterface）。\n2. MainActivityHolder 返回类型 AppCompatActivity，向下兼容 MainActivity 实例。\n3. AiLogAnalyzer.findLatestLog 兼容非 MainActivity 实例（类型转换前 instanceof 检查）。\n4. Splash → HomeActivity 启动链路修复（InstallLauncherFile.enterLauncher）。\n\n构建：versionCode 6, versionName 1.0.5, APK 179.5MB（release 签名）。"
+    "versionCode": 7,
+    "versionName": "1.0.6",
+    "date": "2026.08.16",
+    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.6/StarDockLauncher-v1.0.6-release.apk"],
+    "updateLog": "StarDockLauncher 1.0.6（导航横屏 + 淘瓦联机 + AI 搜索框 + 设置全面完善）：\n\n布局与导航：\n1. 底部导航栏移到左侧改为横向 NavigationRailView，88dp 固定侧栏。\n2. 顶栏删除右侧最小化/关闭两个按钮，仅保留淘瓦联机与 AI 入口。\n3. 应用图标 100% 重写，启动加载动画升级。\n\n淘瓦联机（Taowa）：\n1. 主页一键开关控制，默认关闭。\n2. 复用 Hin2nService 内网穿透 + TunnelMultiplayerFragment + MultiplayerActivity，自动识别房间/生成邀请码。\n\nAI 搜索框：\n1. AI 界面全链重写为搜索框，支持 Modrinth/Curseforge 链接识别与关键词搜索。\n2. 搜索 Mod/Shader/资源包/整合包，结果点击直接跳转。\n3. 设置中新增 AI 协议 + 拉取模型列表 + 测试模型。\n\n下载与模组合并：\n1. 游戏版本/模组/整合包三 Tab 合一，Modrinth API 搜索。\n2. 模组自动识别本地已安装游戏版本并优先跳转，一键下载依赖。\n3. 下载目录统一为 StarDockLauncher/{games,libraries,runtime}，支持 BMCLAPI/MOJANG 下载源切换。\n\n设置全面完善：\n1. 主题：系统/深色/浅色/Android12 动态取色 + 自定义背景。\n2. 登录：正版（微软）/离线/第三方服务器。\n3. 关于：检查版本 + 历史版本直连开源仓库 + 用户须知/AI 协议/语言协议。\n4. 进入应用完成语言选择→用户须知→AI 协议后自动弹出公告。\n\n构建：versionCode 7, versionName 1.0.6, APK 179.5MB（release 签名）。"
   },
   "latestPrerelease": {
-    "versionCode": 6,
-    "versionName": "1.0.5",
-    "date": "2026.08.15",
-    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.5/StarDockLauncher-v1.0.5-release.apk"],
-    "updateLog": "StarDockLauncher 1.0.5：全面 UI/架构重写（Material3 NavigationBar + 5 Fragment）+ 新增局域网联机功能（端口扫描 + 邀请码生成）。"
+    "versionCode": 7,
+    "versionName": "1.0.6",
+    "date": "2026.08.16",
+    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.6/StarDockLauncher-v1.0.6-release.apk"],
+    "updateLog": "StarDockLauncher 1.0.6：导航横屏 + 淘瓦联机 + AI 搜索框 + 下载/模组整合 + 设置全面完善 + 图标/动画重写。"
   }
 }
