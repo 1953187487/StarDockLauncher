@@ -30,6 +30,14 @@ public class MinecraftVersionService {
         }
     }
 
+    public static MinecraftVersion find(String id) {
+        if (id == null) return null;
+        for (MinecraftVersion v : list()) {
+            if (id.equals(v.id)) return v;
+        }
+        return null;
+    }
+
     public static List<MinecraftVersion> list() {
         List<MinecraftVersion> versions = new ArrayList<>();
         try {

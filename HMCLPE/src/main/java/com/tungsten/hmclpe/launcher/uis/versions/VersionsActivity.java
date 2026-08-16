@@ -10,8 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tungsten.hmclpe.R;
+import com.tungsten.hmclpe.ai.AiTranslate;
 import com.tungsten.hmclpe.launcher.setting.AppPrefs;
 import com.tungsten.hmclpe.launcher.setting.VersionManager;
 
@@ -34,7 +33,7 @@ public class VersionsActivity extends AppCompatActivity {
     private LinearLayout emptyView;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
             setContentView(R.layout.activity_versions);
@@ -48,7 +47,6 @@ public class VersionsActivity extends AppCompatActivity {
 
         list = findViewById(R.id.versions_list);
         emptyView = findViewById(R.id.versions_empty);
-
         if (list != null) list.setLayoutManager(new LinearLayoutManager(this));
 
         refresh();
@@ -72,9 +70,7 @@ public class VersionsActivity extends AppCompatActivity {
                             return a.getName().compareToIgnoreCase(b.getName());
                         }
                     });
-                    for (File f : arr) {
-                        if (f.isDirectory()) data.add(f);
-                    }
+                    for (File f : arr) if (f.isDirectory()) data.add(f);
                 }
             }
             if (data.isEmpty()) {
@@ -90,7 +86,7 @@ public class VersionsActivity extends AppCompatActivity {
         }
     }
 
-    class VersionAdapter extends RecyclerView.Adapter<VersionAdapter.VH> {
+    private class VersionAdapter extends RecyclerView.Adapter<VersionAdapter.VH> {
 
         private final List<File> data;
 
@@ -114,11 +110,18 @@ public class VersionsActivity extends AppCompatActivity {
                 File jar = new File(f, "client.jar");
                 File json = new File(f, name + ".json");
                 File libs = new File(f, "libraries");
+                File mods = new File(f, "mods");
                 StringBuilder meta = new StringBuilder();
                 meta.append("目录：").append(f.getAbsolutePath()).append("\n");
                 meta.append(jar.exists() ? "客户端 ✓" : "客户端 ✗").append("  ");
                 meta.append(json.exists() ? "配置 ✓" : "配置 ✗").append("  ");
-                meta.append(libs.exists() ? "依赖 ✓" : "依赖 ✗");
+                meta.append(libs.exists() ? "依赖 ✓" : "依赖 ✗").append("  ");
+                if (mods.exists()) {
+                    File[] ms = mods.listFiles();
+                    int c = 0;
+                    if (ms != null) for (File m : ms) if (m.isFile() && m.getName().endsWith(".jar")) c++;
+                    meta.append("模组 ").append(c);
+                }
                 h.meta.setText(meta);
                 h.itemView.setOnClickListener(v -> showActions(f));
             } catch (Throwable ignored) {}
@@ -142,7 +145,13 @@ public class VersionsActivity extends AppCompatActivity {
 
     private void showActions(File f) {
         String name = f.getName();
-        String[] items = new String[]{"设为当前版本", "启动游戏", "打开目录", "删除版本"};
+        String[] items = new String[]{
+                "设为当前版本",
+                "启动游戏",
+                "管理模组（含 AI 汉化）",
+                "打开目录",
+                "删除版本"
+        };
         new MaterialAlertDialogBuilder(this)
                 .setTitle(name)
                 .setItems(items, (d, which) -> {
@@ -156,20 +165,21 @@ public class VersionsActivity extends AppCompatActivity {
                             launch(name);
                             break;
                         case 2:
+                            openModsManager(name);
+                            break;
+                        case 3:
                             try {
                                 Intent i = new Intent(Intent.ACTION_VIEW);
                                 i.setDataAndType(android.net.Uri.fromFile(f), "resource/folder");
                                 i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                                 if (i.resolveActivity(getPackageManager()) == null) {
                                     Toast.makeText(this, "目录：" + f.getAbsolutePath(), Toast.LENGTH_LONG).show();
-                                } else {
-                                    startActivity(i);
-                                }
+                                } else startActivity(i);
                             } catch (Throwable t) {
                                 Toast.makeText(this, "目录：" + f.getAbsolutePath(), Toast.LENGTH_LONG).show();
                             }
                             break;
-                        case 3:
+                        case 4:
                             confirmDelete(f);
                             break;
                     }
@@ -177,10 +187,22 @@ public class VersionsActivity extends AppCompatActivity {
                 .show();
     }
 
+    private void openModsManager(String verName) {
+        try {
+            File modsDir = new File(VersionManager.gamesDir(), verName + "/mods");
+            if (!modsDir.exists()) modsDir.mkdirs();
+            Intent i = new Intent(this, ModsManagerActivity.class);
+            i.putExtra("version", verName);
+            startActivity(i);
+        } catch (Throwable t) {
+            Toast.makeText(this, "打开模组管理失败：" + t.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void confirmDelete(File f) {
         new MaterialAlertDialogBuilder(this)
                 .setTitle("删除版本 " + f.getName() + "？")
-                .setMessage("将永久删除 " + f.getAbsolutePath() + "，操作不可恢复。")
+                .setMessage("将永久删除 " + f.getAbsolutePath())
                 .setPositiveButton("删除", (d, w) -> {
                     try {
                         deleteRecursive(f);
@@ -199,9 +221,7 @@ public class VersionsActivity extends AppCompatActivity {
             File[] kids = f.listFiles();
             if (kids != null) for (File k : kids) deleteRecursive(k);
         }
-        if (!f.delete()) {
-            throw new RuntimeException("无法删除：" + f.getAbsolutePath());
-        }
+        if (!f.delete()) throw new RuntimeException("无法删除：" + f.getAbsolutePath());
     }
 
     private void launch(String name) {

@@ -202,22 +202,20 @@ public class HomeActivity extends AppCompatActivity {
                     try {
                         final String apk = r.apkUrl;
                         final String tag = r.tagName;
+                        final String changelog = r.body == null ? "" : r.body;
                         new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                                 .setTitle("发现新版本 " + tag)
-                                .setMessage("启动器有可用更新，是否立即下载？\n\n" + (apk == null ? "" : apk))
+                                .setMessage("启动器有可用更新，是否立即下载？")
                                 .setPositiveButton("一键下载", (d, w) -> {
-                                    if (apk == null) return;
-                                    java.io.File root = com.tungsten.hmclpe.launcher.setting.VersionManager.root();
-                                    if (!root.exists()) root.mkdirs();
-                                    java.io.File target = new java.io.File(root, "StarDockLauncher-" + tag + ".apk");
-                                    com.tungsten.hmclpe.launcher.download.DownloadService.Task t = new com.tungsten.hmclpe.launcher.download.DownloadService.Task();
-                                    t.id = "apk-" + tag;
-                                    t.name = "StarDockLauncher-" + tag + ".apk";
-                                    t.url = apk;
-                                    t.destination = target;
-                                    t.targetVersion = "update";
-                                    com.tungsten.hmclpe.launcher.download.DownloadService.enqueue(t);
-                                    Toast.makeText(this, "已开始下载：" + target.getAbsolutePath(), Toast.LENGTH_LONG).show();
+                                    try {
+                                        android.content.Intent i = new android.content.Intent(this, com.tungsten.hmclpe.launcher.uis.update.UpdateDownloadActivity.class);
+                                        i.putExtra("tag", tag);
+                                        i.putExtra("apkUrl", apk);
+                                        i.putExtra("changelog", changelog);
+                                        startActivity(i);
+                                    } catch (Throwable t) {
+                                        Toast.makeText(this, "启动下载页失败：" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
                                 })
                                 .setNegativeButton("稍后", null)
                                 .show();
@@ -307,7 +305,7 @@ public class HomeActivity extends AppCompatActivity {
             String tag = currentTag(which);
             Fragment existing = fm.findFragmentByTag(tag);
             Fragment frag = existing;
-            if (frag == null || frag.isDetached()) {
+            if (frag == null) {
                 switch (which) {
                     case FRAG_HOME: frag = new HomeFragment(); break;
                     case FRAG_DOWNLOAD: frag = new DownloadFragment(); break;
@@ -318,14 +316,21 @@ public class HomeActivity extends AppCompatActivity {
             }
             FragmentTransaction tx = fm.beginTransaction();
             tx.setReorderingAllowed(true);
-            if (currentFrag != -1) {
-                Fragment cur = fm.findFragmentByTag(currentTag(currentFrag));
-                if (cur != null) tx.hide(cur);
+            FragmentTransaction detachedTx = null;
+            for (int i = 0; i <= 3; i++) {
+                Fragment f = fm.findFragmentByTag(currentTag(i));
+                if (f == null) continue;
+                if (i == which) {
+                    if (f.isDetached()) {
+                        tx.attach(f);
+                    }
+                    tx.show(f);
+                } else {
+                    if (!f.isHidden()) tx.hide(f);
+                }
             }
-            if (existing == null || existing.isDetached()) {
+            if (existing == null) {
                 tx.add(R.id.home_content, frag, tag);
-            } else {
-                tx.show(frag);
             }
             tx.commitNowAllowingStateLoss();
             currentFrag = which;

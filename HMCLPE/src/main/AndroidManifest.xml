@@ -44,9 +44,9 @@
         android:allowBackup="true"
         android:requestLegacyExternalStorage="true"
         android:preserveLegacyExternalStorage="true"
-        android:icon="@drawable/ic_craft_table"
+        android:icon="@mipmap/ic_stardock_modern"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/ic_craft_table"
+        android:roundIcon="@mipmap/ic_stardock_modern"
         android:largeHeap="true"
         android:usesCleartextTraffic="true"
         android:networkSecurityConfig="@xml/network_security_config"
@@ -118,6 +118,16 @@
             android:theme="@style/Theme.StarDock.Main"/>
         <activity
             android:name=".launcher.uis.versions.VersionsActivity"
+            android:screenOrientation="sensorLandscape"
+            android:exported="false"
+            android:theme="@style/Theme.StarDock.Main"/>
+        <activity
+            android:name=".launcher.uis.update.UpdateDownloadActivity"
+            android:screenOrientation="sensorLandscape"
+            android:exported="false"
+            android:theme="@style/Theme.StarDock.Main"/>
+        <activity
+            android:name=".launcher.uis.versions.ModsManagerActivity"
             android:screenOrientation="sensorLandscape"
             android:exported="false"
             android:theme="@style/Theme.StarDock.Main"/>

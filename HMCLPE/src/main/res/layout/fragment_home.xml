@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:fillViewport="true"
         android:clipToPadding="false"
-        android:paddingBottom="96dp">
+        android:paddingBottom="120dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -18,72 +18,70 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <com.google.android.material.card.MaterialCardView
+            <LinearLayout
                 android:id="@+id/home_account_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
+                android:background="@drawable/sd_glass_card"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="2dp">
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="20dp">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/home_account_avatar"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_account_placeholder"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.StarDock.Circle"
+                    app:strokeColor="#60FFFFFF"
+                    app:strokeWidth="2dp" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="20dp">
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/home_account_avatar"
-                        android:layout_width="72dp"
-                        android:layout_height="72dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/ic_account_placeholder"
-                        app:shapeAppearanceOverlay="@style/ShapeAppearance.StarDock.Circle"
-                        app:strokeColor="@color/sd_outline_variant"
-                        app:strokeWidth="1dp" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/home_account_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="未登录"
-                            android:textAppearance="?attr/textAppearanceTitleLarge"
-                            android:textStyle="bold" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/home_account_mode"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="点此登录账号"
-                            android:textAppearance="?attr/textAppearanceBodyMedium" />
-                    </LinearLayout>
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/home_account_login_btn"
-                        style="@style/Widget.Material3.Button.TonalButton"
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/home_account_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="登录" />
+                        android:text="未登录"
+                        android:textColor="@color/sd_on_surface"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/home_account_mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="点击登录账号"
+                        android:textColor="@color/sd_on_surface_variant"
+                        android:textSize="13sp" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/home_account_login_btn"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="登录" />
+            </LinearLayout>
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="10dp"
                 android:text="已安装版本"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="@color/sd_on_surface"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -92,20 +90,17 @@
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false" />
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/home_manage_versions_card"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/sd_glass_card"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardBackgroundColor="@color/sd_surface"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/sd_outline_variant"
-                app:strokeWidth="1dp">
+                android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/home_btn_download_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
@@ -116,32 +111,26 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="管理版本（启动 / 删除 / 安装目录）"
-                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:text="下载中心（游戏 / 模组 / 整合包 / 光影）"
+                        android:textColor="@color/sd_on_surface"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="›"
-                        android:textAppearance="?attr/textAppearanceHeadlineSmall" />
+                        android:textColor="@color/sd_on_surface_variant"
+                        android:textSize="22sp" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/home_btn_download_card"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:cardBackgroundColor="@color/sd_surface"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/sd_outline_variant"
-                app:strokeWidth="1dp">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#20FFFFFF" />
 
                 <LinearLayout
+                    android:id="@+id/home_manage_versions_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
@@ -152,17 +141,49 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="下载中心（游戏版本 / 模组 / 整合包 / 光影）"
-                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:text="管理版本（启动 / 模组管理 / 删除）"
+                        android:textColor="@color/sd_on_surface"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="›"
-                        android:textAppearance="?attr/textAppearanceHeadlineSmall" />
+                        android:textColor="@color/sd_on_surface_variant"
+                        android:textSize="22sp" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#20FFFFFF" />
+
+                <LinearLayout
+                    android:id="@+id/home_btn_tools_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="18dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="工具（淘瓦联机 / 键位 / AI）"
+                        android:textColor="@color/sd_on_surface"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="›"
+                        android:textColor="@color/sd_on_surface_variant"
+                        android:textSize="22sp" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

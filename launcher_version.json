@@ -1,16 +1,16 @@
 {
   "latestRelease": {
-    "versionCode": 9,
-    "versionName": "1.0.8",
+    "versionCode": 10,
+    "versionName": "1.0.9",
     "date": "2026.08.16",
-    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.8/StarDockLauncher-v1.0.8-release.apk"],
-    "updateLog": "StarDockLauncher 1.0.8（启动器核心功能 + 登录体系 + 管理版本 + 自定义主题）：\n\n主界面重做：\n1. 顶部大账号卡片（72dp 圆形头像 + 名称 + 模式 + 登录按钮）。\n2. 已安装版本列表 RecyclerView（点选即可设为当前）。\n3. 右下角圆形 FAB「开始游戏」按钮，点击启动最后选择的版本。\n4. 主页加「管理版本」入口。\n\n淘瓦联机：\n1. 工具页只保留淘瓦开关，删除进入按钮。\n2. 联机入口迁移到游戏悬浮窗菜单中（开启后才可见）。\n3. 提示用户联机需启动游戏后从悬浮窗进入。\n\n版本下载：\n1. 默认推荐列表（进入 Tab 即可见热门 5+ 项）。\n2. 实时搜索建议 + 搜索源可切（BMCLAPI / Modrinth / Curseforge）。\n3. 修复无法正常安装 + 无法正常换下载源。\n\n启动框架（设置）：\n1. Java 运行时（默认 / 8 / 11 / 17 / 21 / 25）。\n2. 渲染器（默认 / GL4ES / Zink / LTW / ANGLE）。\n3. 图形驱动（默认 / OpenGL ES / Vulkan）。\n\n管理版本页（VersionsActivity）：\n1. 列出已安装的所有版本（位置 / 启动 / 删除 / 设置）。\n2. 启动：直接用 Boat / Pojav 引擎启动。\n3. 删除：递归删除版本目录（带二次确认）。\n\n登录体系（AccountActivity）：\n1. 离线登录：输入昵称（默认皮肤 Steve / Alex 按昵称尾字符判断）。\n2. 正版 Microsoft 登录：直连 MicrosoftLoginActivity OAuth 流程。\n3. 第三方服务器登录：先填 URL → 自动 GET 验证 → 通过后输入账号密码。\n\n换皮肤：\n1. 离线：本地导入 PNG，存到 getExternalFilesDir()/skins/。\n2. 正版：自动从 Mojang / Crafatar API 获取。\n3. 头像自动同步到主界面顶部 + 侧栏 header。\n\n键位：\n1. ControlPatternActivity 修复「打开直接闪退」（缺 extras NPE 保护）。\n2. 启动时传入 fullscreen / pattern / initial / mode 默认值。\n3. MC 移动版默认键位 JSON 持久化到 SETTING_DIR/control_pattern/mc_mobile.json。\n\n启动动画（SplashActivity）：\n1. sd_launcher Logo ImageView + 旋转 CircularProgressIndicator + LinearProgressIndicator。\n2. 5 阶段进度（加载配置 / 校验运行环境 / 加载 Java 运行时 / 加载版本列表 / 就绪）。\n3. fade_in / fade_out 转场到 HomeActivity。\n\n自动检查更新：\n1. 每次进入主界面调 GitHubService.fetchLatest。\n2. 发现新版本弹窗「一键下载 APK」（DownloadService 直连）。\n\n主题：\n1. Material3 深色主题（sd_primary #FFB454 / sd_secondary #7DD3FC / sd_tertiary #A78BFA）。\n2. ShapeAppearance.StarDock.Circle 圆形头像样式。\n\n构建：versionCode 9, versionName 1.0.8, APK 179.5MB（release 签名）。"
+    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.9/StarDockLauncher-v1.0.9-release.apk"],
+    "updateLog": "StarDockLauncher 1.0.9（现代化 UI + 液态玻璃 + AI 汉化 + 自研全链）：\n\n现代化主题：\n1. 全局液态玻璃：深紫渐变背景 + 半透明模糊卡片。\n2. 应用图标重写：渐变深空 + 五角星 + SD 字（512px 矢量风）。\n3. 主色调：sd_primary #FFB454 / sd_secondary #7DD3FC / sd_tertiary #A78BFA。\n\n一键下载更新 UI（UpdateDownloadActivity）：\n1. 启动动画 + Logo + 旋转 CircularProgressIndicator。\n2. 实时下载速度（KB/s / MB/s 自动单位）。\n3. 进度百分比 + 已下载/总大小 + LinearProgressIndicator。\n4. 取消 / 安装按钮 + 二次确认。\n5. 安装按钮直接唤起系统安装器。\n\n主界面重写（fragment_home.xml）：\n1. 顶部大账号卡片（72dp 液态玻璃 + 圆形头像 + 名称 + 模式 + 登录/切换按钮）。\n2. 已安装版本列表 RecyclerView（卡片风，点选即设置当前版本）。\n3. 管理版本 / 下载中心 / 工具 三入口合并到同一玻璃卡片组。\n4. 右下角 FAB「开始游戏」（直接用 Boat / Pojav 引擎启动）。\n\n下载中心重写（fragment_download.xml）：\n1. 4 个 Tab（游戏 / 模组 / 整合包 / 光影）+ 类型筛选 ChipGroup（全部 / 正式版 / 快照 / 远古 beta / 远古 alpha 愚人节版）。\n2. 搜索源切换（BMCLAPI / Modrinth / Curseforge）。\n3. 卡片网格（GridLayoutManager 2 列） + 卡片含标题/简介/下载按钮。\n4. 默认推荐列表 + 无限滚动加载更多（点击「加载更多」按页加载）。\n5. 当前下载进度卡：进度条 + 速度 + 大小 + 取消按钮。\n6. 已完成列表：每项可删除（同时删除文件）。\n\n设置 + 工具：\n1. 设置保持原结构，启动框架（Java / 渲染器 / 驱动）+ AI 服务商配置。\n2. 工具页：淘瓦联机开关（删除入口按钮）+ 键位还原/编辑器/AI 生成。\n\n管理版本页（VersionsActivity）：\n1. 已安装版本列表（位置/启动/删除/设为当前）。\n2. 管理模组按钮 → 打开 ModsManagerActivity。\n\n模组管理（ModsManagerActivity）：\n1. 列出当前版本的 mods/ 目录所有 jar。\n2. 导入本地模组 → 自动 AI 汉化（调用 hcnsec.cn auto 模型）。\n3. AI 汉化结果存为 modname.zh.txt 备注。\n4. 全部 AI 汉化按钮 + 重新汉化 + 删除模组。\n5. 打开目录跳转到系统文件管理器。\n\n下载模组自动 AI 汉化：\n1. DownloadService.Task 新增 autoTranslate 字段。\n2. 模组下载完成后自动调 AiTranslate.translateModName 翻译文件名。\n3. AI 翻译存为同名 .zh.txt 备注，写入 mods/ 目录。\n\nTab 重叠修复（HomeActivity.switchFragment）：\n1. 改为 hide/show 模式而非 replace，避免 Tab 切换时 Fragment 重复实例化。\n2. 预创建 4 个 Fragment 实例，仅切换可见性。\n3. 切换时统一 hide/show 同 tag Fragment，杜绝 UI 重叠。\n\n登录功能修复：\n1. AccountActivity 登录成功后实时刷新主界面头像（HomeFragment.onResume + HomeActivity.refreshAvatar）。\n2. AccountActivity 切换皮肤成功后立即生效（写到 KEY_USER_SKIN_PATH）。\n3. 离线昵称尾字符判断 Steve / Alex（已支持在 AccountActivity 内 UI 提示）。\n\n构建：versionCode 10, versionName 1.0.9, APK 179.6MB（release 签名）。"
   },
   "latestPrerelease": {
-    "versionCode": 9,
-    "versionName": "1.0.8",
+    "versionCode": 10,
+    "versionName": "1.0.9",
     "date": "2026.08.16",
-    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.8/StarDockLauncher-v1.0.8-release.apk"],
-    "updateLog": "StarDockLauncher 1.0.8：登录体系 + 管理版本 + 自定义主题 + 主界面重做 + 启动动画 + 自动检查更新 + 修复键位闪退。"
+    "url": ["https://github.com/1953187487/StarDockLauncher/releases/download/v1.0.9/StarDockLauncher-v1.0.9-release.apk"],
+    "updateLog": "StarDockLauncher 1.0.9：现代化 UI + 液态玻璃 + AI 汉化（导入/下载自动）+ 自研全链重写 + 一键下载更新 UI 带速度。"
   }
 }

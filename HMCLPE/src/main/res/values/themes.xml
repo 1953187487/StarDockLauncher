@@ -54,17 +54,20 @@
         <item name="colorOnTertiaryContainer">@color/sd_on_tertiary_container</item>
         <item name="colorError">@color/sd_error</item>
         <item name="colorOnError">@color/sd_on_error</item>
-        <item name="android:colorBackground">@color/sd_surface_dim</item>
-        <item name="colorSurface">@color/sd_surface</item>
+        <item name="android:colorBackground">@drawable/sd_liquid_bg</item>
+        <item name="colorSurface">#161B22</item>
         <item name="colorOnSurface">@color/sd_on_surface</item>
         <item name="colorSurfaceVariant">@color/sd_surface_container</item>
         <item name="colorOnSurfaceVariant">@color/sd_on_surface_variant</item>
         <item name="colorOutline">@color/sd_outline</item>
         <item name="colorOutlineVariant">@color/sd_outline_variant</item>
-        <item name="android:windowBackground">@color/sd_surface_dim</item>
-        <item name="android:statusBarColor">@color/sd_surface_dim</item>
-        <item name="android:navigationBarColor">@color/sd_surface_dim</item>
+        <item name="android:windowBackground">@drawable/sd_liquid_bg</item>
+        <item name="android:statusBarColor">#00000000</item>
+        <item name="android:navigationBarColor">#00000000</item>
         <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
     <style name="ShapeAppearance.StarDock.Circle" parent="">

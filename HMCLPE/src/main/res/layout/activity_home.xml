@@ -5,23 +5,23 @@
     android:id="@+id/home_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/sd_surface_dim"
+    android:background="@drawable/sd_liquid_bg"
     android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/home_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="88dp"
-        android:background="@color/sd_surface"
+        android:layout_marginStart="96dp"
+        android:background="#00000000"
         android:elevation="0dp"
         app:liftOnScroll="false">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/home_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:background="@color/sd_surface"
+            android:layout_height="56dp"
+            android:background="#00000000"
             app:titleTextColor="@color/sd_on_surface">
 
             <LinearLayout
@@ -32,24 +32,10 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp">
 
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/home_avatar"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:padding="1dp"
-                    android:background="@color/sd_secondary_container"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_account_placeholder"
-                    app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full"
-                    app:strokeColor="@color/sd_primary"
-                    app:strokeWidth="2dp"
-                    android:contentDescription="账号" />
-
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="14dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -57,7 +43,7 @@
                         android:layout_height="wrap_content"
                         android:text="StarDockLauncher"
                         android:textColor="@color/sd_on_surface"
-                        android:textSize="17sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -68,31 +54,23 @@
                         android:textColor="@color/sd_on_surface_variant"
                         android:textSize="11sp" />
                 </LinearLayout>
-
             </LinearLayout>
-
         </com.google.android.material.appbar.MaterialToolbar>
-
-        <com.google.android.material.divider.MaterialDivider
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            app:dividerColor="@color/sd_outline_variant" />
-
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
         android:id="@+id/home_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="88dp"
+        android:layout_marginStart="96dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <com.google.android.material.navigationrail.NavigationRailView
         android:id="@+id/home_nav_rail"
-        android:layout_width="88dp"
+        android:layout_width="96dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/sd_surface"
+        android:background="#660B1020"
         app:itemIconTint="@color/sd_nav_item_color"
         app:itemTextColor="@color/sd_nav_item_color"
         app:itemRippleColor="@color/sd_secondary_container"
@@ -100,15 +78,15 @@
         app:menu="@menu/sd_bottom_nav" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/home_fab_ai"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:id="@+id/home_fab_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="22dp"
         android:layout_marginBottom="24dp"
-        android:src="@drawable/ic_ai_assistant"
+        android:contentDescription="开始游戏"
+        android:src="@drawable/ic_baseline_arrow_forward_white"
         app:backgroundTint="@color/sd_primary"
-        app:tint="@color/sd_on_primary"
-        android:contentDescription="AI 助手" />
+        app:tint="@color/sd_on_primary" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

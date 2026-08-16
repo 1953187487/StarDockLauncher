@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
 import com.tungsten.hmclpe.R;
@@ -37,6 +35,7 @@ public class HomeFragment extends Fragment {
     private MaterialTextView name;
     private MaterialTextView mode;
     private MaterialButton loginBtn;
+    private View accountCard;
 
     @Nullable
     @Override
@@ -52,19 +51,20 @@ public class HomeFragment extends Fragment {
             name = view.findViewById(R.id.home_account_name);
             mode = view.findViewById(R.id.home_account_mode);
             loginBtn = view.findViewById(R.id.home_account_login_btn);
+            accountCard = view.findViewById(R.id.home_account_card);
             versionList = view.findViewById(R.id.home_version_list);
 
-            MaterialCardView downloadCard = view.findViewById(R.id.home_btn_download_card);
-            MaterialCardView manageCard = view.findViewById(R.id.home_manage_versions_card);
-            MaterialCardView accountCard = view.findViewById(R.id.home_account_card);
+            View downloadCard = view.findViewById(R.id.home_btn_download_card);
+            View manageCard = view.findViewById(R.id.home_manage_versions_card);
+            View toolsCard = view.findViewById(R.id.home_btn_tools_card);
 
             if (downloadCard != null) downloadCard.setOnClickListener(v -> SettingNavigation.openDownloadTab(requireActivity()));
             if (manageCard != null) manageCard.setOnClickListener(v -> openManageVersions());
+            if (toolsCard != null) toolsCard.setOnClickListener(v -> SettingNavigation.openToolsTab(requireActivity()));
             if (accountCard != null) accountCard.setOnClickListener(v -> openLogin());
             if (loginBtn != null) loginBtn.setOnClickListener(v -> openLogin());
 
             if (versionList != null) versionList.setLayoutManager(new LinearLayoutManager(requireContext()));
-
             bindAccount();
             bindVersions();
         } catch (Throwable t) {
@@ -84,7 +84,7 @@ public class HomeFragment extends Fragment {
             android.content.Intent i = new android.content.Intent(requireContext(), com.tungsten.hmclpe.launcher.uis.login.AccountActivity.class);
             startActivity(i);
         } catch (Throwable t) {
-            Toast.makeText(requireContext(), "登录面板未就绪", Toast.LENGTH_SHORT).show();
+            android.widget.Toast.makeText(requireContext(), "登录面板未就绪", android.widget.Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -93,7 +93,7 @@ public class HomeFragment extends Fragment {
             android.content.Intent i = new android.content.Intent(requireContext(), com.tungsten.hmclpe.launcher.uis.versions.VersionsActivity.class);
             startActivity(i);
         } catch (Throwable t) {
-            Toast.makeText(requireContext(), "管理版本页未就绪", Toast.LENGTH_SHORT).show();
+            android.widget.Toast.makeText(requireContext(), "管理版本页未就绪", android.widget.Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -103,7 +103,7 @@ public class HomeFragment extends Fragment {
             String n = AuthManager.currentNickname();
             boolean offline = (n == null || n.isEmpty());
             if (name != null) name.setText(offline ? "未登录" : n);
-            if (mode != null) mode.setText(AuthManager.name(m));
+            if (mode != null) mode.setText(offline ? "点击登录账号，享受云端皮肤" : AuthManager.name(m));
             if (loginBtn != null) loginBtn.setText(offline ? "登录" : "切换");
             if (avatar != null) {
                 avatar.setImageResource(R.drawable.ic_account_placeholder);
@@ -111,9 +111,7 @@ public class HomeFragment extends Fragment {
                 if (skin != null && !skin.isEmpty()) {
                     File f = new File(skin);
                     if (f.exists()) {
-                        try {
-                            avatar.setImageURI(android.net.Uri.fromFile(f));
-                        } catch (Throwable ignored) {}
+                        try { avatar.setImageURI(android.net.Uri.fromFile(f)); } catch (Throwable ignored) {}
                     }
                 }
             }
@@ -133,9 +131,7 @@ public class HomeFragment extends Fragment {
                             return a.getName().compareToIgnoreCase(b.getName());
                         }
                     });
-                    for (File f : arr) {
-                        if (f.isDirectory()) files.add(f);
-                    }
+                    for (File f : arr) if (f.isDirectory()) files.add(f);
                 }
             }
             versionList.setAdapter(new VersionAdapter(files));
@@ -143,12 +139,8 @@ public class HomeFragment extends Fragment {
     }
 
     class VersionAdapter extends RecyclerView.Adapter<VersionAdapter.VH> {
-
         private final List<File> data;
-
-        VersionAdapter(List<File> data) {
-            this.data = data;
-        }
+        VersionAdapter(List<File> data) { this.data = data; }
 
         @NonNull
         @Override
@@ -161,10 +153,10 @@ public class HomeFragment extends Fragment {
         public void onBindViewHolder(@NonNull VH h, int pos) {
             try {
                 File f = data.get(pos);
-                String name = f.getName();
-                h.title.setText(name);
+                String n = f.getName();
+                h.title.setText(n);
                 File jar = new File(f, "client.jar");
-                File json = new File(f, name + ".json");
+                File json = new File(f, n + ".json");
                 File libs = new File(f, "libraries");
                 StringBuilder meta = new StringBuilder();
                 meta.append(jar.exists() ? "客户端 ✓" : "客户端 ✗").append("  ");
@@ -172,24 +164,18 @@ public class HomeFragment extends Fragment {
                 meta.append(libs.exists() ? "依赖 ✓" : "依赖 ✗");
                 h.meta.setText(meta);
                 h.itemView.setOnClickListener(v -> {
-                    try {
-                        AppPrefs.setString(requireContext(), AppPrefs.KEY_LAST_GAME_VERSION, name);
-                        AppPrefs.setString(requireContext(), AppPrefs.KEY_LAST_PROFILE, name);
-                        Toast.makeText(requireContext(), "已选择版本：" + name + "，请点击右下角开始游戏", Toast.LENGTH_SHORT).show();
-                        if (getActivity() instanceof HomeActivity) {
-                            ((HomeActivity) getActivity()).refreshStartFab();
-                        }
-                    } catch (Throwable t) {
-                        Toast.makeText(requireContext(), "选择失败", Toast.LENGTH_SHORT).show();
+                    AppPrefs.setString(requireContext(), AppPrefs.KEY_LAST_GAME_VERSION, n);
+                    AppPrefs.setString(requireContext(), AppPrefs.KEY_LAST_PROFILE, n);
+                    android.widget.Toast.makeText(requireContext(), "已选择版本：" + n + "，点击右下角开始游戏", android.widget.Toast.LENGTH_SHORT).show();
+                    if (getActivity() instanceof HomeActivity) {
+                        ((HomeActivity) getActivity()).refreshStartFab();
                     }
                 });
             } catch (Throwable ignored) {}
         }
 
         @Override
-        public int getItemCount() {
-            return data == null ? 0 : data.size();
-        }
+        public int getItemCount() { return data == null ? 0 : data.size(); }
 
         class VH extends RecyclerView.ViewHolder {
             TextView title;

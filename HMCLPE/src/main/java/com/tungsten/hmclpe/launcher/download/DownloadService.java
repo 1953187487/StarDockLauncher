@@ -31,6 +31,8 @@ public class DownloadService {
         public int progress;
         public State state = State.QUEUED;
         public File destination;
+        public String category;
+        public boolean autoTranslate = false;
 
         public enum State { QUEUED, RUNNING, PAUSED, COMPLETED, FAILED, CANCELED }
     }
@@ -110,6 +112,18 @@ public class DownloadService {
             for (Listener l : listeners) {
                 try { l.onCompleted(t); } catch (Throwable ignored) {}
             }
+            if (t.autoTranslate && "mod".equals(t.category) && t.destination != null && t.destination.exists()) {
+                com.tungsten.hmclpe.ai.AiTranslate.translateModName(stripExt(t.name), new com.tungsten.hmclpe.ai.AiTranslate.Callback() {
+                    @Override public void onSuccess(String translated) {
+                        File note = new File(t.destination.getParentFile(), stripExt(t.name) + ".zh.txt");
+                        try (FileOutputStream fos = new FileOutputStream(note)) {
+                            String content = "原名：" + t.name + "\n中文：" + translated + "\n下载时间：" + System.currentTimeMillis() + "\n";
+                            fos.write(content.getBytes("UTF-8"));
+                        } catch (Throwable ignored) {}
+                    }
+                    @Override public void onFailed(String err) {}
+                });
+            }
         } catch (IOException e) {
             fail(t, e.getMessage() == null ? "IO 错误" : e.getMessage());
         } catch (Throwable t2) {
@@ -134,5 +148,11 @@ public class DownloadService {
                 try { l.onUpdate(snap); } catch (Throwable ignored) {}
             }
         });
+    }
+
+    private static String stripExt(String name) {
+        if (name == null) return "";
+        int i = name.lastIndexOf('.');
+        return i < 0 ? name : name.substring(0, i);
     }
 }
